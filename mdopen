@@ -1,0 +1,682 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  printf 'Usage: mdopen FILE.md\n' >&2
+}
+
+if [ "$#" -ne 1 ]; then
+  usage
+  exit 2
+fi
+
+input_arg=$1
+
+if [ ! -f "$input_arg" ]; then
+  printf 'mdopen: file not found: %s\n' "$input_arg" >&2
+  exit 1
+fi
+
+if ! command -v pandoc >/dev/null 2>&1; then
+  printf 'mdopen: pandoc is not on PATH\n' >&2
+  exit 1
+fi
+
+input_dir=$(cd -- "$(dirname -- "$input_arg")" && pwd)
+input_file=$(basename -- "$input_arg")
+input="$input_dir/$input_file"
+title=${input_file%.*}
+
+outdir="${TMPDIR:-/tmp}/mdopen"
+mkdir -p "$outdir"
+
+css="$outdir/mdopen.css"
+template="$outdir/mdopen-template.html"
+out="$outdir/${title}.html"
+
+cat > "$css" <<'CSS'
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  background: var(--bgColor-default, #ffffff);
+}
+
+html[data-mdopen-theme="light"] body {
+  background: #ffffff;
+}
+
+html[data-mdopen-theme="dark"] body {
+  background: #0d1117;
+}
+
+.markdown-body {
+  box-sizing: border-box;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 48px 40px;
+}
+
+.markdown-body > :first-child {
+  margin-top: 0 !important;
+}
+
+.markdown-body > :last-child {
+  margin-bottom: 0 !important;
+}
+
+img {
+  max-width: 100%;
+}
+
+html[data-mdopen-density="tight"] .markdown-body,
+html[data-mdopen-density="dense"] .markdown-body,
+html[data-mdopen-density="compact"] .markdown-body {
+  --mdopen-text-gap: 0.65em;
+  --mdopen-heading-major-top: 0.95em;
+  --mdopen-heading-major-bottom: 0.34em;
+  --mdopen-heading-minor-top: 0.72em;
+  --mdopen-heading-minor-bottom: 0.24em;
+  --mdopen-rule-gap: 0.55em;
+  --mdopen-rule-height: 1px;
+  --mdopen-pre-padding: 10px;
+  --mdopen-cell-padding-y: 4px;
+  line-height: 1.42;
+}
+
+html[data-mdopen-density="dense"] .markdown-body {
+  --mdopen-text-gap: 0.34em;
+  --mdopen-heading-major-top: 0.58em;
+  --mdopen-heading-major-bottom: 0.18em;
+  --mdopen-heading-minor-top: 0.42em;
+  --mdopen-heading-minor-bottom: 0.12em;
+  --mdopen-rule-gap: 0.22em;
+  --mdopen-rule-height: 1px;
+  --mdopen-pre-padding: 7px;
+  --mdopen-cell-padding-y: 2px;
+  line-height: 1.26;
+}
+
+html[data-mdopen-density="compact"] .markdown-body {
+  --mdopen-text-gap: 0.16em;
+  --mdopen-heading-major-top: 0.34em;
+  --mdopen-heading-major-bottom: 0.08em;
+  --mdopen-heading-minor-top: 0.24em;
+  --mdopen-heading-minor-bottom: 0.06em;
+  --mdopen-rule-gap: 0.08em;
+  --mdopen-rule-height: 1px;
+  --mdopen-pre-padding: 5px;
+  --mdopen-cell-padding-y: 1px;
+  line-height: 1.16;
+}
+
+html[data-mdopen-density="tight"] .markdown-body h1,
+html[data-mdopen-density="tight"] .markdown-body h2,
+html[data-mdopen-density="dense"] .markdown-body h1,
+html[data-mdopen-density="dense"] .markdown-body h2,
+html[data-mdopen-density="compact"] .markdown-body h1,
+html[data-mdopen-density="compact"] .markdown-body h2 {
+  margin-top: var(--mdopen-heading-major-top) !important;
+  margin-bottom: var(--mdopen-heading-major-bottom) !important;
+  padding-bottom: 0.18em !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body h3,
+html[data-mdopen-density="tight"] .markdown-body h4,
+html[data-mdopen-density="tight"] .markdown-body h5,
+html[data-mdopen-density="tight"] .markdown-body h6,
+html[data-mdopen-density="dense"] .markdown-body h3,
+html[data-mdopen-density="dense"] .markdown-body h4,
+html[data-mdopen-density="dense"] .markdown-body h5,
+html[data-mdopen-density="dense"] .markdown-body h6,
+html[data-mdopen-density="compact"] .markdown-body h3,
+html[data-mdopen-density="compact"] .markdown-body h4,
+html[data-mdopen-density="compact"] .markdown-body h5,
+html[data-mdopen-density="compact"] .markdown-body h6 {
+  margin-top: var(--mdopen-heading-minor-top) !important;
+  margin-bottom: var(--mdopen-heading-minor-bottom) !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body p,
+html[data-mdopen-density="tight"] .markdown-body blockquote,
+html[data-mdopen-density="tight"] .markdown-body ul,
+html[data-mdopen-density="tight"] .markdown-body ol,
+html[data-mdopen-density="tight"] .markdown-body dl,
+html[data-mdopen-density="tight"] .markdown-body table,
+html[data-mdopen-density="tight"] .markdown-body pre,
+html[data-mdopen-density="tight"] .markdown-body details,
+html[data-mdopen-density="dense"] .markdown-body p,
+html[data-mdopen-density="dense"] .markdown-body blockquote,
+html[data-mdopen-density="dense"] .markdown-body ul,
+html[data-mdopen-density="dense"] .markdown-body ol,
+html[data-mdopen-density="dense"] .markdown-body dl,
+html[data-mdopen-density="dense"] .markdown-body table,
+html[data-mdopen-density="dense"] .markdown-body pre,
+html[data-mdopen-density="dense"] .markdown-body details,
+html[data-mdopen-density="compact"] .markdown-body p,
+html[data-mdopen-density="compact"] .markdown-body blockquote,
+html[data-mdopen-density="compact"] .markdown-body ul,
+html[data-mdopen-density="compact"] .markdown-body ol,
+html[data-mdopen-density="compact"] .markdown-body dl,
+html[data-mdopen-density="compact"] .markdown-body table,
+html[data-mdopen-density="compact"] .markdown-body pre,
+html[data-mdopen-density="compact"] .markdown-body details {
+  margin-top: 0 !important;
+  margin-bottom: var(--mdopen-text-gap) !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body li + li {
+  margin-top: 0.12em !important;
+}
+
+html[data-mdopen-density="dense"] .markdown-body li + li {
+  margin-top: 0 !important;
+}
+
+html[data-mdopen-density="compact"] .markdown-body li + li {
+  margin-top: 0 !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body ul ul,
+html[data-mdopen-density="tight"] .markdown-body ul ol,
+html[data-mdopen-density="tight"] .markdown-body ol ol,
+html[data-mdopen-density="tight"] .markdown-body ol ul,
+html[data-mdopen-density="dense"] .markdown-body ul ul,
+html[data-mdopen-density="dense"] .markdown-body ul ol,
+html[data-mdopen-density="dense"] .markdown-body ol ol,
+html[data-mdopen-density="dense"] .markdown-body ol ul,
+html[data-mdopen-density="compact"] .markdown-body ul ul,
+html[data-mdopen-density="compact"] .markdown-body ul ol,
+html[data-mdopen-density="compact"] .markdown-body ol ol,
+html[data-mdopen-density="compact"] .markdown-body ol ul {
+  margin-top: 0.1em !important;
+  margin-bottom: 0 !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body pre,
+html[data-mdopen-density="dense"] .markdown-body pre,
+html[data-mdopen-density="compact"] .markdown-body pre {
+  padding: var(--mdopen-pre-padding) !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body th,
+html[data-mdopen-density="tight"] .markdown-body td,
+html[data-mdopen-density="dense"] .markdown-body th,
+html[data-mdopen-density="dense"] .markdown-body td,
+html[data-mdopen-density="compact"] .markdown-body th,
+html[data-mdopen-density="compact"] .markdown-body td {
+  padding-top: var(--mdopen-cell-padding-y) !important;
+  padding-bottom: var(--mdopen-cell-padding-y) !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body hr,
+html[data-mdopen-density="dense"] .markdown-body hr,
+html[data-mdopen-density="compact"] .markdown-body hr {
+  height: var(--mdopen-rule-height) !important;
+  margin: var(--mdopen-rule-gap) 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background-color: var(--borderColor-default, #d0d7de) !important;
+}
+
+.mdopen-toolbar {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--bgColor-default, #fff) 88%, transparent);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+}
+
+.mdopen-toolbar button {
+  min-width: 44px;
+  height: 30px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fgColor-default, #1f2328);
+  font: 13px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  cursor: pointer;
+}
+
+.mdopen-toolbar button[aria-pressed="true"] {
+  background: var(--button-default-bgColor-active, rgba(128, 128, 128, 0.18));
+  font-weight: 600;
+}
+
+.mdopen-divider {
+  width: 1px;
+  margin: 3px 2px;
+  background: rgba(128, 128, 128, 0.28);
+}
+
+@media (max-width: 767px) {
+  .markdown-body {
+    padding: 32px 16px;
+  }
+
+  .mdopen-toolbar {
+    left: 8px;
+    right: 8px;
+    justify-content: center;
+  }
+
+  .mdopen-toolbar button {
+    min-width: 38px;
+  }
+}
+
+@media print {
+  @page {
+    margin: 12mm 13mm;
+  }
+
+  html {
+    --mdopen-print-text: #2f3437;
+    --mdopen-print-muted: #5f666b;
+    --mdopen-print-heading: #111417;
+    --mdopen-print-heading-soft: #343a40;
+    --mdopen-print-accent: #5e6469;
+    --mdopen-print-accent-soft: #eef0f2;
+    --mdopen-print-border: #cfd4d8;
+    --mdopen-print-code-bg: #f6f7f8;
+  }
+
+  html[data-mdopen-print="blue"] {
+    --mdopen-print-text: #20262d;
+    --mdopen-print-muted: #55616e;
+    --mdopen-print-heading: #123e68;
+    --mdopen-print-heading-soft: #1f5b8f;
+    --mdopen-print-accent: #2b6fa8;
+    --mdopen-print-accent-soft: #edf5fb;
+    --mdopen-print-border: #bdd3e6;
+    --mdopen-print-code-bg: #f3f8fc;
+  }
+
+  html[data-mdopen-print="burgundy"] {
+    --mdopen-print-text: #292423;
+    --mdopen-print-muted: #665b58;
+    --mdopen-print-heading: #6f2435;
+    --mdopen-print-heading-soft: #8d3448;
+    --mdopen-print-accent: #9a3f52;
+    --mdopen-print-accent-soft: #fbf1f3;
+    --mdopen-print-border: #e1bdc5;
+    --mdopen-print-code-bg: #fbf5f6;
+  }
+
+  .mdopen-toolbar {
+    display: none;
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  .markdown-body {
+    max-width: none;
+    padding: 0;
+    color: var(--mdopen-print-text) !important;
+    font-size: 10.2pt;
+    line-height: 1.34;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .markdown-body h1,
+  .markdown-body h2,
+  .markdown-body h3,
+  .markdown-body h4,
+  .markdown-body h5,
+  .markdown-body h6 {
+    break-after: avoid-page;
+    page-break-after: avoid;
+    color: var(--mdopen-print-heading) !important;
+  }
+
+  .markdown-body h1 {
+    margin: 0 0 6pt !important;
+    padding-bottom: 4pt !important;
+    border-bottom-color: var(--mdopen-print-border) !important;
+    font-size: 20pt !important;
+    line-height: 1.12 !important;
+  }
+
+  .markdown-body h2 {
+    margin: 11pt 0 4pt !important;
+    padding-bottom: 2pt !important;
+    border-bottom-color: var(--mdopen-print-border) !important;
+    font-size: 14.5pt !important;
+    line-height: 1.14 !important;
+  }
+
+  .markdown-body h3 {
+    margin: 8pt 0 3pt !important;
+    color: var(--mdopen-print-heading-soft) !important;
+    font-size: 11.2pt !important;
+    line-height: 1.16 !important;
+  }
+
+  .markdown-body h4,
+  .markdown-body h5,
+  .markdown-body h6 {
+    margin: 6pt 0 2pt !important;
+    color: var(--mdopen-print-heading-soft) !important;
+    font-size: 10.4pt !important;
+    line-height: 1.16 !important;
+  }
+
+  .markdown-body p,
+  .markdown-body ul,
+  .markdown-body ol,
+  .markdown-body dl,
+  .markdown-body blockquote,
+  .markdown-body table,
+  .markdown-body pre,
+  .markdown-body details {
+    margin-top: 0 !important;
+    margin-bottom: 5pt !important;
+  }
+
+  .markdown-body hr {
+    height: 0.6pt !important;
+    margin: 6pt 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: var(--mdopen-print-border) !important;
+  }
+
+  .markdown-body blockquote {
+    padding-left: 7pt !important;
+    color: var(--mdopen-print-muted) !important;
+    border-left-color: var(--mdopen-print-accent) !important;
+  }
+
+  .markdown-body pre {
+    padding: 6pt !important;
+    background: var(--mdopen-print-code-bg) !important;
+    border-color: var(--mdopen-print-border) !important;
+  }
+
+  .markdown-body code,
+  .markdown-body tt {
+    background: var(--mdopen-print-code-bg) !important;
+  }
+
+  .markdown-body th,
+  .markdown-body td {
+    padding: 2.5pt 5pt !important;
+    border-color: var(--mdopen-print-border) !important;
+  }
+
+  .markdown-body th {
+    background: var(--mdopen-print-accent-soft) !important;
+    color: var(--mdopen-print-heading) !important;
+  }
+
+  a {
+    color: var(--mdopen-print-accent) !important;
+    text-decoration-color: var(--mdopen-print-border) !important;
+  }
+
+  pre, blockquote, table {
+    break-inside: avoid;
+  }
+
+  html[data-mdopen-density="tight"] .markdown-body {
+    font-size: 9.7pt;
+    line-height: 1.24;
+  }
+
+  html[data-mdopen-density="dense"] .markdown-body {
+    font-size: 9.1pt;
+    line-height: 1.17;
+  }
+
+  html[data-mdopen-density="compact"] .markdown-body {
+    font-size: 8.6pt;
+    line-height: 1.1;
+  }
+
+  html[data-mdopen-density="tight"] .markdown-body h1 {
+    margin-bottom: 4pt !important;
+    padding-bottom: 3pt !important;
+    font-size: 18pt !important;
+  }
+
+  html[data-mdopen-density="dense"] .markdown-body h1 {
+    margin-bottom: 3pt !important;
+    padding-bottom: 2pt !important;
+    font-size: 16pt !important;
+  }
+
+  html[data-mdopen-density="compact"] .markdown-body h1 {
+    margin-bottom: 2pt !important;
+    padding-bottom: 1pt !important;
+    font-size: 14.5pt !important;
+  }
+
+  html[data-mdopen-density="tight"] .markdown-body h2 {
+    margin-top: 8pt !important;
+    margin-bottom: 3pt !important;
+    padding-bottom: 1.5pt !important;
+    font-size: 13pt !important;
+  }
+
+  html[data-mdopen-density="dense"] .markdown-body h2 {
+    margin-top: 5pt !important;
+    margin-bottom: 2pt !important;
+    padding-bottom: 1pt !important;
+    font-size: 11.8pt !important;
+  }
+
+  html[data-mdopen-density="compact"] .markdown-body h2 {
+    margin-top: 3pt !important;
+    margin-bottom: 1pt !important;
+    padding-bottom: 0.5pt !important;
+    font-size: 10.8pt !important;
+  }
+
+  html[data-mdopen-density="tight"] .markdown-body h3 {
+    margin-top: 6pt !important;
+    margin-bottom: 2pt !important;
+    font-size: 10.6pt !important;
+  }
+
+  html[data-mdopen-density="dense"] .markdown-body h3 {
+    margin-top: 3.5pt !important;
+    margin-bottom: 1pt !important;
+    font-size: 9.8pt !important;
+  }
+
+  html[data-mdopen-density="compact"] .markdown-body h3 {
+    margin-top: 2pt !important;
+    margin-bottom: 0.5pt !important;
+    font-size: 9.2pt !important;
+  }
+
+  html[data-mdopen-density="tight"] .markdown-body p,
+  html[data-mdopen-density="tight"] .markdown-body ul,
+  html[data-mdopen-density="tight"] .markdown-body ol,
+  html[data-mdopen-density="tight"] .markdown-body dl,
+  html[data-mdopen-density="tight"] .markdown-body blockquote,
+  html[data-mdopen-density="tight"] .markdown-body table,
+  html[data-mdopen-density="tight"] .markdown-body pre,
+  html[data-mdopen-density="tight"] .markdown-body details {
+    margin-bottom: 3pt !important;
+  }
+
+  html[data-mdopen-density="dense"] .markdown-body p,
+  html[data-mdopen-density="dense"] .markdown-body ul,
+  html[data-mdopen-density="dense"] .markdown-body ol,
+  html[data-mdopen-density="dense"] .markdown-body dl,
+  html[data-mdopen-density="dense"] .markdown-body blockquote,
+  html[data-mdopen-density="dense"] .markdown-body table,
+  html[data-mdopen-density="dense"] .markdown-body pre,
+  html[data-mdopen-density="dense"] .markdown-body details {
+    margin-bottom: 1.5pt !important;
+  }
+
+  html[data-mdopen-density="compact"] .markdown-body p,
+  html[data-mdopen-density="compact"] .markdown-body ul,
+  html[data-mdopen-density="compact"] .markdown-body ol,
+  html[data-mdopen-density="compact"] .markdown-body dl,
+  html[data-mdopen-density="compact"] .markdown-body blockquote,
+  html[data-mdopen-density="compact"] .markdown-body table,
+  html[data-mdopen-density="compact"] .markdown-body pre,
+  html[data-mdopen-density="compact"] .markdown-body details {
+    margin-bottom: 0.5pt !important;
+  }
+
+  html[data-mdopen-density="tight"] .markdown-body hr {
+    margin: 4pt 0 !important;
+  }
+
+  html[data-mdopen-density="dense"] .markdown-body hr {
+    margin: 2pt 0 !important;
+  }
+
+  html[data-mdopen-density="compact"] .markdown-body hr {
+    margin: 0.8pt 0 !important;
+    height: 0.4pt !important;
+  }
+
+  html[data-mdopen-density="dense"] .markdown-body th,
+  html[data-mdopen-density="dense"] .markdown-body td,
+  html[data-mdopen-density="compact"] .markdown-body th,
+  html[data-mdopen-density="compact"] .markdown-body td {
+    padding-top: 1pt !important;
+    padding-bottom: 1pt !important;
+  }
+}
+CSS
+
+cat > "$template" <<'HTML'
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>$pagetitle$</title>
+  <link id="mdopen-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown-light.min.css">
+  <link rel="stylesheet" href="$css$">
+  <style>
+$highlighting-css$
+  </style>
+</head>
+<body>
+  <nav class="mdopen-toolbar" aria-label="Theme">
+    <button type="button" data-theme="light" aria-pressed="true">Light</button>
+    <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+    <span class="mdopen-divider" aria-hidden="true"></span>
+    <button type="button" data-print="gray" aria-pressed="true">Gray</button>
+    <button type="button" data-print="blue" aria-pressed="false">Blue</button>
+    <button type="button" data-print="burgundy" aria-pressed="false">Burg</button>
+    <span class="mdopen-divider" aria-hidden="true"></span>
+    <button type="button" data-density="normal" aria-pressed="true">Gap</button>
+    <button type="button" data-density="tight" aria-pressed="false">-1</button>
+    <button type="button" data-density="dense" aria-pressed="false">-2</button>
+    <button type="button" data-density="compact" aria-pressed="false">-3</button>
+  </nav>
+  <article class="markdown-body">
+$body$
+  </article>
+  <script>
+    (function () {
+      var styles = {
+        light: 'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown-light.min.css',
+        dark: 'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown-dark.min.css'
+      };
+      var link = document.getElementById('mdopen-theme');
+      var themeButtons = Array.prototype.slice.call(document.querySelectorAll('[data-theme]'));
+      var printButtons = Array.prototype.slice.call(document.querySelectorAll('[data-print]'));
+      var densityButtons = Array.prototype.slice.call(document.querySelectorAll('[data-density]'));
+
+      function setTheme(theme) {
+        if (!styles[theme]) theme = 'light';
+        document.documentElement.dataset.mdopenTheme = theme;
+        link.href = styles[theme];
+        localStorage.setItem('mdopen-theme', theme);
+        themeButtons.forEach(function (button) {
+          button.setAttribute('aria-pressed', String(button.dataset.theme === theme));
+        });
+      }
+
+      function setDensity(density) {
+        if (['normal', 'tight', 'dense', 'compact'].indexOf(density) === -1) density = 'normal';
+        document.documentElement.dataset.mdopenDensity = density;
+        localStorage.setItem('mdopen-density', density);
+        densityButtons.forEach(function (button) {
+          button.setAttribute('aria-pressed', String(button.dataset.density === density));
+        });
+      }
+
+      function setPrintTheme(printTheme) {
+        if (['gray', 'blue', 'burgundy'].indexOf(printTheme) === -1) printTheme = 'gray';
+        document.documentElement.dataset.mdopenPrint = printTheme;
+        localStorage.setItem('mdopen-print', printTheme);
+        printButtons.forEach(function (button) {
+          button.setAttribute('aria-pressed', String(button.dataset.print === printTheme));
+        });
+      }
+
+      themeButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          setTheme(button.dataset.theme);
+        });
+      });
+
+      densityButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          setDensity(button.dataset.density);
+        });
+      });
+
+      printButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          setPrintTheme(button.dataset.print);
+        });
+      });
+
+      var params = new URLSearchParams(window.location.search);
+      setTheme(params.get('theme') || localStorage.getItem('mdopen-theme') || 'light');
+      setPrintTheme(params.get('print') || localStorage.getItem('mdopen-print') || 'gray');
+      setDensity(params.get('density') || localStorage.getItem('mdopen-density') || 'normal');
+
+      var themeBeforePrint = null;
+      window.addEventListener('beforeprint', function () {
+        themeBeforePrint = localStorage.getItem('mdopen-theme') || 'light';
+        link.href = styles.light;
+        document.documentElement.dataset.mdopenTheme = 'light';
+      });
+      window.addEventListener('afterprint', function () {
+        setTheme(themeBeforePrint || localStorage.getItem('mdopen-theme') || 'light');
+      });
+    }());
+  </script>
+</body>
+</html>
+HTML
+
+pandoc "$input" \
+  --template "$template" \
+  --metadata "pagetitle=$title" \
+  --syntax-highlighting=tango \
+  --variable "css=$css" \
+  --output "$out"
+
+open "$out"
+printf '%s\n' "$out"
