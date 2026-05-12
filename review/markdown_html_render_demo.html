@@ -1,0 +1,1101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Markdown HTML Typography Demo</title>
+  <style>
+    :root {
+      --page-bg: #f6f7fb;
+      --paper-bg: #ffffff;
+      --text: #1f2937;
+      --text-strong: #111827;
+      --text-muted: #6b7280;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+      --border: #d1d5db;
+      --border-soft: #e5e7eb;
+      --code-bg: #f3f4f6;
+      --quote-bg: #eff6ff;
+      --note-bg: #eff6ff;
+      --tip-bg: #ecfdf5;
+      --warning-bg: #fffbeb;
+      --important-bg: #fef2f2;
+      --note-border: #2563eb;
+      --tip-border: #059669;
+      --warning-border: #d97706;
+      --important-border: #dc2626;
+      --radius: 14px;
+      --shadow: 0 24px 70px rgba(17, 24, 39, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 100%;
+      color-scheme: light;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 34rem),
+        var(--page-bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 18px;
+      line-height: 1.65;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page-shell {
+      width: min(100%, 920px);
+      margin: 0 auto;
+      padding: 48px 20px;
+    }
+
+    .markdown-body {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 56px 64px;
+      background: var(--paper-bg);
+      border: 1px solid rgba(209, 213, 219, 0.7);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .document-meta {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-soft);
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.35rem;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--text-strong);
+      line-height: 1.18;
+      letter-spacing: -0.025em;
+      text-wrap: balance;
+    }
+
+    h1 {
+      margin: 0 0 1.15rem;
+      font-size: clamp(2.25rem, 6vw, 4rem);
+      line-height: 1.05;
+    }
+
+    h2 {
+      margin: 3.2rem 0 1rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--border-soft);
+      color: #1e40af;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+    }
+
+    h3 {
+      margin: 2.25rem 0 0.75rem;
+      color: #047857;
+      font-size: 1.35rem;
+    }
+
+    h4 {
+      margin: 1.7rem 0 0.45rem;
+      color: #92400e;
+      font-size: 1.05rem;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0 0 1.15rem;
+    }
+
+    .lede {
+      color: #374151;
+      font-size: 1.18rem;
+      line-height: 1.6;
+    }
+
+    strong {
+      color: var(--text-strong);
+      font-weight: 700;
+    }
+
+    em {
+      color: #374151;
+    }
+
+    a {
+      color: var(--accent-dark);
+      font-weight: 550;
+      text-decoration-color: rgba(29, 78, 216, 0.35);
+      text-underline-offset: 0.16em;
+    }
+
+    a:hover {
+      text-decoration-color: currentColor;
+    }
+
+    ul,
+    ol {
+      margin: 0 0 1.35rem 1.3rem;
+      padding: 0;
+    }
+
+    li {
+      margin: 0.35rem 0;
+      padding-left: 0.15rem;
+    }
+
+    li::marker {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    blockquote {
+      margin: 1.6rem 0;
+      padding: 1rem 1.15rem;
+      border-left: 4px solid var(--accent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      background: var(--quote-bg);
+      color: #374151;
+    }
+
+    blockquote p:last-child {
+      margin-bottom: 0;
+    }
+
+    .callout {
+      margin: 1.4rem 0;
+      padding: 1rem 1.1rem;
+      border: 1px solid var(--border-soft);
+      border-left-width: 5px;
+      border-radius: var(--radius);
+    }
+
+    .callout-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0 0 0.35rem;
+      color: var(--text-strong);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .callout p:last-child {
+      margin-bottom: 0;
+    }
+
+    .callout.note {
+      background: var(--note-bg);
+      border-left-color: var(--note-border);
+    }
+
+    .callout.tip {
+      background: var(--tip-bg);
+      border-left-color: var(--tip-border);
+    }
+
+    .callout.warning {
+      background: var(--warning-bg);
+      border-left-color: var(--warning-border);
+    }
+
+    .callout.important {
+      background: var(--important-bg);
+      border-left-color: var(--important-border);
+    }
+
+    code,
+    kbd,
+    samp {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+    }
+
+    :not(pre) > code {
+      padding: 0.13em 0.35em;
+      border: 1px solid var(--border-soft);
+      border-radius: 0.35rem;
+      background: var(--code-bg);
+      color: #111827;
+      white-space: nowrap;
+    }
+
+    pre {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      padding: 1rem 1.1rem;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      background: #111827;
+      color: #f9fafb;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      tab-size: 2;
+    }
+
+    pre code {
+      font-size: inherit;
+    }
+
+    table {
+      width: 100%;
+      margin: 1.6rem 0;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+
+    caption {
+      margin-bottom: 0.55rem;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      text-align: left;
+    }
+
+    th,
+    td {
+      padding: 0.7rem 0.75rem;
+      border-bottom: 1px solid var(--border-soft);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      color: var(--text-strong);
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: #f9fafb;
+    }
+
+    hr {
+      height: 1px;
+      margin: 2.75rem 0;
+      border: 0;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+    }
+
+    figure {
+      margin: 1.7rem 0;
+    }
+
+    .image-placeholder {
+      display: grid;
+      min-height: 220px;
+      place-items: center;
+      border: 1px dashed #9ca3af;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #f9fafb, #eff6ff);
+      color: var(--text-muted);
+      font-weight: 650;
+      text-align: center;
+    }
+
+    figcaption {
+      margin-top: 0.55rem;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 0.75rem;
+      margin: 1.25rem 0 1.6rem;
+    }
+
+    .swatch {
+      padding: 0.85rem;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      background: white;
+    }
+
+    .swatch-chip {
+      height: 42px;
+      margin-bottom: 0.55rem;
+      border-radius: 10px;
+      border: 1px solid rgba(17, 24, 39, 0.08);
+    }
+
+    .swatch-name {
+      display: block;
+      color: var(--text-strong);
+      font-size: 0.86rem;
+      font-weight: 750;
+    }
+
+    .swatch-value {
+      color: var(--text-muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.78rem;
+    }
+
+    .footnotes {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-soft);
+      color: #4b5563;
+      font-size: 0.9rem;
+    }
+
+    .footnotes ol {
+      margin-bottom: 0;
+    }
+
+    h5 {
+      margin: 1.35rem 0 0.35rem;
+      color: #6d28d9;
+      font-size: 0.98rem;
+      letter-spacing: 0;
+    }
+
+    h6 {
+      margin: 1.2rem 0 0.3rem;
+      color: #be123c;
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    del {
+      color: var(--text-muted);
+      text-decoration-thickness: 0.08em;
+    }
+
+    ins {
+      padding-inline: 0.15em;
+      border-radius: 0.25rem;
+      background: #ecfdf5;
+      color: #065f46;
+      text-decoration: none;
+    }
+
+    mark {
+      padding: 0.08em 0.22em;
+      border-radius: 0.25rem;
+      background: #fef3c7;
+      color: #78350f;
+    }
+
+    small {
+      color: var(--text-muted);
+      font-size: 0.86em;
+    }
+
+    sup,
+    sub {
+      position: relative;
+      vertical-align: baseline;
+      font-size: 0.72em;
+      line-height: 0;
+    }
+
+    sup {
+      top: -0.45em;
+    }
+
+    sub {
+      bottom: -0.2em;
+    }
+
+    abbr[title] {
+      cursor: help;
+      text-decoration: underline dotted;
+      text-underline-offset: 0.18em;
+    }
+
+    kbd {
+      display: inline-block;
+      padding: 0.12em 0.42em;
+      border: 1px solid #cbd5e1;
+      border-bottom-width: 2px;
+      border-radius: 0.38rem;
+      background: #ffffff;
+      color: #111827;
+      font-size: 0.82em;
+      line-height: 1.35;
+      box-shadow: 0 1px 0 rgba(17, 24, 39, 0.05);
+    }
+
+    samp {
+      color: #4b5563;
+    }
+
+    var {
+      color: #7c2d12;
+      font-family: Georgia, Cambria, serif;
+      font-style: italic;
+    }
+
+    li > p {
+      margin: 0.45rem 0;
+    }
+
+    ul ul,
+    ul ol,
+    ol ul,
+    ol ol {
+      margin-top: 0.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .task-list {
+      margin-left: 0;
+      list-style: none;
+    }
+
+    .task-list li {
+      display: flex;
+      gap: 0.55rem;
+      align-items: flex-start;
+      padding-left: 0;
+    }
+
+    .task-list input[type="checkbox"] {
+      width: 1rem;
+      height: 1rem;
+      margin-top: 0.38em;
+      accent-color: var(--accent);
+      flex: 0 0 auto;
+    }
+
+    blockquote blockquote {
+      margin: 0.9rem 0 0;
+      border-left-color: #60a5fa;
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    dl {
+      margin: 1.4rem 0;
+      padding: 0;
+    }
+
+    dt {
+      margin-top: 1rem;
+      color: var(--text-strong);
+      font-weight: 750;
+    }
+
+    dd {
+      margin: 0.25rem 0 0.75rem 1.2rem;
+      color: #374151;
+    }
+
+    img,
+    video,
+    iframe {
+      max-width: 100%;
+      border-radius: var(--radius);
+    }
+
+    img,
+    video {
+      height: auto;
+    }
+
+    iframe {
+      width: 100%;
+      border: 1px solid var(--border-soft);
+      background: #f9fafb;
+      aspect-ratio: 16 / 9;
+    }
+
+    details {
+      margin: 1.4rem 0;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    summary {
+      cursor: pointer;
+      padding: 0.85rem 1rem;
+      color: var(--text-strong);
+      font-weight: 750;
+    }
+
+    details[open] summary {
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    details > *:not(summary) {
+      margin-inline: 1rem;
+    }
+
+    details > :last-child {
+      margin-bottom: 1rem;
+    }
+
+    .toc {
+      margin: 1.6rem 0 2rem;
+      padding: 1rem 1.1rem;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      background: #f9fafb;
+    }
+
+    .toc-title {
+      margin: 0 0 0.55rem;
+      color: var(--text-strong);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .toc ol {
+      margin-bottom: 0;
+    }
+
+    .anchor {
+      color: var(--text-muted);
+      font-weight: 600;
+      text-decoration: none;
+      opacity: 0;
+    }
+
+    h2:hover .anchor,
+    h3:hover .anchor,
+    h4:hover .anchor {
+      opacity: 1;
+    }
+
+    .math-inline {
+      padding: 0.05em 0.25em;
+      border-radius: 0.3rem;
+      background: #f8fafc;
+      font-family: Cambria Math, STIX Two Math, Georgia, serif;
+      white-space: nowrap;
+    }
+
+    .math-display {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      padding: 1rem;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      background: #f8fafc;
+      font-family: Cambria Math, STIX Two Math, Georgia, serif;
+      text-align: center;
+    }
+
+    .footnote-ref {
+      font-size: 0.75em;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .footnote-backref {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 1.6rem 0;
+    }
+
+    .table-wrapper table {
+      margin: 0;
+    }
+
+    .broken-image {
+      display: grid;
+      min-height: 120px;
+      place-items: center;
+      padding: 1rem;
+      border: 1px dashed #9ca3af;
+      border-radius: var(--radius);
+      color: var(--text-muted);
+      background: #f9fafb;
+      text-align: center;
+    }
+
+    @media (max-width: 720px) {
+      body {
+        font-size: 17px;
+      }
+
+      .page-shell {
+        padding: 0;
+      }
+
+      .markdown-body {
+        max-width: none;
+        min-height: 100vh;
+        padding: 32px 22px;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+    }
+
+    @page {
+      margin: 18mm 16mm;
+    }
+
+    @media print {
+      :root {
+        --text: #000;
+        --text-strong: #000;
+        --text-muted: #444;
+        --accent: #000;
+        --accent-dark: #000;
+        --border: #aaa;
+        --border-soft: #d8d8d8;
+      }
+
+      html {
+        font-size: 11.5pt;
+      }
+
+      body {
+        background: white;
+        color: black;
+        font-size: 11.5pt;
+        line-height: 1.45;
+      }
+
+      .page-shell {
+        width: auto;
+        margin: 0;
+        padding: 0;
+      }
+
+      .markdown-body {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .document-meta,
+      .lede,
+      p,
+      li,
+      em,
+      strong,
+      blockquote,
+      figcaption,
+      caption,
+      del,
+      ins,
+      mark,
+      small,
+      abbr,
+      dt,
+      dd,
+      kbd,
+      samp,
+      var,
+      summary,
+      .toc,
+      .toc-title,
+      .math-inline,
+      .math-display,
+      .footnotes,
+      .footnote-ref,
+      .footnote-backref,
+      .swatch-name,
+      .swatch-value {
+        color: #000;
+      }
+
+      .eyebrow,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      li::marker,
+      a {
+        color: #000;
+      }
+
+      h1 {
+        font-size: 28pt;
+      }
+
+      h2 {
+        margin-top: 22pt;
+        padding-top: 10pt;
+        font-size: 17pt;
+      }
+
+      h3 {
+        font-size: 13.5pt;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4 {
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+
+      p,
+      li {
+        orphans: 3;
+        widows: 3;
+      }
+
+      a {
+        color: #000;
+        text-decoration: underline;
+        text-decoration-color: #000;
+      }
+
+      blockquote,
+      .callout {
+        background: transparent !important;
+        color: #000;
+        border-color: #000;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .callout-title {
+        color: #000;
+      }
+
+      pre {
+        background: transparent;
+        color: #000;
+        border: 1px solid #000;
+        white-space: pre-wrap;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      :not(pre) > code {
+        background: transparent;
+        color: #000;
+        border: 1px solid #000;
+      }
+
+      table,
+      figure {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      th {
+        background: transparent;
+      }
+
+      .image-placeholder {
+        background: transparent;
+        border-color: #999;
+      }
+
+      ins,
+      mark,
+      .toc,
+      .math-inline,
+      .math-display,
+      details,
+      .broken-image {
+        background: transparent;
+      }
+
+      kbd,
+      details,
+      .toc,
+      .math-display,
+      .broken-image,
+      img,
+      video,
+      iframe {
+        border-color: #000;
+      }
+
+      .task-list input[type="checkbox"] {
+        accent-color: #000;
+      }
+
+      .anchor {
+        display: none;
+      }
+
+      .color-grid {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <article class="markdown-body">
+      <header class="document-meta">
+        <p class="eyebrow">Markdown converter demo</p>
+        <h1>Readable HTML from Markdown</h1>
+        <p class="lede">A practical typography and color demo for markdown rendered as HTML. The same document should feel good on screen and remain clean when printed.</p>
+      </header>
+
+      <h2>Design goals</h2>
+      <p>A markdown-rendered page should be quiet, structured, and easy to scan. It should support long reading without fatigue and preserve clear hierarchy when printed.</p>
+      <ul>
+        <li><strong>Screen:</strong> comfortable contrast, generous spacing, soft color accents.</li>
+        <li><strong>Print:</strong> strong contrast, simple borders, no dependence on background color.</li>
+        <li><strong>Converter-friendly:</strong> normal HTML elements should look good without custom classes.</li>
+      </ul>
+
+      <h2>Color system</h2>
+      <p>Use mostly neutral colors. Keep the accent color for links, heading emphasis, markers, and callout borders. The page should still work in grayscale.</p>
+
+      <div class="color-grid" aria-label="Color palette">
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#1f2937"></div>
+          <span class="swatch-name">Text</span>
+          <span class="swatch-value">#1F2937</span>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#2563eb"></div>
+          <span class="swatch-name">Accent</span>
+          <span class="swatch-value">#2563EB</span>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#eff6ff"></div>
+          <span class="swatch-name">Info surface</span>
+          <span class="swatch-value">#EFF6FF</span>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#f3f4f6"></div>
+          <span class="swatch-name">Code surface</span>
+          <span class="swatch-value">#F3F4F6</span>
+        </div>
+      </div>
+
+      <nav class="toc" aria-label="Table of contents">
+        <p class="toc-title">Contents</p>
+        <ol>
+          <li><a href="#headings">Headings</a></li>
+          <li><a href="#text-semantics">Text semantics</a></li>
+          <li><a href="#extended-markdown">Extended markdown</a></li>
+          <li><a href="#media">Media and embeds</a></li>
+        </ol>
+      </nav>
+
+      <h2 id="headings">Headings <a class="anchor" href="#headings" aria-label="Link to this section">#</a></h2>
+      <p>Headings use tighter line height and more space above than below. This helps readers see which paragraphs belong to each section.</p>
+
+      <h3>Heading level 3 <a class="anchor" href="#headings" aria-label="Link to this section">#</a></h3>
+      <p>Third-level headings introduce subsections. They should be distinct, but not so large that the page feels fragmented.</p>
+
+      <h4>Heading level 4</h4>
+      <p>Fourth-level headings are useful for dense documentation. They stay close to the content they label.</p>
+
+      <h5>Heading level 5</h5>
+      <p>Fifth-level headings are compact. They work best inside reference-style content.</p>
+
+      <h6>Heading level 6</h6>
+      <p>Sixth-level headings are label-like. They should be rare.</p>
+
+      <h2 id="text-semantics">Paragraphs and text semantics <a class="anchor" href="#text-semantics" aria-label="Link to this section">#</a></h2>
+      <p>This is a normal paragraph. The line length is constrained so the reader does not need to scan across the full browser width. The line height is open enough for screen reading.</p>
+      <p>Markdown emphasis should remain simple: <strong>bold for importance</strong>, <em>italic for nuance</em>, and <strong><em>combined emphasis</em></strong> only when truly needed.</p>
+      <p>Extended markdown may produce <del>deleted text</del>, <ins>inserted text</ins>, <mark>highlighted text</mark>, <small>small notes</small>, abbreviations like <abbr title="HyperText Markup Language">HTML</abbr>, superscript x<sup>2</sup>, and subscript H<sub>2</sub>O.</p>
+      <p>Links should look like links: <a href="https://example.com">example documentation link</a>. In print, links become underlined black text.</p>
+
+      <h2>Lists</h2>
+      <p>Lists should be compact, aligned, and easy to scan.</p>
+      <ul>
+        <li>Use modest spacing between items.</li>
+        <li>Keep markers quiet but visible.
+          <ul>
+            <li>Nested lists should not drift too far right.</li>
+            <li>Wrapped lines should align cleanly.</li>
+          </ul>
+        </li>
+        <li>
+          <p>List items can contain paragraphs.</p>
+          <p>The spacing should stay readable without making the list look broken.</p>
+        </li>
+      </ul>
+      <ol>
+        <li>Write the core action first.</li>
+        <li>Add context only when it helps.</li>
+        <li>Keep related steps grouped together.</li>
+      </ol>
+      <ul class="task-list">
+        <li><input type="checkbox" checked disabled /> <span>Checked task item generated by extended markdown.</span></li>
+        <li><input type="checkbox" disabled /> <span>Unchecked task item generated by extended markdown.</span></li>
+      </ul>
+
+      <h2>Blockquotes</h2>
+      <blockquote>
+        <p>Good typography does not ask the reader to notice the design. It removes friction from reading.</p>
+        <blockquote>
+          <p>Nested quotes should remain readable and not become visually heavy.</p>
+        </blockquote>
+      </blockquote>
+      <p>The quote uses a left border and a soft background on screen. In print, the background disappears and the border carries the structure.</p>
+
+      <h2>Callouts</h2>
+      <p>Many markdown systems support callouts. If your converter does not, you can map blockquotes with labels like <code>[!NOTE]</code> into these blocks.</p>
+
+      <section class="callout note">
+        <p class="callout-title">Note</p>
+        <p>Use notes for context, secondary explanation, or reading guidance.</p>
+      </section>
+
+      <section class="callout tip">
+        <p class="callout-title">Tip</p>
+        <p>Use tips for practical advice that improves the reader’s workflow.</p>
+      </section>
+
+      <section class="callout warning">
+        <p class="callout-title">Warning</p>
+        <p>Use warnings for risks, limitations, or decisions that need care.</p>
+      </section>
+
+      <section class="callout important">
+        <p class="callout-title">Important</p>
+        <p>Use important blocks sparingly. Too many strong blocks weaken the hierarchy.</p>
+      </section>
+
+      <h2>Code and technical inline elements</h2>
+      <p>Inline code like <code>font-size</code>, <code>line-height</code>, and <code>max-width</code> should be readable without shouting. Keyboard input like <kbd>Ctrl</kbd> + <kbd>K</kbd>, sample output like <samp>Build completed</samp>, and variables like <var>x</var> should each have a clear treatment.</p>
+      <pre><code>.markdown-body {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 56px 64px;
+  color: #1f2937;
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+@media print {
+  .markdown-body {
+    max-width: none;
+    padding: 0;
+    color: black;
+    box-shadow: none;
+  }
+}</code></pre>
+
+      <h2>Tables</h2>
+      <div class="table-wrapper">
+      <table>
+        <caption>Recommended behavior for common markdown elements.</caption>
+        <thead>
+          <tr>
+            <th>Element</th>
+            <th>Screen style</th>
+            <th>Print style</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>h1</code></td>
+            <td>Large, dark, strong</td>
+            <td>Large, black</td>
+          </tr>
+          <tr>
+            <td><code>h2</code></td>
+            <td>Accent color with top rule</td>
+            <td>Black with top rule</td>
+          </tr>
+          <tr>
+            <td><code>blockquote</code></td>
+            <td>Border and soft background</td>
+            <td>Border only</td>
+          </tr>
+          <tr>
+            <td><code>pre</code></td>
+            <td>Dark code block</td>
+            <td>Light code block</td>
+          </tr>
+          <tr>
+            <td><code>a</code></td>
+            <td>Blue text</td>
+            <td>Black underlined text</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h2 id="extended-markdown">Definition lists, math, and disclosure blocks <a class="anchor" href="#extended-markdown" aria-label="Link to this section">#</a></h2>
+      <dl>
+        <dt>Definition term</dt>
+        <dd>A definition description generated by markdown extensions or custom converters.</dd>
+        <dt>Another term</dt>
+        <dd>Definitions need clear spacing because they often appear in reference documentation.</dd>
+      </dl>
+      <p>Inline math can appear as <span class="math-inline">E = mc<sup>2</sup></span>. Display math should be centered and horizontally scrollable if needed.</p>
+      <div class="math-display">f(x) = ax<sup>2</sup> + bx + c</div>
+      <details>
+        <summary>Expandable details block</summary>
+        <p>This covers markdown or HTML output using <code>details</code> and <code>summary</code>. It should be usable on screen and plain when printed.</p>
+      </details>
+
+      <h2>Horizontal rule</h2>
+      <p>A horizontal rule should separate sections without creating a hard visual stop.</p>
+      <hr />
+
+      <h2 id="media">Images, captions, and embeds <a class="anchor" href="#media" aria-label="Link to this section">#</a></h2>
+      <figure>
+        <div class="image-placeholder">Image area<br />Scales to content width</div>
+        <figcaption>Figure 1. Captions are smaller, muted, and still readable in print.</figcaption>
+      </figure>
+      <div class="broken-image">Broken or missing image fallback</div>
+      <figure>
+        <iframe title="Example embedded content" srcdoc="<p style='font-family:system-ui;margin:2rem;text-align:center;color:#555'>Embedded content area</p>"></iframe>
+        <figcaption>Figure 2. Embeds need borders and aspect ratio control. Printed output should avoid relying on the live embed.</figcaption>
+      </figure>
+
+      <h2>Print behavior</h2>
+      <p>The print stylesheet removes shadows, decorative page background, and most soft fills. It keeps hierarchy through size, rules, borders, and spacing.</p>
+      <ul>
+        <li>Links are underlined.</li>
+        <li>Headings avoid page breaks directly after them.</li>
+        <li>Tables, figures, callouts, and code blocks try not to split across pages.</li>
+        <li>Code blocks switch to a light background to save ink.</li>
+      </ul>
+
+      <section class="footnotes">
+        <h2>Footnotes</h2>
+        <ol>
+          <li id="fn-1">Footnotes should be smaller than body text, but not cramped. They need enough line height for printed reading. <a class="footnote-backref" href="#fnref-1" aria-label="Back to content">↩</a></li>
+        </ol>
+      </section>
+    </article>
+  </main>
+</body>
+</html>

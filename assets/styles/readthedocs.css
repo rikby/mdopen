@@ -1,0 +1,453 @@
+/*
+  Read the Docs style source, adapted from:
+  https://github.com/readthedocs/sphinx_rtd_theme/blob/master/sphinx_rtd_theme/static/css/theme.css
+*/
+
+@font-face {
+  font-family: Lato;
+  src: url("fonts/lato-normal.woff2") format("woff2");
+  font-display: block;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Lato;
+  src: url("fonts/lato-bold.woff2") format("woff2");
+  font-display: block;
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: Lato;
+  src: url("fonts/lato-normal-italic.woff2") format("woff2");
+  font-display: block;
+  font-style: italic;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Lato;
+  src: url("fonts/lato-bold-italic.woff2") format("woff2");
+  font-display: block;
+  font-style: italic;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Roboto Slab";
+  src: url("fonts/Roboto-Slab-Regular.woff2") format("woff2");
+  font-display: block;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Roboto Slab";
+  src: url("fonts/Roboto-Slab-Bold.woff2") format("woff2");
+  font-display: block;
+  font-style: normal;
+  font-weight: 700;
+}
+
+@media screen {
+  html[data-mdopen-style="readthedocs"] {
+    --mdopen-rtd-page-bg: #fcfcfc;
+    --mdopen-rtd-paper-bg: #fcfcfc;
+    --mdopen-rtd-text: #404040;
+    --mdopen-rtd-muted: #808080;
+    --mdopen-rtd-heading: #404040;
+    --mdopen-rtd-link: #2980b9;
+    --mdopen-rtd-link-hover: #3091d1;
+    --mdopen-rtd-border: #e1e4e5;
+    --mdopen-rtd-border-strong: #c9c9c9;
+    --mdopen-rtd-code-bg: #ffffff;
+    --mdopen-rtd-code: #e74c3c;
+    --mdopen-rtd-soft-blue: #e7f2fa;
+    --mdopen-rtd-soft-green: #dbfaf4;
+    --mdopen-rtd-soft-yellow: #ffedcc;
+    --mdopen-rtd-soft-red: #fdf3f2;
+    --mdopen-rtd-info: #6ab0de;
+    --mdopen-rtd-success: #1abc9c;
+    --mdopen-rtd-warning: #f0b37e;
+    --mdopen-rtd-danger: #f29f97;
+  }
+
+  html[data-mdopen-style="readthedocs"] body {
+    background: var(--mdopen-rtd-page-bg);
+    color: var(--mdopen-rtd-text);
+    font-size: 16px;
+    line-height: 24px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  html[data-mdopen-style="readthedocs"][data-mdopen-theme="dark"] body {
+    --mdopen-rtd-page-bg: #111820;
+    --mdopen-rtd-paper-bg: #18212b;
+    --mdopen-rtd-text: #d6dde5;
+    --mdopen-rtd-muted: #9aa8b5;
+    --mdopen-rtd-heading: #edf3f8;
+    --mdopen-rtd-link: #7dbde8;
+    --mdopen-rtd-link-hover: #a3d2ef;
+    --mdopen-rtd-border: #2f3b46;
+    --mdopen-rtd-border-strong: #44515e;
+    --mdopen-rtd-code-bg: #111820;
+    --mdopen-rtd-code: #ff9b90;
+    --mdopen-rtd-soft-blue: rgba(106, 176, 222, 0.14);
+    --mdopen-rtd-soft-green: rgba(26, 188, 156, 0.12);
+    --mdopen-rtd-soft-yellow: rgba(240, 179, 126, 0.15);
+    --mdopen-rtd-soft-red: rgba(242, 159, 151, 0.14);
+    background: var(--mdopen-rtd-page-bg);
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body {
+    max-width: 800px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 26px 52px;
+    background: var(--mdopen-rtd-paper-bg);
+    color: var(--mdopen-rtd-text);
+    font-family: Lato, "Helvetica Neue", Arial, sans-serif !important;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body h1,
+  html[data-mdopen-style="readthedocs"] .markdown-body h2,
+  html[data-mdopen-style="readthedocs"] .markdown-body h3,
+  html[data-mdopen-style="readthedocs"] .markdown-body h4,
+  html[data-mdopen-style="readthedocs"] .markdown-body h5,
+  html[data-mdopen-style="readthedocs"] .markdown-body h6 {
+    margin: 0 0 24px !important;
+    color: var(--mdopen-rtd-heading) !important;
+    font-family: "Roboto Slab", Georgia, "Times New Roman", serif !important;
+    font-weight: 700 !important;
+    line-height: 1.2;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body h1 {
+    font-size: 175% !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body h2 {
+    padding-bottom: 0 !important;
+    border-bottom: 0 !important;
+    font-size: 150% !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body h3 {
+    font-size: 125% !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body h4,
+  html[data-mdopen-style="readthedocs"] .markdown-body h5,
+  html[data-mdopen-style="readthedocs"] .markdown-body h6 {
+    font-size: 115% !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body p,
+  html[data-mdopen-style="readthedocs"] .markdown-body ul,
+  html[data-mdopen-style="readthedocs"] .markdown-body ol,
+  html[data-mdopen-style="readthedocs"] .markdown-body dl,
+  html[data-mdopen-style="readthedocs"] .markdown-body blockquote,
+  html[data-mdopen-style="readthedocs"] .markdown-body table,
+  html[data-mdopen-style="readthedocs"] .markdown-body pre,
+  html[data-mdopen-style="readthedocs"] .markdown-body details {
+    margin-top: 0 !important;
+    margin-bottom: 24px !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body a {
+    color: var(--mdopen-rtd-link) !important;
+    text-decoration: none;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body a:hover,
+  html[data-mdopen-style="readthedocs"] .markdown-body a:focus {
+    color: var(--mdopen-rtd-link-hover) !important;
+    text-decoration: underline;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body ul,
+  html[data-mdopen-style="readthedocs"] .markdown-body ol {
+    padding-left: 24px !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body li {
+    margin: 0 !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body li + li {
+    margin-top: 6px !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body blockquote {
+    margin-left: 24px !important;
+    padding: 0 0 0 24px !important;
+    border-left: 3px solid var(--mdopen-rtd-border-strong) !important;
+    color: var(--mdopen-rtd-muted) !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body hr {
+    height: 1px !important;
+    margin: 24px 0 !important;
+    border: 0 !important;
+    background: var(--mdopen-rtd-border) !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body :not(pre) > code,
+  html[data-mdopen-style="readthedocs"] .markdown-body :not(pre) > tt {
+    max-width: 100%;
+    padding: 0 5px !important;
+    border: 1px solid var(--mdopen-rtd-border);
+    background: var(--mdopen-rtd-code-bg) !important;
+    color: var(--mdopen-rtd-code) !important;
+    font-size: 75%;
+    white-space: nowrap;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body pre {
+    overflow-x: auto;
+    padding: 12px !important;
+    border: 1px solid var(--mdopen-rtd-border);
+    border-radius: 0;
+    background: var(--mdopen-rtd-code-bg) !important;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body pre code,
+  html[data-mdopen-style="readthedocs"] .markdown-body pre tt,
+  html[data-mdopen-style="readthedocs"] .markdown-body pre span {
+    border: 0;
+    background: transparent !important;
+    font-size: inherit;
+    white-space: pre;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--mdopen-rtd-border);
+    font-size: 90%;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body th,
+  html[data-mdopen-style="readthedocs"] .markdown-body td {
+    padding: 8px 16px !important;
+    border: 1px solid var(--mdopen-rtd-border) !important;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body th {
+    background: var(--mdopen-rtd-soft-blue) !important;
+    font-weight: 700;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body .callout {
+    clear: both;
+    margin: 24px 0;
+    padding: 12px;
+    border: 0;
+    border-left: 3px solid var(--mdopen-rtd-info);
+    background: var(--mdopen-rtd-soft-blue);
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body .callout-title {
+    margin: -12px -12px 12px;
+    padding: 6px 12px;
+    background: var(--mdopen-rtd-info);
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body .callout.tip {
+    border-left-color: var(--mdopen-rtd-success);
+    background: var(--mdopen-rtd-soft-green);
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body .callout.tip .callout-title {
+    background: var(--mdopen-rtd-success);
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body .callout.warning {
+    border-left-color: var(--mdopen-rtd-warning);
+    background: var(--mdopen-rtd-soft-yellow);
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body .callout.warning .callout-title {
+    background: var(--mdopen-rtd-warning);
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body .callout.important {
+    border-left-color: var(--mdopen-rtd-danger);
+    background: var(--mdopen-rtd-soft-red);
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body .callout.important .callout-title {
+    background: var(--mdopen-rtd-danger);
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body .callout > :last-child,
+  html[data-mdopen-style="readthedocs"] .markdown-body details > :last-child,
+  html[data-mdopen-style="readthedocs"] .markdown-body blockquote > :last-child {
+    margin-bottom: 0 !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body details {
+    border: 1px solid var(--mdopen-rtd-border);
+    background: var(--mdopen-rtd-code-bg);
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body summary {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body details[open] summary {
+    border-bottom: 1px solid var(--mdopen-rtd-border);
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body dl dt {
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body dl dd {
+    margin: 0 0 12px 24px;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body mark {
+    background: #f1c40f;
+    color: #000000;
+    font-weight: 700;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body kbd {
+    padding: 2px 6px;
+    border: 1px solid #a6a6a6;
+    border-radius: 4px;
+    border-bottom-width: 2px;
+    background: #ffffff;
+    color: #404040;
+    font-size: 80%;
+  }
+
+  html[data-mdopen-style="readthedocs"][data-mdopen-theme="dark"] .markdown-body kbd {
+    background: var(--mdopen-rtd-code-bg);
+    color: var(--mdopen-rtd-text);
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body .contains-task-list {
+    padding-left: 0 !important;
+    list-style: none;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body .task-list-item input[type="checkbox"] {
+    margin-right: 6px;
+    accent-color: var(--mdopen-rtd-link);
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body img,
+  html[data-mdopen-style="readthedocs"] .markdown-body video,
+  html[data-mdopen-style="readthedocs"] .markdown-body iframe {
+    max-width: 100%;
+  }
+
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body {
+    color: var(--mdopen-preview-text) !important;
+  }
+
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body h1,
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body h2,
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body h3,
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body h4,
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body h5,
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body h6 {
+    color: var(--mdopen-preview-heading) !important;
+  }
+
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body a {
+    color: var(--mdopen-preview-accent-link) !important;
+  }
+
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body blockquote {
+    color: var(--mdopen-preview-muted) !important;
+    border-left-color: var(--mdopen-preview-accent-line) !important;
+  }
+
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body pre,
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body :not(pre) > code,
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body :not(pre) > tt,
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body details {
+    border-color: var(--mdopen-preview-border) !important;
+    background: var(--mdopen-preview-code-bg) !important;
+  }
+
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body th,
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body td {
+    border-color: var(--mdopen-preview-border) !important;
+  }
+
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body th,
+  html[data-mdopen-style="readthedocs"][data-mdopen-tone] .markdown-body .callout {
+    background: var(--mdopen-preview-accent-soft) !important;
+  }
+
+  html[data-mdopen-style="readthedocs"][data-mdopen-accent] .markdown-body h1 {
+    color: var(--mdopen-preview-accent-h1) !important;
+  }
+
+  html[data-mdopen-style="readthedocs"][data-mdopen-accent] .markdown-body h2,
+  html[data-mdopen-style="readthedocs"][data-mdopen-accent] .markdown-body h5 {
+    color: var(--mdopen-preview-accent-h2) !important;
+  }
+
+  html[data-mdopen-style="readthedocs"][data-mdopen-accent] .markdown-body h3 {
+    color: var(--mdopen-preview-accent-h3) !important;
+  }
+
+  html[data-mdopen-style="readthedocs"][data-mdopen-accent] .markdown-body h4,
+  html[data-mdopen-style="readthedocs"][data-mdopen-accent] .markdown-body h6,
+  html[data-mdopen-style="readthedocs"][data-mdopen-accent] .markdown-body a {
+    color: var(--mdopen-preview-accent-link) !important;
+  }
+
+  html[data-mdopen-style="readthedocs"][data-mdopen-accent] .markdown-body blockquote,
+  html[data-mdopen-style="readthedocs"][data-mdopen-accent] .markdown-body .callout {
+    border-left-color: var(--mdopen-preview-accent-line) !important;
+  }
+
+  html[data-mdopen-style="readthedocs"][data-mdopen-accent] .markdown-body th {
+    background: var(--mdopen-preview-accent-soft) !important;
+  }
+
+  @media (max-width: 768px) {
+    html[data-mdopen-style="readthedocs"] .markdown-body {
+      max-width: none;
+      padding: 26px;
+    }
+  }
+}
+
+@media print {
+  html[data-mdopen-style="readthedocs"] .markdown-body {
+    max-width: none;
+    padding: 0;
+    color: #404040 !important;
+    font-family: Lato, "Helvetica Neue", Arial, sans-serif !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body h1,
+  html[data-mdopen-style="readthedocs"] .markdown-body h2,
+  html[data-mdopen-style="readthedocs"] .markdown-body h3,
+  html[data-mdopen-style="readthedocs"] .markdown-body h4,
+  html[data-mdopen-style="readthedocs"] .markdown-body h5,
+  html[data-mdopen-style="readthedocs"] .markdown-body h6 {
+    color: #404040 !important;
+    font-family: "Roboto Slab", Georgia, "Times New Roman", serif !important;
+  }
+}

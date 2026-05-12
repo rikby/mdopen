@@ -1,0 +1,31 @@
+html[data-mdopen-font]:not([data-mdopen-font="source"]) .markdown-body {
+  font-family: var(--mdopen-font-body) !important;
+  letter-spacing: var(--mdopen-font-body-spacing) !important;
+}
+
+html[data-mdopen-font]:not([data-mdopen-font="source"]) .markdown-body h1,
+html[data-mdopen-font]:not([data-mdopen-font="source"]) .markdown-body h2,
+html[data-mdopen-font]:not([data-mdopen-font="source"]) .markdown-body h3,
+html[data-mdopen-font]:not([data-mdopen-font="source"]) .markdown-body h4,
+html[data-mdopen-font]:not([data-mdopen-font="source"]) .markdown-body h5,
+html[data-mdopen-font]:not([data-mdopen-font="source"]) .markdown-body h6 {
+  font-family: var(--mdopen-font-heading) !important;
+  font-weight: var(--mdopen-font-heading-weight) !important;
+  letter-spacing: var(--mdopen-font-heading-spacing) !important;
+}
+
+html[data-mdopen-font]:not([data-mdopen-font="source"]) .markdown-body code,
+html[data-mdopen-font]:not([data-mdopen-font="source"]) .markdown-body kbd,
+html[data-mdopen-font]:not([data-mdopen-font="source"]) .markdown-body pre,
+html[data-mdopen-font]:not([data-mdopen-font="source"]) .markdown-body samp,
+html[data-mdopen-font]:not([data-mdopen-font="source"]) .markdown-body tt {
+  font-family: var(--mdopen-font-code) !important;
+}
+
+html[data-mdopen-font]:not([data-mdopen-font="source"]) .markdown-body blockquote {
+  font-family: var(--mdopen-font-quote) !important;
+}
+
+html[data-mdopen-font]:not([data-mdopen-font="source"]) .markdown-body table {
+  font-family: var(--mdopen-font-ui) !important;
+}

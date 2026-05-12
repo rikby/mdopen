@@ -1,0 +1,1064 @@
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  background: var(--bgColor-default, #ffffff);
+}
+
+html[data-mdopen-theme="light"] body {
+  background: #ffffff;
+}
+
+html[data-mdopen-theme="dark"] body {
+  background: #0d1117;
+}
+
+.markdown-body {
+  box-sizing: border-box;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 48px 40px;
+}
+
+.markdown-body > :first-child {
+  margin-top: 0 !important;
+}
+
+.markdown-body > :last-child {
+  margin-bottom: 0 !important;
+}
+
+img {
+  max-width: 100%;
+}
+
+html[data-mdopen-font="system"] {
+  --mdopen-font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mdopen-font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mdopen-font-quote: Georgia, "Times New Roman", Times, serif;
+  --mdopen-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mdopen-font-code: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --mdopen-font-heading-weight: 600;
+  --mdopen-font-heading-spacing: 0;
+  --mdopen-font-body-spacing: 0;
+}
+
+html[data-mdopen-font="balanced"] {
+  --mdopen-font-body: Inter, "Avenir Next", Avenir, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mdopen-font-heading: "Inter Display", Inter, "Avenir Next", Avenir, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mdopen-font-quote: "Source Serif 4", Georgia, "Times New Roman", Times, serif;
+  --mdopen-font-ui: Inter, "Avenir Next", Avenir, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mdopen-font-code: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --mdopen-font-heading-weight: 700;
+  --mdopen-font-heading-spacing: 0;
+  --mdopen-font-body-spacing: 0;
+}
+
+html[data-mdopen-font="print"] {
+  --mdopen-font-body: "Source Serif 4", Georgia, "Times New Roman", Times, serif;
+  --mdopen-font-heading: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mdopen-font-quote: "Source Serif 4", Georgia, "Times New Roman", Times, serif;
+  --mdopen-font-ui: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mdopen-font-code: "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --mdopen-font-heading-weight: 650;
+  --mdopen-font-heading-spacing: 0.01em;
+  --mdopen-font-body-spacing: 0;
+}
+
+html[data-mdopen-font="technical"] {
+  --mdopen-font-body: "IBM Plex Sans", Verdana, Geneva, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mdopen-font-heading: "IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --mdopen-font-quote: "IBM Plex Serif", Georgia, "Times New Roman", Times, serif;
+  --mdopen-font-ui: "IBM Plex Sans", Verdana, Geneva, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mdopen-font-code: "IBM Plex Mono", Monaco, ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --mdopen-font-heading-weight: 700;
+  --mdopen-font-heading-spacing: 0.015em;
+  --mdopen-font-body-spacing: 0;
+}
+
+html[data-mdopen-font="editorial"] {
+  --mdopen-font-body: Literata, Georgia, "Times New Roman", Times, serif;
+  --mdopen-font-heading: "Playfair Display", Georgia, "Times New Roman", Times, serif;
+  --mdopen-font-quote: Literata, Georgia, "Times New Roman", Times, serif;
+  --mdopen-font-ui: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mdopen-font-code: "Roboto Mono", ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --mdopen-font-heading-weight: 700;
+  --mdopen-font-heading-spacing: 0.005em;
+  --mdopen-font-body-spacing: 0.002em;
+}
+
+html[data-mdopen-font="product"] {
+  --mdopen-font-body: "DM Sans", "Trebuchet MS", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mdopen-font-heading: "Space Grotesk", "DM Sans", "Trebuchet MS", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mdopen-font-quote: "DM Serif Text", Georgia, "Times New Roman", Times, serif;
+  --mdopen-font-ui: "DM Sans", "Trebuchet MS", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mdopen-font-code: "Fira Code", ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --mdopen-font-heading-weight: 700;
+  --mdopen-font-heading-spacing: 0;
+  --mdopen-font-body-spacing: 0.002em;
+}
+
+html[data-mdopen-font="mono"] {
+  --mdopen-font-body: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --mdopen-font-heading: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --mdopen-font-quote: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --mdopen-font-ui: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --mdopen-font-code: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --mdopen-font-heading-weight: 700;
+  --mdopen-font-heading-spacing: 0;
+  --mdopen-font-body-spacing: 0;
+}
+
+html[data-mdopen-tone="black"] {
+  --mdopen-preview-text: #1f2328;
+  --mdopen-preview-muted: #57606a;
+  --mdopen-preview-heading: #111417;
+  --mdopen-preview-heading-soft: #343a40;
+  --mdopen-preview-border: #c9d1d9;
+  --mdopen-preview-code-bg: rgba(175, 184, 193, 0.16);
+  --mdopen-preview-accent-h1: var(--mdopen-preview-heading);
+  --mdopen-preview-accent-h2: var(--mdopen-preview-heading);
+  --mdopen-preview-accent-h3: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-link: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-line: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-soft: var(--mdopen-preview-code-bg);
+}
+
+html[data-mdopen-tone="graphite"] {
+  --mdopen-preview-text: #30363d;
+  --mdopen-preview-muted: #6e7781;
+  --mdopen-preview-heading: #24292f;
+  --mdopen-preview-heading-soft: #4b535a;
+  --mdopen-preview-border: #d0d7de;
+  --mdopen-preview-code-bg: rgba(175, 184, 193, 0.13);
+  --mdopen-preview-accent-h1: var(--mdopen-preview-heading);
+  --mdopen-preview-accent-h2: var(--mdopen-preview-heading);
+  --mdopen-preview-accent-h3: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-link: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-line: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-soft: var(--mdopen-preview-code-bg);
+}
+
+html[data-mdopen-tone="slate"] {
+  --mdopen-preview-text: #454c54;
+  --mdopen-preview-muted: #7d858d;
+  --mdopen-preview-heading: #343b43;
+  --mdopen-preview-heading-soft: #5d6670;
+  --mdopen-preview-border: #d8dee4;
+  --mdopen-preview-code-bg: rgba(175, 184, 193, 0.1);
+  --mdopen-preview-accent-h1: var(--mdopen-preview-heading);
+  --mdopen-preview-accent-h2: var(--mdopen-preview-heading);
+  --mdopen-preview-accent-h3: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-link: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-line: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-soft: var(--mdopen-preview-code-bg);
+}
+
+html[data-mdopen-tone="ash"] {
+  --mdopen-preview-text: #596068;
+  --mdopen-preview-muted: #8c959f;
+  --mdopen-preview-heading: #4d555e;
+  --mdopen-preview-heading-soft: #6e7781;
+  --mdopen-preview-border: #e5e8ec;
+  --mdopen-preview-code-bg: rgba(175, 184, 193, 0.08);
+  --mdopen-preview-accent-h1: var(--mdopen-preview-heading);
+  --mdopen-preview-accent-h2: var(--mdopen-preview-heading);
+  --mdopen-preview-accent-h3: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-link: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-line: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-soft: var(--mdopen-preview-code-bg);
+}
+
+html[data-mdopen-accent="none"] {
+  --mdopen-preview-accent-h1: var(--mdopen-preview-heading, #111417);
+  --mdopen-preview-accent-h2: var(--mdopen-preview-heading, #111417);
+  --mdopen-preview-accent-h3: var(--mdopen-preview-heading-soft, #343a40);
+  --mdopen-preview-accent-link: var(--mdopen-preview-heading-soft, #343a40);
+  --mdopen-preview-accent-line: var(--mdopen-preview-heading-soft, #343a40);
+  --mdopen-preview-accent-soft: var(--mdopen-preview-code-bg, rgba(175, 184, 193, 0.16));
+}
+
+html[data-mdopen-accent="blue"] {
+  --mdopen-preview-accent-h1: #3f6f9b;
+  --mdopen-preview-accent-h2: #5b8bb4;
+  --mdopen-preview-accent-h3: #7fa5c7;
+  --mdopen-preview-accent-link: #4f82ad;
+  --mdopen-preview-accent-line: #9ebbd3;
+  --mdopen-preview-accent-soft: rgba(91, 139, 180, 0.09);
+}
+
+html[data-mdopen-accent="sage"] {
+  --mdopen-preview-accent-h1: #5f8467;
+  --mdopen-preview-accent-h2: #789b7f;
+  --mdopen-preview-accent-h3: #91ad96;
+  --mdopen-preview-accent-link: #688f70;
+  --mdopen-preview-accent-line: #acc5b0;
+  --mdopen-preview-accent-soft: rgba(111, 150, 120, 0.1);
+}
+
+html[data-mdopen-accent="rose"] {
+  --mdopen-preview-accent-h1: #965c69;
+  --mdopen-preview-accent-h2: #b07a87;
+  --mdopen-preview-accent-h3: #c5929d;
+  --mdopen-preview-accent-link: #a66d7a;
+  --mdopen-preview-accent-line: #d9b5bd;
+  --mdopen-preview-accent-soft: rgba(176, 122, 135, 0.1);
+}
+
+html[data-mdopen-theme="dark"][data-mdopen-tone] {
+  --mdopen-preview-text: var(--fgColor-default, #e6edf3);
+  --mdopen-preview-muted: var(--fgColor-muted, #8b949e);
+  --mdopen-preview-heading: var(--fgColor-default, #e6edf3);
+  --mdopen-preview-heading-soft: var(--fgColor-muted, #8b949e);
+  --mdopen-preview-border: var(--borderColor-default, #30363d);
+  --mdopen-preview-code-bg: var(--bgColor-muted, #161b22);
+  --mdopen-preview-accent-h1: var(--mdopen-preview-heading);
+  --mdopen-preview-accent-h2: var(--mdopen-preview-heading);
+  --mdopen-preview-accent-h3: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-link: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-line: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-soft: var(--mdopen-preview-code-bg);
+}
+
+html[data-mdopen-theme="dark"][data-mdopen-accent="none"] {
+  --mdopen-preview-accent-h1: var(--mdopen-preview-heading);
+  --mdopen-preview-accent-h2: var(--mdopen-preview-heading);
+  --mdopen-preview-accent-h3: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-link: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-line: var(--mdopen-preview-heading-soft);
+  --mdopen-preview-accent-soft: var(--mdopen-preview-code-bg);
+}
+
+html[data-mdopen-theme="dark"][data-mdopen-accent="blue"] {
+  --mdopen-preview-accent-h1: #b1d3ef;
+  --mdopen-preview-accent-h2: #8bbce0;
+  --mdopen-preview-accent-h3: #70a5cb;
+  --mdopen-preview-accent-link: #9cc8e8;
+  --mdopen-preview-accent-line: #5f89a8;
+  --mdopen-preview-accent-soft: rgba(139, 188, 224, 0.12);
+}
+
+html[data-mdopen-theme="dark"][data-mdopen-accent="sage"] {
+  --mdopen-preview-accent-h1: #bfe0c5;
+  --mdopen-preview-accent-h2: #9acaa3;
+  --mdopen-preview-accent-h3: #82b98d;
+  --mdopen-preview-accent-link: #acd5b4;
+  --mdopen-preview-accent-line: #6f9b77;
+  --mdopen-preview-accent-soft: rgba(154, 202, 163, 0.12);
+}
+
+html[data-mdopen-theme="dark"][data-mdopen-accent="rose"] {
+  --mdopen-preview-accent-h1: #efc1cb;
+  --mdopen-preview-accent-h2: #dca5b2;
+  --mdopen-preview-accent-h3: #c98b99;
+  --mdopen-preview-accent-link: #e5b4be;
+  --mdopen-preview-accent-line: #aa7580;
+  --mdopen-preview-accent-soft: rgba(220, 165, 178, 0.12);
+}
+
+html[data-mdopen-tone] .markdown-body {
+  color: var(--mdopen-preview-text) !important;
+}
+
+html[data-mdopen-tone] .markdown-body h1,
+html[data-mdopen-tone] .markdown-body h2 {
+  color: var(--mdopen-preview-heading) !important;
+  border-bottom-color: var(--mdopen-preview-border) !important;
+}
+
+html[data-mdopen-accent] .markdown-body h1 {
+  color: var(--mdopen-preview-accent-h1) !important;
+}
+
+html[data-mdopen-accent] .markdown-body h2 {
+  color: var(--mdopen-preview-accent-h2) !important;
+}
+
+html[data-mdopen-accent] .markdown-body h3 {
+  color: var(--mdopen-preview-accent-h3) !important;
+}
+
+html[data-mdopen-tone] .markdown-body h3,
+html[data-mdopen-tone] .markdown-body h4,
+html[data-mdopen-tone] .markdown-body h5,
+html[data-mdopen-tone] .markdown-body h6 {
+  color: var(--mdopen-preview-heading-soft) !important;
+}
+
+html[data-mdopen-tone] .markdown-body blockquote {
+  color: var(--mdopen-preview-muted) !important;
+  border-left-color: var(--mdopen-preview-accent-line) !important;
+}
+
+html[data-mdopen-tone] .markdown-body pre,
+html[data-mdopen-tone] .markdown-body :not(pre) > code,
+html[data-mdopen-tone] .markdown-body :not(pre) > tt {
+  background: var(--mdopen-preview-code-bg) !important;
+}
+
+html[data-mdopen-tone] .markdown-body pre code,
+html[data-mdopen-tone] .markdown-body pre tt,
+html[data-mdopen-tone] .markdown-body pre span {
+  background: transparent !important;
+}
+
+html[data-mdopen-tone] .markdown-body th,
+html[data-mdopen-tone] .markdown-body td {
+  border-color: var(--mdopen-preview-border) !important;
+}
+
+html[data-mdopen-tone] .markdown-body th {
+  background: var(--mdopen-preview-accent-soft) !important;
+}
+
+html[data-mdopen-tone] .markdown-body hr {
+  background-color: var(--mdopen-preview-border) !important;
+}
+
+html[data-mdopen-tone] .markdown-body a {
+  color: var(--mdopen-preview-accent-link) !important;
+}
+
+.markdown-body .hljs {
+  color: var(--mdopen-preview-text, currentColor);
+}
+
+.markdown-body .hljs-comment,
+.markdown-body .hljs-quote {
+  color: var(--mdopen-preview-muted, #6b7280);
+}
+
+.markdown-body .hljs-keyword,
+.markdown-body .hljs-selector-tag,
+.markdown-body .hljs-title.function_ {
+  color: var(--mdopen-preview-accent-h1, #2563eb);
+}
+
+.markdown-body .hljs-string,
+.markdown-body .hljs-regexp,
+.markdown-body .hljs-symbol {
+  color: var(--mdopen-preview-accent-h2, #047857);
+}
+
+.markdown-body .hljs-number,
+.markdown-body .hljs-literal,
+.markdown-body .hljs-variable,
+.markdown-body .hljs-template-variable {
+  color: var(--mdopen-preview-accent-h3, #92400e);
+}
+
+.markdown-body .hljs-title,
+.markdown-body .hljs-attr,
+.markdown-body .hljs-attribute,
+.markdown-body .hljs-name,
+.markdown-body .hljs-property {
+  color: var(--mdopen-preview-accent-link, #1d4ed8);
+}
+
+.mermaid-container {
+  position: relative;
+  overflow: auto;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border: 1px solid var(--mdopen-preview-border, #d0d7de);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.mermaid-container .mermaid {
+  display: flex;
+  justify-content: center;
+  min-width: max-content;
+}
+
+.mermaid-container svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.mermaid-fullscreen-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.88);
+  color: #1f2328;
+  font: 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  cursor: pointer;
+}
+
+.mermaid-container:fullscreen {
+  display: grid;
+  place-items: center;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 48px;
+  border: 0;
+  border-radius: 0;
+}
+
+.mermaid-container:fullscreen .mermaid {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.mermaid-container:fullscreen svg {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+html[data-mdopen-density="tight"] .markdown-body,
+html[data-mdopen-density="dense"] .markdown-body,
+html[data-mdopen-density="compact"] .markdown-body {
+  --mdopen-text-gap: 0.65em;
+  --mdopen-heading-major-top: 0.95em;
+  --mdopen-heading-major-bottom: 0.34em;
+  --mdopen-heading-minor-top: 0.72em;
+  --mdopen-heading-minor-bottom: 0.24em;
+  --mdopen-rule-gap: 0.55em;
+  --mdopen-rule-height: 1px;
+  --mdopen-pre-padding: 10px;
+  --mdopen-cell-padding-y: 4px;
+  line-height: 1.42;
+}
+
+html[data-mdopen-density="dense"] .markdown-body {
+  --mdopen-text-gap: 0.34em;
+  --mdopen-heading-major-top: 0.58em;
+  --mdopen-heading-major-bottom: 0.18em;
+  --mdopen-heading-minor-top: 0.42em;
+  --mdopen-heading-minor-bottom: 0.12em;
+  --mdopen-rule-gap: 0.22em;
+  --mdopen-rule-height: 1px;
+  --mdopen-pre-padding: 7px;
+  --mdopen-cell-padding-y: 2px;
+  line-height: 1.26;
+}
+
+html[data-mdopen-density="compact"] .markdown-body {
+  --mdopen-text-gap: 0.16em;
+  --mdopen-heading-major-top: 0.34em;
+  --mdopen-heading-major-bottom: 0.08em;
+  --mdopen-heading-minor-top: 0.24em;
+  --mdopen-heading-minor-bottom: 0.06em;
+  --mdopen-rule-gap: 0.08em;
+  --mdopen-rule-height: 1px;
+  --mdopen-pre-padding: 5px;
+  --mdopen-cell-padding-y: 1px;
+  line-height: 1.16;
+}
+
+html[data-mdopen-density="tight"] .markdown-body h1,
+html[data-mdopen-density="tight"] .markdown-body h2,
+html[data-mdopen-density="dense"] .markdown-body h1,
+html[data-mdopen-density="dense"] .markdown-body h2,
+html[data-mdopen-density="compact"] .markdown-body h1,
+html[data-mdopen-density="compact"] .markdown-body h2 {
+  margin-top: var(--mdopen-heading-major-top) !important;
+  margin-bottom: var(--mdopen-heading-major-bottom) !important;
+  padding-bottom: 0.18em !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body h3,
+html[data-mdopen-density="tight"] .markdown-body h4,
+html[data-mdopen-density="tight"] .markdown-body h5,
+html[data-mdopen-density="tight"] .markdown-body h6,
+html[data-mdopen-density="dense"] .markdown-body h3,
+html[data-mdopen-density="dense"] .markdown-body h4,
+html[data-mdopen-density="dense"] .markdown-body h5,
+html[data-mdopen-density="dense"] .markdown-body h6,
+html[data-mdopen-density="compact"] .markdown-body h3,
+html[data-mdopen-density="compact"] .markdown-body h4,
+html[data-mdopen-density="compact"] .markdown-body h5,
+html[data-mdopen-density="compact"] .markdown-body h6 {
+  margin-top: var(--mdopen-heading-minor-top) !important;
+  margin-bottom: var(--mdopen-heading-minor-bottom) !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body p,
+html[data-mdopen-density="tight"] .markdown-body blockquote,
+html[data-mdopen-density="tight"] .markdown-body ul,
+html[data-mdopen-density="tight"] .markdown-body ol,
+html[data-mdopen-density="tight"] .markdown-body dl,
+html[data-mdopen-density="tight"] .markdown-body table,
+html[data-mdopen-density="tight"] .markdown-body pre,
+html[data-mdopen-density="tight"] .markdown-body details,
+html[data-mdopen-density="dense"] .markdown-body p,
+html[data-mdopen-density="dense"] .markdown-body blockquote,
+html[data-mdopen-density="dense"] .markdown-body ul,
+html[data-mdopen-density="dense"] .markdown-body ol,
+html[data-mdopen-density="dense"] .markdown-body dl,
+html[data-mdopen-density="dense"] .markdown-body table,
+html[data-mdopen-density="dense"] .markdown-body pre,
+html[data-mdopen-density="dense"] .markdown-body details,
+html[data-mdopen-density="compact"] .markdown-body p,
+html[data-mdopen-density="compact"] .markdown-body blockquote,
+html[data-mdopen-density="compact"] .markdown-body ul,
+html[data-mdopen-density="compact"] .markdown-body ol,
+html[data-mdopen-density="compact"] .markdown-body dl,
+html[data-mdopen-density="compact"] .markdown-body table,
+html[data-mdopen-density="compact"] .markdown-body pre,
+html[data-mdopen-density="compact"] .markdown-body details {
+  margin-top: 0 !important;
+  margin-bottom: var(--mdopen-text-gap) !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body li + li {
+  margin-top: 0.12em !important;
+}
+
+html[data-mdopen-density="dense"] .markdown-body li + li {
+  margin-top: 0 !important;
+}
+
+html[data-mdopen-density="compact"] .markdown-body li + li {
+  margin-top: 0 !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body ul ul,
+html[data-mdopen-density="tight"] .markdown-body ul ol,
+html[data-mdopen-density="tight"] .markdown-body ol ol,
+html[data-mdopen-density="tight"] .markdown-body ol ul,
+html[data-mdopen-density="dense"] .markdown-body ul ul,
+html[data-mdopen-density="dense"] .markdown-body ul ol,
+html[data-mdopen-density="dense"] .markdown-body ol ol,
+html[data-mdopen-density="dense"] .markdown-body ol ul,
+html[data-mdopen-density="compact"] .markdown-body ul ul,
+html[data-mdopen-density="compact"] .markdown-body ul ol,
+html[data-mdopen-density="compact"] .markdown-body ol ol,
+html[data-mdopen-density="compact"] .markdown-body ol ul {
+  margin-top: 0.1em !important;
+  margin-bottom: 0 !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body pre,
+html[data-mdopen-density="dense"] .markdown-body pre,
+html[data-mdopen-density="compact"] .markdown-body pre {
+  padding: var(--mdopen-pre-padding) !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body th,
+html[data-mdopen-density="tight"] .markdown-body td,
+html[data-mdopen-density="dense"] .markdown-body th,
+html[data-mdopen-density="dense"] .markdown-body td,
+html[data-mdopen-density="compact"] .markdown-body th,
+html[data-mdopen-density="compact"] .markdown-body td {
+  padding-top: var(--mdopen-cell-padding-y) !important;
+  padding-bottom: var(--mdopen-cell-padding-y) !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body hr,
+html[data-mdopen-density="dense"] .markdown-body hr,
+html[data-mdopen-density="compact"] .markdown-body hr {
+  height: var(--mdopen-rule-height) !important;
+  margin: var(--mdopen-rule-gap) 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background-color: var(--borderColor-default, #d0d7de) !important;
+}
+
+.mdopen-toolbar {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--bgColor-default, #fff) 88%, transparent);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+}
+
+.mdopen-toolbar button,
+.mdopen-toolbar select {
+  min-width: 44px;
+  height: 30px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fgColor-default, #1f2328);
+  font: 13px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.mdopen-toolbar button {
+  cursor: pointer;
+}
+
+.mdopen-toolbar select {
+  min-width: 92px;
+  padding: 0 22px 0 8px;
+  border: 1px solid rgba(128, 128, 128, 0.28);
+  background: color-mix(in srgb, var(--bgColor-default, #fff) 82%, transparent);
+}
+
+.mdopen-toolbar label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--fgColor-muted, #57606a);
+  font: 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.mdopen-toolbar button[aria-pressed="true"] {
+  background: var(--button-default-bgColor-active, rgba(128, 128, 128, 0.18));
+  font-weight: 600;
+}
+
+.mdopen-menu-button {
+  width: 34px;
+  padding: 0;
+  line-height: 30px;
+}
+
+.mdopen-menu-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  display: grid;
+  min-width: 232px;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--bgColor-default, #fff) 94%, transparent);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+}
+
+.mdopen-menu-panel[hidden] {
+  display: none;
+}
+
+.mdopen-menu-panel label {
+  display: grid;
+  grid-template-columns: 52px minmax(150px, 1fr);
+  gap: 8px;
+}
+
+.mdopen-menu-panel select {
+  width: 100%;
+  min-width: 0;
+}
+
+.mdopen-divider {
+  width: 1px;
+  margin: 3px 2px;
+  background: rgba(128, 128, 128, 0.28);
+}
+
+@media (max-width: 767px) {
+  .markdown-body {
+    padding: 32px 16px;
+  }
+
+  .mdopen-toolbar {
+    left: 8px;
+    right: 8px;
+    justify-content: center;
+  }
+
+  .mdopen-toolbar button {
+    min-width: 38px;
+  }
+
+  .mdopen-menu-panel {
+    left: 0;
+    right: 0;
+    min-width: 0;
+  }
+
+  .mdopen-menu-panel label {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}
+
+@media print {
+  @page {
+    margin: 12mm 13mm;
+  }
+
+  html {
+    --mdopen-print-text: #000000;
+    --mdopen-print-muted: #555555;
+    --mdopen-print-heading: #000000;
+    --mdopen-print-heading-soft: #333333;
+    --mdopen-print-border: #cccccc;
+    --mdopen-print-code-bg: #f6f6f6;
+    --mdopen-print-accent-h1: var(--mdopen-print-heading);
+    --mdopen-print-accent-h2: var(--mdopen-print-heading);
+    --mdopen-print-accent-h3: var(--mdopen-print-heading-soft);
+    --mdopen-print-accent-link: var(--mdopen-print-heading-soft);
+    --mdopen-print-accent-line: var(--mdopen-print-heading-soft);
+    --mdopen-print-accent-soft: #f6f6f6;
+  }
+
+  html[data-mdopen-tone="graphite"] {
+    --mdopen-print-text: #333333;
+    --mdopen-print-muted: #666666;
+    --mdopen-print-heading: #222222;
+    --mdopen-print-heading-soft: #444444;
+    --mdopen-print-border: #d0d0d0;
+    --mdopen-print-code-bg: #f7f7f7;
+  }
+
+  html[data-mdopen-tone="slate"] {
+    --mdopen-print-text: #4d4d4d;
+    --mdopen-print-muted: #777777;
+    --mdopen-print-heading: #3d3d3d;
+    --mdopen-print-heading-soft: #5c5c5c;
+    --mdopen-print-border: #dddddd;
+    --mdopen-print-code-bg: #fafafa;
+  }
+
+  html[data-mdopen-tone="ash"] {
+    --mdopen-print-text: #666666;
+    --mdopen-print-muted: #888888;
+    --mdopen-print-heading: #555555;
+    --mdopen-print-heading-soft: #707070;
+    --mdopen-print-border: #e6e6e6;
+    --mdopen-print-code-bg: #fcfcfc;
+  }
+
+  html[data-mdopen-accent="blue"] {
+    --mdopen-print-accent-h1: #2f668f;
+    --mdopen-print-accent-h2: #4f819f;
+    --mdopen-print-accent-h3: #7899aa;
+    --mdopen-print-accent-link: #3f7696;
+    --mdopen-print-accent-line: #a8bdc8;
+    --mdopen-print-accent-soft: #f5f8fa;
+  }
+
+  html[data-mdopen-accent="sage"] {
+    --mdopen-print-accent-h1: #587b5e;
+    --mdopen-print-accent-h2: #7a875d;
+    --mdopen-print-accent-h3: #8fa18c;
+    --mdopen-print-accent-link: #667f61;
+    --mdopen-print-accent-line: #b7c3b4;
+    --mdopen-print-accent-soft: #f6f9f5;
+  }
+
+  html[data-mdopen-accent="rose"] {
+    --mdopen-print-accent-h1: #8b5962;
+    --mdopen-print-accent-h2: #a56f62;
+    --mdopen-print-accent-h3: #b18e93;
+    --mdopen-print-accent-link: #9a6670;
+    --mdopen-print-accent-line: #d2b6ba;
+    --mdopen-print-accent-soft: #fbf7f7;
+  }
+
+  .mdopen-toolbar {
+    display: none;
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  .markdown-body {
+    max-width: none;
+    padding: 0;
+    color: var(--mdopen-print-text) !important;
+    font-size: 10.2pt;
+    line-height: 1.34;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .markdown-body h1,
+  .markdown-body h2,
+  .markdown-body h3,
+  .markdown-body h4,
+  .markdown-body h5,
+  .markdown-body h6 {
+    break-after: avoid-page;
+    page-break-after: avoid;
+    color: var(--mdopen-print-heading-soft) !important;
+  }
+
+  .markdown-body h1 {
+    margin: 0 0 6pt !important;
+    padding-bottom: 4pt !important;
+    border-bottom-color: var(--mdopen-print-border) !important;
+    color: var(--mdopen-print-accent-h1) !important;
+    font-size: 20pt !important;
+    line-height: 1.12 !important;
+  }
+
+  .markdown-body h2 {
+    margin: 11pt 0 4pt !important;
+    padding-bottom: 2pt !important;
+    border-bottom-color: var(--mdopen-print-border) !important;
+    color: var(--mdopen-print-accent-h2) !important;
+    font-size: 14.5pt !important;
+    line-height: 1.14 !important;
+  }
+
+  .markdown-body h3 {
+    margin: 8pt 0 3pt !important;
+    color: var(--mdopen-print-accent-h3) !important;
+    font-size: 11.2pt !important;
+    line-height: 1.16 !important;
+  }
+
+  .markdown-body h4,
+  .markdown-body h5,
+  .markdown-body h6 {
+    margin: 6pt 0 2pt !important;
+    color: var(--mdopen-print-heading-soft) !important;
+    font-size: 10.4pt !important;
+    line-height: 1.16 !important;
+  }
+
+  .markdown-body p,
+  .markdown-body ul,
+  .markdown-body ol,
+  .markdown-body dl,
+  .markdown-body blockquote,
+  .markdown-body table,
+  .markdown-body pre,
+  .markdown-body details {
+    margin-top: 0 !important;
+    margin-bottom: 5pt !important;
+  }
+
+  .markdown-body hr {
+    height: 0.6pt !important;
+    margin: 6pt 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: var(--mdopen-print-border) !important;
+  }
+
+  .markdown-body blockquote {
+    padding-left: 7pt !important;
+    color: var(--mdopen-print-muted) !important;
+    border-left-color: var(--mdopen-print-accent-line) !important;
+  }
+
+  .markdown-body pre {
+    padding: 6pt !important;
+    background: var(--mdopen-print-code-bg) !important;
+    border-color: var(--mdopen-print-border) !important;
+  }
+
+  .markdown-body :not(pre) > code,
+  .markdown-body :not(pre) > tt {
+    background: var(--mdopen-print-code-bg) !important;
+  }
+
+  .markdown-body pre code,
+  .markdown-body pre tt,
+  .markdown-body pre span {
+    background: transparent !important;
+  }
+
+  .markdown-body th,
+  .markdown-body td {
+    padding: 2.5pt 5pt !important;
+    border-color: var(--mdopen-print-border) !important;
+  }
+
+  .markdown-body th {
+    background: var(--mdopen-print-accent-soft) !important;
+    color: var(--mdopen-print-heading) !important;
+  }
+
+  a {
+    color: var(--mdopen-print-accent-link) !important;
+    text-decoration-color: var(--mdopen-print-border) !important;
+  }
+
+  .markdown-body .hljs {
+    color: var(--mdopen-print-text);
+  }
+
+  .markdown-body .hljs-comment,
+  .markdown-body .hljs-quote {
+    color: var(--mdopen-print-muted);
+  }
+
+  .markdown-body .hljs-keyword,
+  .markdown-body .hljs-selector-tag,
+  .markdown-body .hljs-title.function_ {
+    color: var(--mdopen-print-accent-h1);
+  }
+
+  .markdown-body .hljs-string,
+  .markdown-body .hljs-regexp,
+  .markdown-body .hljs-symbol {
+    color: var(--mdopen-print-accent-h2);
+  }
+
+  .markdown-body .hljs-number,
+  .markdown-body .hljs-literal,
+  .markdown-body .hljs-variable,
+  .markdown-body .hljs-template-variable {
+    color: var(--mdopen-print-accent-h3);
+  }
+
+  .markdown-body .hljs-title,
+  .markdown-body .hljs-attr,
+  .markdown-body .hljs-attribute,
+  .markdown-body .hljs-name,
+  .markdown-body .hljs-property {
+    color: var(--mdopen-print-accent-link);
+  }
+
+  pre, blockquote, table {
+    break-inside: avoid;
+  }
+
+  .mermaid-container {
+    overflow: visible;
+    padding: 8pt;
+    border-color: var(--mdopen-print-border);
+    background: #ffffff;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .mermaid-fullscreen-btn {
+    display: none;
+  }
+
+  html[data-mdopen-density="tight"] .markdown-body {
+    font-size: 9.7pt;
+    line-height: 1.24;
+  }
+
+  html[data-mdopen-density="dense"] .markdown-body {
+    font-size: 9.1pt;
+    line-height: 1.17;
+  }
+
+  html[data-mdopen-density="compact"] .markdown-body {
+    font-size: 8.6pt;
+    line-height: 1.1;
+  }
+
+  html[data-mdopen-density="tight"] .markdown-body h1 {
+    margin-bottom: 4pt !important;
+    padding-bottom: 3pt !important;
+    font-size: 18pt !important;
+  }
+
+  html[data-mdopen-density="dense"] .markdown-body h1 {
+    margin-bottom: 3pt !important;
+    padding-bottom: 2pt !important;
+    font-size: 16pt !important;
+  }
+
+  html[data-mdopen-density="compact"] .markdown-body h1 {
+    margin-bottom: 2pt !important;
+    padding-bottom: 1pt !important;
+    font-size: 14.5pt !important;
+  }
+
+  html[data-mdopen-density="tight"] .markdown-body h2 {
+    margin-top: 8pt !important;
+    margin-bottom: 3pt !important;
+    padding-bottom: 1.5pt !important;
+    font-size: 13pt !important;
+  }
+
+  html[data-mdopen-density="dense"] .markdown-body h2 {
+    margin-top: 5pt !important;
+    margin-bottom: 2pt !important;
+    padding-bottom: 1pt !important;
+    font-size: 11.8pt !important;
+  }
+
+  html[data-mdopen-density="compact"] .markdown-body h2 {
+    margin-top: 3pt !important;
+    margin-bottom: 1pt !important;
+    padding-bottom: 0.5pt !important;
+    font-size: 10.8pt !important;
+  }
+
+  html[data-mdopen-density="tight"] .markdown-body h3 {
+    margin-top: 6pt !important;
+    margin-bottom: 2pt !important;
+    font-size: 10.6pt !important;
+  }
+
+  html[data-mdopen-density="dense"] .markdown-body h3 {
+    margin-top: 3.5pt !important;
+    margin-bottom: 1pt !important;
+    font-size: 9.8pt !important;
+  }
+
+  html[data-mdopen-density="compact"] .markdown-body h3 {
+    margin-top: 2pt !important;
+    margin-bottom: 0.5pt !important;
+    font-size: 9.2pt !important;
+  }
+
+  html[data-mdopen-density="tight"] .markdown-body p,
+  html[data-mdopen-density="tight"] .markdown-body ul,
+  html[data-mdopen-density="tight"] .markdown-body ol,
+  html[data-mdopen-density="tight"] .markdown-body dl,
+  html[data-mdopen-density="tight"] .markdown-body blockquote,
+  html[data-mdopen-density="tight"] .markdown-body table,
+  html[data-mdopen-density="tight"] .markdown-body pre,
+  html[data-mdopen-density="tight"] .markdown-body details {
+    margin-bottom: 3pt !important;
+  }
+
+  html[data-mdopen-density="dense"] .markdown-body p,
+  html[data-mdopen-density="dense"] .markdown-body ul,
+  html[data-mdopen-density="dense"] .markdown-body ol,
+  html[data-mdopen-density="dense"] .markdown-body dl,
+  html[data-mdopen-density="dense"] .markdown-body blockquote,
+  html[data-mdopen-density="dense"] .markdown-body table,
+  html[data-mdopen-density="dense"] .markdown-body pre,
+  html[data-mdopen-density="dense"] .markdown-body details {
+    margin-bottom: 1.5pt !important;
+  }
+
+  html[data-mdopen-density="compact"] .markdown-body p,
+  html[data-mdopen-density="compact"] .markdown-body ul,
+  html[data-mdopen-density="compact"] .markdown-body ol,
+  html[data-mdopen-density="compact"] .markdown-body dl,
+  html[data-mdopen-density="compact"] .markdown-body blockquote,
+  html[data-mdopen-density="compact"] .markdown-body table,
+  html[data-mdopen-density="compact"] .markdown-body pre,
+  html[data-mdopen-density="compact"] .markdown-body details {
+    margin-bottom: 0.5pt !important;
+  }
+
+  html[data-mdopen-density="tight"] .markdown-body hr {
+    margin: 4pt 0 !important;
+  }
+
+  html[data-mdopen-density="dense"] .markdown-body hr {
+    margin: 2pt 0 !important;
+  }
+
+  html[data-mdopen-density="compact"] .markdown-body hr {
+    margin: 0.8pt 0 !important;
+    height: 0.4pt !important;
+  }
+
+  html[data-mdopen-density="dense"] .markdown-body th,
+  html[data-mdopen-density="dense"] .markdown-body td,
+  html[data-mdopen-density="compact"] .markdown-body th,
+  html[data-mdopen-density="compact"] .markdown-body td {
+    padding-top: 1pt !important;
+    padding-bottom: 1pt !important;
+  }
+}

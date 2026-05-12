@@ -1,0 +1,23 @@
+{
+  "name": "mdopen",
+  "version": "1.0.0",
+  "description": "Quickly render a Markdown file as styled HTML and open it in the browser.",
+  "main": "renderer.js",
+  "scripts": {
+    "check": "bash -n mdopen && cp assets/mdopen.css /tmp/mdopen.css && cp assets/mdopen-overrides.css /tmp/mdopen-overrides.css && cp assets/styles/demo.css /tmp/demo.css && cp assets/styles/readthedocs.css /tmp/readthedocs.css && mkdir -p /tmp/fonts && cp assets/styles/fonts/* /tmp/fonts/ && bun renderer.js README.md templates/mdopen.html /tmp/mdopen-check.html README mdopen.css readthedocs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "highlight.js": "^11.11.1",
+    "markdown-it": "^14.1.1",
+    "markdown-it-deflist": "^3.0.0",
+    "markdown-it-footnote": "^4.0.0",
+    "markdown-it-mark": "^4.0.0",
+    "markdown-it-sub": "^2.0.0",
+    "markdown-it-sup": "^2.0.0",
+    "markdown-it-task-lists": "^2.1.1"
+  }
+}

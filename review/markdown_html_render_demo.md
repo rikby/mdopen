@@ -1,0 +1,374 @@
+# Markdown to HTML Typography Demo
+
+> A sample document for testing a markdown-to-HTML converter. It is designed for comfortable screen reading and clean printed output.
+
+---
+
+## Design goals
+
+A good markdown-rendered document should feel quiet, readable, and structured. The page should not look like a raw technical dump, but it also should not feel over-designed. Markdown content usually contains headings, paragraphs, lists, code, quotes, tables, and callouts, so the visual system should make those elements easy to scan.
+
+The layout should work in two modes:
+
+* **Screen reading:** soft contrast, generous spacing, readable line length, subtle color.
+* **Print reading:** high contrast, clear hierarchy, minimal ink waste, no dependence on background color.
+
+## Page layout
+
+The main content column should be narrow enough for long reading.
+
+Recommended content width:
+
+* Screen: `680px` to `760px`
+* Print: full page width minus margins
+* Line length: around `65–80` characters
+
+Margins should be generous. On screen, the page can sit inside a calm background. On paper, the content should print directly without decorative containers.
+
+## Typography
+
+Use a serious, readable typeface. A good system stack is usually enough:
+
+```css
+font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+```
+
+For long-form reading, a serif face can also work well:
+
+```css
+font-family: Charter, "Bitstream Charter", "Sitka Text", Cambria, serif;
+```
+
+The recommended base size is:
+
+* Screen: `17px` or `18px`
+* Print: `11pt` or `12pt`
+* Line height: `1.6` on screen, `1.45` on paper
+
+## Heading hierarchy
+
+# Heading level 1
+
+The first-level heading should be reserved for the document title. It should be large, confident, and not overly decorative.
+
+## Heading level 2
+
+Second-level headings divide the document into major sections. They can use a calm accent color on screen.
+
+### Heading level 3
+
+Third-level headings introduce smaller subsections. They should be visibly different from body text but not too loud.
+
+#### Heading level 4
+
+Fourth-level headings are useful inside dense documentation. They should usually stay close to the paragraph below them.
+
+## Recommended colors
+
+Use a restrained palette. The document should remain readable if printed in grayscale.
+
+| Role            |           Screen color | Print behavior          |
+| --------------- | ---------------------: | ----------------------- |
+| Text            |              `#1F2937` | Black or near-black     |
+| Muted text      |              `#6B7280` | Dark gray               |
+| Heading         |              `#111827` | Black                   |
+| Accent          |              `#2563EB` | Black or dark gray      |
+| Link            |              `#1D4ED8` | Underlined              |
+| Border          |              `#D1D5DB` | Light gray              |
+| Code background |              `#F3F4F6` | Very light gray or none |
+| Warning         | `#92400E` on `#FEF3C7` | Border only if needed   |
+| Success         | `#065F46` on `#D1FAE5` | Border only if needed   |
+| Info            | `#1E40AF` on `#DBEAFE` | Border only if needed   |
+
+Avoid saturated backgrounds for large areas. Use color mostly for hierarchy, links, borders, and small callout accents.
+
+## Renderer controls
+
+The preview toolbar should keep screen reading and print output separate.
+
+| Control | Good default | Print intent |
+| ------- | ------------ | ------------ |
+| Style   | Demo         | Uses this document's opinionated layout styles |
+| Tone    | Default      | Preserves source colors until a gray tone is chosen |
+| Color   | Default      | Preserves source colors until an accent set is chosen |
+| Font    | Print        | Uses serif body text with sans-serif headings |
+| Gap     | Normal       | Keeps comfortable spacing for reading |
+
+Tone choices such as **Black**, **Graphite**, **Slate**, and **Ash** should affect the whole document. They should use flat neutral RGB values for near-black print, not mixed color blacks.
+
+Color choices should be light and printer-friendly. Colored themes can vary heading levels to improve scanning, but should avoid heavy fills and saturated backgrounds.
+
+Dark mode is for screen reading only. Printed output should remain light, plain, and economical.
+
+## Paragraphs
+
+Paragraphs should have enough spacing to avoid crowding. The spacing should come from margins, not empty lines inserted into the content.
+
+This is a normal paragraph. It should be easy to read for several minutes without fatigue. The line height should feel open, but not loose. The text color should not be pure black on a bright white screen; near-black is usually more comfortable.
+
+A second paragraph follows here. Notice that the page should not need indentation. Modern web documents usually use vertical paragraph spacing instead of first-line indents.
+
+## Emphasis
+
+Markdown supports **bold text**, *italic text*, and ***bold italic text***.
+
+Use bold for strong emphasis, not for decoration. Italic text should be slightly distinct but still readable. Avoid using color alone to communicate meaning.
+
+## Links
+
+A link should look like a link: [example documentation link](https://example.com).
+
+On screen, color is acceptable. In print, links should usually be underlined, because color may disappear or become ambiguous.
+
+## Lists
+
+Lists should be compact but not cramped.
+
+### Unordered list
+
+* Use clear spacing between list items.
+* Keep markers visually quiet.
+* Align wrapped lines cleanly.
+* Avoid excessive indentation.
+
+### Ordered list
+
+1. Start with the main action.
+2. Add only the necessary explanation.
+3. Keep related steps close together.
+4. Use sublists only when they improve clarity.
+
+### Nested list
+
+* Document layout
+
+  * Content width
+  * Margins
+  * Print behavior
+* Typography
+
+  * Font family
+  * Font size
+  * Line height
+* Color
+
+  * Accent color
+  * Link color
+  * Callout colors
+
+## Blockquotes
+
+> Good typography does not ask the reader to notice the design. It removes friction from reading.
+
+A blockquote should be visually distinct without becoming a decorative poster. A left border, slightly muted text, and subtle background are enough.
+
+> **Note:** In printed output, a blockquote should still work if background colors are removed. The left border and spacing should carry the structure.
+
+## Callout blocks
+
+Markdown does not have a universal callout syntax, but many converters support patterns like blockquotes with labels.
+
+> [!NOTE]
+> This is an informational note. Use it for context, hints, or secondary explanations.
+
+> [!TIP]
+> This is a helpful tip. Use it for practical advice that improves the reader’s workflow.
+
+> [!WARNING]
+> This is a warning. Use it for risks, limitations, or things the reader should check carefully.
+
+> [!IMPORTANT]
+> This is important information. Use it sparingly so it keeps its weight.
+
+For print, callouts should rely on border style, label text, and spacing rather than background color alone.
+
+## Code
+
+Inline code like `font-size`, `line-height`, and `margin-block` should be slightly highlighted but not visually aggressive.
+
+A code block should use a monospace font, syntax highlighting, and enough padding:
+
+```css
+.markdown-body {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px;
+  color: #1f2937;
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
+  color: #111827;
+  line-height: 1.2;
+}
+
+.markdown-body blockquote {
+  margin-inline: 0;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid #2563eb;
+  background: #eff6ff;
+  color: #374151;
+}
+```
+
+Printed code blocks should avoid dark backgrounds. They use too much ink and reduce readability.
+
+```js
+const printProfile = {
+  tone: "graphite",
+  color: "default",
+  darkMode: false,
+  preserveSourceColors: true,
+};
+
+function shouldUseFlatBlack(color) {
+  return color.role === "text" || color.role === "heading";
+}
+```
+
+## Extended markdown
+
+Task lists, definition lists, marks, subscript, and superscript should render without extra configuration.
+
+- [x] Render common GitHub-style markdown.
+- [x] Keep checked and unchecked tasks aligned.
+- [ ] Verify the printed page before sharing it.
+
+Tone
+: A whole-document grayscale treatment.
+
+Color
+: A separate accent system for headings, links, borders, and callouts.
+
+Highlighting with `==marked text==` should be visible but modest. Chemical notation like H~2~O and references like E = mc^2^ should stay readable.
+
+## Mermaid diagrams
+
+Mermaid diagrams should render in the browser preview, adapt to light or dark reading mode, and print without dark backgrounds.
+
+```mermaid
+flowchart LR
+    A[Markdown file] --> B[markdown-it renderer]
+    B --> C[HTML preview]
+    C --> D[Screen reading]
+    C --> E[Printed document]
+    D --> F[Theme controls]
+    E --> G[Flat print colors]
+```
+
+## Tables
+
+Tables should be readable, but not visually heavy.
+
+| Element      | Screen style                  | Print style          |
+| ------------ | ----------------------------- | -------------------- |
+| `h1`         | Large, dark, strong           | Large, black         |
+| `h2`         | Accent color or dark          | Black with rule      |
+| `p`          | Comfortable line height       | Slightly tighter     |
+| `blockquote` | Left border + soft background | Left border only     |
+| `code`       | Light background              | Border or light gray |
+| `a`          | Blue text                     | Underlined           |
+
+Avoid zebra stripes unless the table is large. Borders and spacing are usually enough.
+
+## Horizontal rules
+
+A horizontal rule should be subtle. It should separate sections without looking like a hard break.
+
+---
+
+## Images
+
+Images should scale to the content width and avoid overflowing the page.
+
+![Example image placeholder](https://placehold.co/1200x600?text=Readable+image+area)
+
+Image captions should be smaller and muted.
+
+*Figure 1. A sample image caption. Captions should remain readable in print.*
+
+## Footnotes
+
+Footnotes are useful for secondary references or clarifications.[^1]
+
+The main text should remain readable without forcing the reader to jump constantly between body and notes.
+
+[^1]: This is an example footnote. In print, footnotes should use smaller text but still have enough line height.
+
+## Print-specific guidance
+
+When printing, remove anything that only helps the screen version:
+
+* Remove page shadows.
+* Remove decorative backgrounds.
+* Convert grayscale tones to flat neutral black or dark gray.
+* Keep explicit color themes light enough for color laser printers.
+* Underline links.
+* Avoid page breaks directly after headings.
+* Avoid splitting tables, code blocks, and callouts across pages when possible.
+
+Recommended print CSS:
+
+```css
+@media print {
+  body {
+    background: white;
+  }
+
+  .markdown-body {
+    max-width: none;
+    padding: 0;
+    color: black;
+    font-size: 11.5pt;
+    line-height: 1.45;
+  }
+
+  .markdown-body a {
+    color: black;
+    text-decoration: underline;
+  }
+
+  .markdown-body h1,
+  .markdown-body h2,
+  .markdown-body h3 {
+    color: black;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  .markdown-body pre,
+  .markdown-body blockquote,
+  .markdown-body table {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .markdown-body blockquote {
+    background: transparent;
+    border-left: 3pt solid #777;
+  }
+}
+```
+
+## Full visual direction
+
+The final page should feel like this:
+
+* Calm, editorial, and structured.
+* Mostly neutral colors.
+* Blue or indigo used as the main accent.
+* Soft callout backgrounds on screen.
+* Strong black-and-white clarity on paper.
+* No tiny text.
+* No full-width paragraphs.
+* No dark code blocks for print.
+* No reliance on color alone.
+
+## Closing example
+
+A markdown document becomes pleasant to read when the converter respects rhythm: heading spacing, paragraph width, line height, contrast, and predictable visual treatment for special blocks.
+
+The best result is not flashy. It is a page where the reader understands the structure immediately and can keep reading without thinking about the interface.
