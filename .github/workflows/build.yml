@@ -34,11 +34,11 @@ jobs:
       matrix:
         include:
           - name: macOS x64
-            os: macos-13
+            os: macos-14
             target: bun-darwin-x64
             outfile: dist/mdopen-darwin-x64
             artifact: mdopen-darwin-x64
-            smoke: true
+            smoke: false
 
           - name: macOS arm64
             os: macos-14
