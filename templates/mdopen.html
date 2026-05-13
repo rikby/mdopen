@@ -16,51 +16,60 @@
     <button type="button" id="mdopen-theme-toggle" aria-pressed="false">Dark</button>
     <button type="button" id="mdopen-menu-toggle" class="mdopen-menu-button" aria-label="View options" aria-expanded="false" aria-controls="mdopen-menu-panel">☰</button>
     <div id="mdopen-menu-panel" class="mdopen-menu-panel" hidden>
-      <label>Theme
-        <select id="mdopen-style">
-          <option value="default">Default</option>
-          <option value="demo">Demo</option>
-          <option value="readthedocs">Read the Docs</option>
-        </select>
-      </label>
-      <label>Font
-        <select id="mdopen-font">
-          <option value="source">Source</option>
-          <option value="system">System</option>
-          <option value="balanced">Balanced docs</option>
-          <option value="print">Print serif</option>
-          <option value="technical">Technical</option>
-          <option value="editorial">Editorial</option>
-          <option value="product">Product</option>
-          <option value="mono">Mono</option>
-        </select>
-      </label>
-      <label>Tone
-        <select id="mdopen-tone">
-          <option value="default">Default</option>
-          <option value="black">Black</option>
-          <option value="graphite">Graphite</option>
-          <option value="slate">Slate</option>
-          <option value="ash">Ash</option>
-        </select>
-      </label>
-      <label>Color
-        <select id="mdopen-accent">
-          <option value="default">Default</option>
-          <option value="none">None</option>
-          <option value="blue">Blue</option>
-          <option value="sage">Sage</option>
-          <option value="rose">Rose</option>
-        </select>
-      </label>
-      <label>Gap
-        <select id="mdopen-density">
-          <option value="normal">Normal</option>
-          <option value="tight">-1</option>
-          <option value="dense">-2</option>
-          <option value="compact">-3</option>
-        </select>
-      </label>
+      <fieldset class="mdopen-option-group">
+        <legend>Theme</legend>
+        <div class="mdopen-segmented" aria-label="Theme style">
+          <button type="button" data-mdopen-control="style" data-mdopen-value="default">Default</button>
+          <button type="button" data-mdopen-control="style" data-mdopen-value="demo">Demo</button>
+          <button type="button" data-mdopen-control="style" data-mdopen-value="readthedocs">Read the Docs</button>
+        </div>
+      </fieldset>
+      <fieldset class="mdopen-option-group">
+        <legend>Font</legend>
+        <div class="mdopen-button-grid" aria-label="Font theme">
+          <button type="button" data-mdopen-control="font" data-mdopen-value="source">Source</button>
+          <button type="button" data-mdopen-control="font" data-mdopen-value="system">System</button>
+          <button type="button" data-mdopen-control="font" data-mdopen-value="balanced">Balanced</button>
+          <button type="button" data-mdopen-control="font" data-mdopen-value="print">Print serif</button>
+          <button type="button" data-mdopen-control="font" data-mdopen-value="technical">Technical</button>
+          <button type="button" data-mdopen-control="font" data-mdopen-value="editorial">Editorial</button>
+          <button type="button" data-mdopen-control="font" data-mdopen-value="product">Product</button>
+          <button type="button" data-mdopen-control="font" data-mdopen-value="mono">Mono</button>
+        </div>
+      </fieldset>
+      <fieldset class="mdopen-option-group">
+        <legend>Tone</legend>
+        <div class="mdopen-segmented" aria-label="Grayscale tone">
+          <button type="button" data-mdopen-control="tone" data-mdopen-value="default">Default</button>
+          <button type="button" data-mdopen-control="tone" data-mdopen-value="black">Black</button>
+          <button type="button" data-mdopen-control="tone" data-mdopen-value="graphite">Graphite</button>
+          <button type="button" data-mdopen-control="tone" data-mdopen-value="slate">Slate</button>
+          <button type="button" data-mdopen-control="tone" data-mdopen-value="ash">Ash</button>
+        </div>
+      </fieldset>
+      <fieldset class="mdopen-option-group">
+        <legend>Color</legend>
+        <div class="mdopen-segmented" aria-label="Color accent">
+          <button type="button" data-mdopen-control="accent" data-mdopen-value="default">Default</button>
+          <button type="button" data-mdopen-control="accent" data-mdopen-value="none">None</button>
+          <button type="button" data-mdopen-control="accent" data-mdopen-value="blue">Blue</button>
+          <button type="button" data-mdopen-control="accent" data-mdopen-value="sage">Sage</button>
+          <button type="button" data-mdopen-control="accent" data-mdopen-value="rose">Rose</button>
+        </div>
+      </fieldset>
+      <fieldset class="mdopen-option-group">
+        <legend>Gap</legend>
+        <div class="mdopen-segmented" aria-label="Content gap">
+          <button type="button" data-mdopen-control="density" data-mdopen-value="normal">Normal</button>
+          <button type="button" data-mdopen-control="density" data-mdopen-value="tight">-1</button>
+          <button type="button" data-mdopen-control="density" data-mdopen-value="dense">-2</button>
+          <button type="button" data-mdopen-control="density" data-mdopen-value="compact">-3</button>
+        </div>
+      </fieldset>
+      <div class="mdopen-menu-preferences">
+        <span>Auto-hide</span>
+        <button type="button" id="mdopen-autohide-toggle" aria-pressed="true">On</button>
+      </div>
     </div>
   </nav>
   <article class="markdown-body">
@@ -77,11 +86,7 @@
       var themeToggle = document.getElementById('mdopen-theme-toggle');
       var menuToggle = document.getElementById('mdopen-menu-toggle');
       var menuPanel = document.getElementById('mdopen-menu-panel');
-      var styleSelect = document.getElementById('mdopen-style');
-      var toneSelect = document.getElementById('mdopen-tone');
-      var accentSelect = document.getElementById('mdopen-accent');
-      var fontSelect = document.getElementById('mdopen-font');
-      var densitySelect = document.getElementById('mdopen-density');
+      var autohideToggle = document.getElementById('mdopen-autohide-toggle');
 
       function setMenuOpen(open, restoreFocus) {
         menuPanel.hidden = !open;
@@ -89,10 +94,33 @@
         if (!open && restoreFocus) menuToggle.focus();
       }
 
-      function closeMenuAfterSelection() {
-        if (window.matchMedia('(max-width: 767px)').matches) {
-          setMenuOpen(false);
-        }
+      function syncHeadingFontPreview() {
+        var heading = document.querySelector('.markdown-body h1') || document.querySelector('.markdown-body');
+        if (!heading || !window.getComputedStyle) return;
+        var activeFont = document.documentElement.dataset.mdopenFont;
+        delete document.documentElement.dataset.mdopenFont;
+        var style = window.getComputedStyle(heading);
+        document.documentElement.style.setProperty('--mdopen-source-h1-font-family', style.fontFamily);
+        document.documentElement.style.setProperty('--mdopen-source-h1-font-weight', style.fontWeight);
+        document.documentElement.style.setProperty('--mdopen-source-h1-letter-spacing', style.letterSpacing);
+        if (activeFont) document.documentElement.dataset.mdopenFont = activeFont;
+      }
+
+      function queueHeadingFontPreview() {
+        window.requestAnimationFrame(syncHeadingFontPreview);
+      }
+
+      function updatePressed(control, value) {
+        var buttons = menuPanel.querySelectorAll('[data-mdopen-control="' + control + '"]');
+        Array.prototype.forEach.call(buttons, function (button) {
+          button.setAttribute('aria-pressed', String(button.dataset.mdopenValue === value));
+        });
+      }
+
+      function setAutohide(enabled) {
+        localStorage.setItem('mdopen-autohide-menu', enabled ? 'true' : 'false');
+        autohideToggle.setAttribute('aria-pressed', String(enabled));
+        autohideToggle.textContent = enabled ? 'On' : 'Off';
       }
 
       function setTheme(theme) {
@@ -103,20 +131,22 @@
         themeToggle.setAttribute('aria-pressed', String(theme === 'dark'));
         themeToggle.textContent = theme === 'dark' ? 'Light' : 'Dark';
         document.dispatchEvent(new CustomEvent('mdopen-theme-change'));
+        queueHeadingFontPreview();
       }
 
       function setDensity(density) {
         if (['normal', 'tight', 'dense', 'compact'].indexOf(density) === -1) density = 'normal';
         document.documentElement.dataset.mdopenDensity = density;
         localStorage.setItem('mdopen-density', density);
-        densitySelect.value = density;
+        updatePressed('density', density);
       }
 
       function setStyle(style) {
         if (['default', 'demo', 'readthedocs'].indexOf(style) === -1) style = 'default';
         document.documentElement.dataset.mdopenStyle = style;
         localStorage.setItem('mdopen-style', style);
-        styleSelect.value = style;
+        updatePressed('style', style);
+        queueHeadingFontPreview();
       }
 
       function setTone(tone) {
@@ -127,7 +157,7 @@
           document.documentElement.dataset.mdopenTone = tone;
         }
         localStorage.setItem('mdopen-tone', tone);
-        toneSelect.value = tone;
+        updatePressed('tone', tone);
       }
 
       function setAccent(accent) {
@@ -138,14 +168,15 @@
           document.documentElement.dataset.mdopenAccent = accent;
         }
         localStorage.setItem('mdopen-accent', accent);
-        accentSelect.value = accent;
+        updatePressed('accent', accent);
       }
 
       function setFont(font) {
         if (['source', 'system', 'balanced', 'print', 'technical', 'editorial', 'product', 'mono'].indexOf(font) === -1) font = 'source';
         document.documentElement.dataset.mdopenFont = font;
         localStorage.setItem('mdopen-font', font);
-        fontSelect.value = font;
+        updatePressed('font', font);
+        queueHeadingFontPreview();
       }
 
       themeToggle.addEventListener('click', function () {
@@ -156,33 +187,23 @@
         setMenuOpen(menuPanel.hidden);
       });
 
-      styleSelect.addEventListener('change', function () {
-        setStyle(styleSelect.value);
-        closeMenuAfterSelection();
+      menuPanel.addEventListener('click', function (event) {
+        var button = event.target.closest('button[data-mdopen-control]');
+        if (!button) return;
+        var value = button.dataset.mdopenValue;
+        if (button.dataset.mdopenControl === 'style') setStyle(value);
+        if (button.dataset.mdopenControl === 'font') setFont(value);
+        if (button.dataset.mdopenControl === 'tone') setTone(value);
+        if (button.dataset.mdopenControl === 'accent') setAccent(value);
+        if (button.dataset.mdopenControl === 'density') setDensity(value);
       });
 
-      densitySelect.addEventListener('change', function () {
-        setDensity(densitySelect.value);
-        closeMenuAfterSelection();
-      });
-
-      toneSelect.addEventListener('change', function () {
-        setTone(toneSelect.value);
-        closeMenuAfterSelection();
-      });
-
-      accentSelect.addEventListener('change', function () {
-        setAccent(accentSelect.value);
-        closeMenuAfterSelection();
-      });
-
-      fontSelect.addEventListener('change', function () {
-        setFont(fontSelect.value);
-        closeMenuAfterSelection();
+      autohideToggle.addEventListener('click', function () {
+        setAutohide(autohideToggle.getAttribute('aria-pressed') !== 'true');
       });
 
       document.addEventListener('click', function (event) {
-        if (!menuPanel.hidden && !toolbar.contains(event.target)) {
+        if (!menuPanel.hidden && autohideToggle.getAttribute('aria-pressed') === 'true' && !toolbar.contains(event.target)) {
           setMenuOpen(false);
         }
       });
@@ -201,6 +222,12 @@
       setAccent(params.get('accent') || (defaultStyle !== 'default' ? 'default' : localStorage.getItem('mdopen-accent')) || 'default');
       setFont(params.get('font') || localStorage.getItem('mdopen-font') || 'source');
       setDensity(params.get('density') || localStorage.getItem('mdopen-density') || 'normal');
+      setAutohide(localStorage.getItem('mdopen-autohide-menu') !== 'false');
+      link.addEventListener('load', queueHeadingFontPreview);
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(queueHeadingFontPreview);
+      }
+      queueHeadingFontPreview();
 
       var themeBeforePrint = null;
       window.addEventListener('beforeprint', function () {

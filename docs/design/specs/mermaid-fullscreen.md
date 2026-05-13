@@ -27,12 +27,14 @@ MermaidContainer
 - Diagram starts centered and fit within about 90% of viewport.
 - Fullscreen overflow is hidden; movement happens through diagram transform, not scrollbars.
 - Fullscreen button remains available and does not participate in drag gestures.
+- Inline and fullscreen containers use theme-aware Mermaid surface tokens; dark mode must not leave a white screen container.
 
 ## States
 
 | State | Trigger | Visual change | Behavior |
 |-------|---------|---------------|----------|
 | inline | page load | diagram inside Markdown content | native page scroll works |
+| dark inline | theme is dark | container background, border, and button chrome use dark tokens | rendered Mermaid uses Mermaid dark theme |
 | entering fullscreen | `FullscreenButton` click | browser begins fullscreen transition | pan/zoom handlers are installed immediately in the same click task |
 | fullscreen ready | `fullscreenchange` | container fills viewport, diagram refits | drag and wheel remain active; fit scale is recalculated |
 | panning | mouse down + drag | cursor changes to `grabbing` | diagram follows pointer in screen pixels |
@@ -66,9 +68,9 @@ MermaidContainer
 
 | Element | Token / value | Usage |
 |---------|---------------|-------|
-| Inline container border | `--mdopen-preview-border` | Mermaid card border |
-| Fullscreen background | existing `.mermaid-container` background | reading surface |
-| Button chrome | current rgba button colors | fullscreen toggle |
+| Container background | `--mdopen-mermaid-bg` | inline and fullscreen Mermaid surface |
+| Container border | `--mdopen-mermaid-border` | Mermaid card border |
+| Button chrome | `--mdopen-mermaid-button-bg`, `--mdopen-mermaid-button-fg` | fullscreen toggle |
 
 ## Classes used
 
@@ -89,6 +91,7 @@ MermaidContainer
 | MF-5 | Wheel up increases rendered diagram size. |
 | MF-6 | Wheel down decreases rendered diagram size. |
 | MF-7 | Exiting fullscreen removes handlers and restores inline state. |
+| MF-8 | Dark mode Mermaid containers do not show a white background. |
 
 ## Extension notes
 

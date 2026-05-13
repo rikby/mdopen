@@ -20,11 +20,13 @@ The generated HTML is written to a temporary directory and opened with the defau
 - Font sets: source, system, balanced docs, print serif, technical, editorial, product, mono
 - Gap controls: normal, `-1`, `-2`, `-3`
 - Mermaid fenced diagram rendering with fullscreen button
+- Theme-aware Mermaid diagram surfaces
 - Print-specific CSS for tighter output
 - `-3` is the most compact print mode
 
-Theme, font, tone, color, and gap are dropdown menus.
-Source font preserves the selected theme fonts.
+Theme, font, tone, color, and gap are available in the hamburger menu as visible button groups.
+The Source font button previews and preserves the selected theme's native heading font.
+Auto-hide controls whether outside clicks close the hamburger menu.
 Default tone and color preserve the selected theme colors.
 Select `None` to remove the color accent. Dark mode is for screen reading only; print output stays light.
 Print grayscale tones use flat neutral RGB values so near-black text stays clean on color laser printers.

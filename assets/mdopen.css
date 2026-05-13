@@ -1,5 +1,9 @@
 :root {
   color-scheme: light dark;
+  --mdopen-mermaid-bg: #ffffff;
+  --mdopen-mermaid-border: var(--mdopen-preview-border, #d0d7de);
+  --mdopen-mermaid-button-bg: rgba(255, 255, 255, 0.88);
+  --mdopen-mermaid-button-fg: #1f2328;
 }
 
 body {
@@ -14,6 +18,13 @@ html[data-mdopen-theme="light"] body {
 
 html[data-mdopen-theme="dark"] body {
   background: #0d1117;
+}
+
+html[data-mdopen-theme="dark"] {
+  --mdopen-mermaid-bg: var(--bgColor-muted, #161b22);
+  --mdopen-mermaid-border: var(--borderColor-default, #30363d);
+  --mdopen-mermaid-button-bg: rgba(13, 17, 23, 0.9);
+  --mdopen-mermaid-button-fg: var(--fgColor-default, #e6edf3);
 }
 
 .markdown-body {
@@ -363,9 +374,9 @@ html[data-mdopen-tone] .markdown-body a {
   overflow: auto;
   margin: 1.5rem 0;
   padding: 1rem;
-  border: 1px solid var(--mdopen-preview-border, #d0d7de);
+  border: 1px solid var(--mdopen-mermaid-border);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--mdopen-mermaid-bg);
 }
 
 .mermaid-container .mermaid {
@@ -377,6 +388,7 @@ html[data-mdopen-tone] .markdown-body a {
 .mermaid-container svg {
   max-width: 100%;
   height: auto;
+  background: transparent !important;
 }
 
 .mermaid-container .mermaid-error {
@@ -399,8 +411,8 @@ html[data-mdopen-theme="dark"] .mermaid-container .mermaid-error {
   padding: 0 8px;
   border: 1px solid rgba(128, 128, 128, 0.35);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.88);
-  color: #1f2328;
+  background: var(--mdopen-mermaid-button-bg);
+  color: var(--mdopen-mermaid-button-fg);
   font: 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   cursor: pointer;
 }
@@ -445,8 +457,7 @@ html[data-mdopen-theme="dark"] .mermaid-container .mermaid-error {
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
 }
 
-.mdopen-toolbar button,
-.mdopen-toolbar select {
+.mdopen-toolbar button {
   min-width: 44px;
   height: 30px;
   border: 0;
@@ -460,24 +471,8 @@ html[data-mdopen-theme="dark"] .mermaid-container .mermaid-error {
   cursor: pointer;
 }
 
-.mdopen-toolbar select {
-  min-width: 92px;
-  padding: 0 22px 0 8px;
-  border: 1px solid rgba(128, 128, 128, 0.28);
-  background: color-mix(in srgb, var(--bgColor-default, #fff) 82%, transparent);
-}
-
-.mdopen-toolbar label {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  color: var(--fgColor-muted, #57606a);
-  font: 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
 .mdopen-toolbar button[aria-pressed="true"] {
   background: var(--button-default-bgColor-active, rgba(128, 128, 128, 0.18));
-  font-weight: 600;
 }
 
 .mdopen-menu-button {
@@ -491,9 +486,9 @@ html[data-mdopen-theme="dark"] .mermaid-container .mermaid-error {
   top: calc(100% + 6px);
   right: 0;
   display: grid;
-  min-width: 232px;
-  gap: 8px;
-  padding: 10px;
+  width: min(420px, calc(100vw - 24px));
+  gap: 12px;
+  padding: 12px;
   border: 1px solid rgba(128, 128, 128, 0.35);
   border-radius: 8px;
   background: color-mix(in srgb, var(--bgColor-default, #fff) 94%, transparent);
@@ -504,15 +499,106 @@ html[data-mdopen-theme="dark"] .mermaid-container .mermaid-error {
   display: none;
 }
 
-.mdopen-menu-panel label {
-  display: grid;
-  grid-template-columns: 52px minmax(150px, 1fr);
-  gap: 8px;
+.mdopen-option-group {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  margin: 0;
 }
 
-.mdopen-menu-panel select {
-  width: 100%;
+.mdopen-option-group legend,
+.mdopen-menu-preferences span {
+  margin-bottom: 6px;
+  color: var(--fgColor-muted, #57606a);
+  font: 600 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.mdopen-segmented,
+.mdopen-button-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mdopen-button-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.mdopen-menu-panel button {
   min-width: 0;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid rgba(128, 128, 128, 0.28);
+  background: color-mix(in srgb, var(--bgColor-default, #fff) 82%, transparent);
+  white-space: nowrap;
+}
+
+.mdopen-menu-panel button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--fgColor-default, #1f2328) 30%, transparent);
+  background: color-mix(in srgb, var(--fgColor-default, #1f2328) 3%, var(--bgColor-default, #fff));
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--fgColor-default, #1f2328) 42%, transparent);
+}
+
+.mdopen-menu-panel [data-mdopen-control="font"] {
+  font-weight: 600;
+}
+
+.mdopen-menu-panel [data-mdopen-control="font"][data-mdopen-value="source"] {
+  font-family: var(--mdopen-source-h1-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+  font-weight: var(--mdopen-source-h1-font-weight, 600);
+  letter-spacing: var(--mdopen-source-h1-letter-spacing, 0);
+}
+
+.mdopen-menu-panel [data-mdopen-control="font"][data-mdopen-value="system"] {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.mdopen-menu-panel [data-mdopen-control="font"][data-mdopen-value="balanced"] {
+  font-family: "Inter Display", Inter, "Avenir Next", Avenir, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  letter-spacing: 0;
+}
+
+.mdopen-menu-panel [data-mdopen-control="font"][data-mdopen-value="print"] {
+  font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.mdopen-menu-panel [data-mdopen-control="font"][data-mdopen-value="technical"] {
+  font-family: "IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: 0.015em;
+}
+
+.mdopen-menu-panel [data-mdopen-control="font"][data-mdopen-value="editorial"] {
+  font-family: "Playfair Display", Georgia, "Times New Roman", Times, serif;
+  letter-spacing: 0.005em;
+}
+
+.mdopen-menu-panel [data-mdopen-control="font"][data-mdopen-value="product"] {
+  font-family: "Space Grotesk", "DM Sans", "Trebuchet MS", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: 0;
+}
+
+.mdopen-menu-panel [data-mdopen-control="font"][data-mdopen-value="mono"] {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  letter-spacing: 0;
+}
+
+.mdopen-menu-panel button:focus-visible,
+.mdopen-toolbar > button:focus-visible {
+  outline: 2px solid var(--focus-outlineColor, #0969da);
+  outline-offset: 2px;
+}
+
+.mdopen-menu-preferences {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 2px;
 }
 
 .mdopen-divider {
@@ -539,12 +625,17 @@ html[data-mdopen-theme="dark"] .mermaid-container .mermaid-error {
   .mdopen-menu-panel {
     left: 0;
     right: 0;
+    width: auto;
     min-width: 0;
   }
 
-  .mdopen-menu-panel label {
-    grid-template-columns: 1fr;
-    gap: 4px;
+  .mdopen-button-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mdopen-segmented button,
+  .mdopen-button-grid button {
+    flex: 1 1 auto;
   }
 }
 

@@ -92,7 +92,10 @@ The risk pattern is any theme source setting element margins with `!important` a
 ## Toolbar Controls
 
 - Use a single light/dark toggle.
-- Use dropdown menus for theme, font, tone, color, and density.
+- Keep the fixed toolbar collapsed to the light/dark toggle and menu button.
+- Keep theme, font, tone, color, and density controls inside `.mdopen-menu-panel`.
+- Use native buttons with `aria-pressed` for menu customizations so the current state is visible without opening dropdowns.
+- Keep outside-click closing controlled by the persisted Auto-hide toggle.
 - Keep toolbar classes structural only; selected values belong in `data-mdopen-*` attributes.
 
 ## Variant Rules
@@ -118,6 +121,7 @@ The toolbar label is `Theme`; the internal attribute remains `data-mdopen-style`
 
 - Dark mode is for screen reading only.
 - Print output must stay light.
+- Mermaid containers must use theme-aware surface tokens on screen and force white only in print.
 - Grayscale tones should affect the full document.
 - Print grayscale colors must stay neutral RGB values, for example `#333333`.
 - Color accents should use related but varied tones across headings, links, blockquotes, and rules.

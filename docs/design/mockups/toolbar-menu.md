@@ -29,11 +29,17 @@ Desktop, open
                                     └───────┬────────┘
                                             │
                               ┌─────────────┴─────────────┐
-                              │ Theme  [Default       ▾]  │
-                              │ Font   [Source        ▾]  │
-                              │ Tone   [Default       ▾]  │
-                              │ Color  [Default       ▾]  │
-                              │ Gap    [Normal        ▾]  │
+                              │ Theme                    │
+                              │ [Default*] [Demo] [RTD]  │
+                              │ Font                     │
+                              │ [Source*] [System] [...] │
+                              │ Tone                     │
+                              │ [Default*] [Black] [...] │
+                              │ Color                    │
+                              │ [Default*] [None] [...]  │
+                              │ Gap                      │
+                              │ [Normal*] [-1] [-2] [-3] │
+                              │ Auto-hide          [On*] │
                               └───────────────────────────┘
 ```
 
@@ -63,15 +69,18 @@ Mobile, open
 │              [Dark] [☰]                 │
 ├──────────────────────────────────────────┤
 │ Theme                                    │
-│ [Default                              ▾] │
+│ [Default*] [Demo] [RTD]                 │
 │ Font                                     │
-│ [Source                               ▾] │
+│ [Source*] [System] [Balanced] [Print]   │
+│ [Tech] [Editorial] [Product] [Mono]     │
 │ Tone                                     │
-│ [Default                              ▾] │
+│ [Default*] [Black] [Graphite]           │
+│ [Slate] [Ash]                           │
 │ Color                                    │
-│ [Default                              ▾] │
+│ [Default*] [None] [Blue] [Sage] [Rose]  │
 │ Gap                                      │
-│ [Normal                               ▾] │
+│ [Normal*] [-1] [-2] [-3]                │
+│ Auto-hide                         [On*] │
 └──────────────────────────────────────────┘
 ```
 
@@ -83,4 +92,6 @@ Mobile, open
 | Theme toggle | `--fgColor-default` | existing `#mdopen-theme-toggle` | stays outside menu |
 | Menu button | `--fgColor-default` | proposed `.mdopen-menu-button` | `aria-expanded` reflects open state |
 | Menu panel | `--bgColor-default`, existing border mix | proposed `.mdopen-menu-panel` | hidden when closed, fixed-position popover |
-| Select rows | existing select styles | current `label > select` pattern | same controls, new container |
+| Option groups | `--fgColor-muted` labels | proposed `.mdopen-option-group` | fieldset/legend structure |
+| Option buttons | existing button colors | proposed `.mdopen-segmented`, `.mdopen-button-grid` | `*` marks `aria-pressed="true"` |
+| Auto-hide | existing button colors | proposed `.mdopen-menu-preferences` | controls outside-click close behavior |
