@@ -16,6 +16,7 @@
 - `assets/styles/demo.css`: optional screen style source adapted from `review/markdown_html_render_demo.html`.
 - `templates/mdopen.html`: HTML template, GitHub Markdown CSS link, toolbar, and UI JavaScript.
 - `docs/styling.md`: local styling contract for CSS structure, data attributes, themes, tones, accents, fonts, and print rules.
+- `docs/design/specs/` and `docs/design/mockups/`: UX contracts and wireframes for UI surfaces.
 - `README.md`: user-facing usage and install notes.
 
 There is no build system, server, or app framework.

@@ -403,11 +403,15 @@ html[data-mdopen-tone] .markdown-body a {
   padding: 48px;
   border: 0;
   border-radius: 0;
+  overflow: hidden;
+  overscroll-behavior: contain;
 }
 
 .mermaid-container:fullscreen .mermaid {
   max-width: 100%;
   max-height: 100%;
+  transform-origin: center center;
+  will-change: transform;
 }
 
 .mermaid-container:fullscreen svg {
