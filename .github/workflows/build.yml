@@ -76,14 +76,14 @@ jobs:
             smoke: false
 
           - name: Windows x64
-            os: windows-latest
+            os: ubuntu-latest
             target: bun-windows-x64-baseline
             outfile: dist/mdopen-windows-x64.exe
             artifact: mdopen-windows-x64
-            smoke: true
+            smoke: false
 
           - name: Windows arm64
-            os: windows-latest
+            os: ubuntu-latest
             target: bun-windows-aarch64
             outfile: dist/mdopen-windows-arm64.exe
             artifact: mdopen-windows-arm64
