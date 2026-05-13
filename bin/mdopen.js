@@ -135,8 +135,8 @@ copyFile(path.join(stylesDir, "demo.css"), path.join(outdir, "demo.css"));
 copyFile(path.join(stylesDir, "readthedocs.css"), path.join(outdir, "readthedocs.css"));
 copyDirectoryFiles(path.join(stylesDir, "fonts"), path.join(outdir, "fonts"));
 
-const reviewDir = path.join(projectDir, "review");
-const defaultStyle = pathStartsWith(input, reviewDir) ? "demo" : "default";
+const examplesDir = path.join(projectDir, "examples");
+const defaultStyle = pathStartsWith(input, examplesDir) ? "demo" : "default";
 
 const render = spawnSync(process.execPath, [
   renderer,

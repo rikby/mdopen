@@ -1,17 +1,28 @@
-# Markdown to HTML Typography Demo
+# Markdown HTML Render Demo
 
-> A sample document for testing a markdown-to-HTML converter. It is designed for comfortable screen reading and clean printed output.
+> A compact public demo for testing Markdown rendering, screen reading controls, and print output.
 
 ---
 
+## What this tests
+
+This page exercises the Markdown features that usually expose renderer and CSS problems:
+
+* Heading hierarchy, paragraphs, links, emphasis, and horizontal rules.
+* Ordered, unordered, nested, and task lists.
+* Tables with alignment and long cells.
+* Code highlighting, inline code, and long code lines.
+* Blockquotes, GitHub-style callouts, definition lists, marks, subscript, superscript, Mermaid diagrams, images, and footnotes.
+* Screen themes, spacing controls, and print behavior.
+
 ## Design goals
 
-A good markdown-rendered document should feel quiet, readable, and structured. The page should not look like a raw technical dump, but it also should not feel over-designed. Markdown content usually contains headings, paragraphs, lists, code, quotes, tables, and callouts, so the visual system should make those elements easy to scan.
+A good rendered Markdown page should feel quiet, readable, and structured. It should not look like a raw technical dump, and it should not depend on decoration to communicate hierarchy.
 
-The layout should work in two modes:
+The same document should work in two modes:
 
 * **Screen reading:** soft contrast, generous spacing, readable line length, subtle color.
-* **Print reading:** high contrast, clear hierarchy, minimal ink waste, no dependence on background color.
+* **Print reading:** high contrast, clear hierarchy, minimal ink waste, no reliance on background color.
 
 ## Page layout
 
@@ -94,11 +105,9 @@ The preview toolbar should keep screen reading and print output separate.
 | Font    | Print        | Uses serif body text with sans-serif headings |
 | Gap     | Normal       | Keeps comfortable spacing for reading |
 
-Tone choices such as **Black**, **Graphite**, **Slate**, and **Ash** should affect the whole document. They should use flat neutral RGB values for near-black print, not mixed color blacks.
+Tone choices such as **Black**, **Graphite**, **Slate**, and **Ash** affect the whole document. Color choices vary heading levels, links, borders, and callouts without using heavy fills.
 
-Color choices should be light and printer-friendly. Colored themes can vary heading levels to improve scanning, but should avoid heavy fills and saturated backgrounds.
-
-Dark mode is for screen reading only. Printed output should remain light, plain, and economical.
+Dark mode is for screen reading only. Printed output should remain light and economical.
 
 ## Paragraphs
 
@@ -117,6 +126,9 @@ Use bold for strong emphasis, not for decoration. Italic text should be slightly
 ## Links
 
 A link should look like a link: [example documentation link](https://example.com).
+
+Long URLs should wrap cleanly without forcing horizontal scrolling:
+https://example.com/docs/rendering/markdown-html-preview/typography/print-output/very-long-reference-path-with-query-string?theme=demo&density=normal&accent=blue
 
 On screen, color is acceptable. In print, links should usually be underlined, because color may disappear or become ambiguous.
 
@@ -155,6 +167,13 @@ Lists should be compact but not cramped.
   * Accent color
   * Link color
   * Callout colors
+
+### Deep nesting
+
+* Document
+  * Section
+    * Component
+      * Detail that wraps onto a second line when the content column is narrow enough to stress indentation, marker spacing, and line height.
 
 ## Blockquotes
 
@@ -227,6 +246,8 @@ const printProfile = {
 function shouldUseFlatBlack(color) {
   return color.role === "text" || color.role === "heading";
 }
+
+const longLine = "This deliberately long line checks whether code blocks scroll horizontally instead of breaking the page layout or clipping important content near the right edge of the viewport.";
 ```
 
 ## Extended markdown
@@ -263,14 +284,14 @@ flowchart LR
 
 Tables should be readable, but not visually heavy.
 
-| Element      | Screen style                  | Print style          |
-| ------------ | ----------------------------- | -------------------- |
-| `h1`         | Large, dark, strong           | Large, black         |
-| `h2`         | Accent color or dark          | Black with rule      |
-| `p`          | Comfortable line height       | Slightly tighter     |
-| `blockquote` | Left border + soft background | Left border only     |
-| `code`       | Light background              | Border or light gray |
-| `a`          | Blue text                     | Underlined           |
+| Element      | Screen style                                                        | Print style          |
+| ------------ | ------------------------------------------------------------------- | -------------------- |
+| `h1`         | Large, dark, strong                                                 | Large, black         |
+| `h2`         | Accent color or dark                                                | Black with rule      |
+| `p`          | Comfortable line height                                             | Slightly tighter     |
+| `blockquote` | Left border + soft background                                      | Left border only     |
+| `code`       | Light background with enough padding for long technical identifiers | Border or light gray |
+| `a`          | Blue text                                                           | Underlined           |
 
 Avoid zebra stripes unless the table is large. Borders and spacing are usually enough.
 
@@ -284,7 +305,7 @@ A horizontal rule should be subtle. It should separate sections without looking 
 
 Images should scale to the content width and avoid overflowing the page.
 
-![Example image placeholder](https://placehold.co/1200x600?text=Readable+image+area)
+![Readable image area placeholder](https://placehold.co/1200x600/ffffff/1f2937?text=Readable+image+area)
 
 Image captions should be smaller and muted.
 
@@ -305,7 +326,6 @@ When printing, remove anything that only helps the screen version:
 * Remove page shadows.
 * Remove decorative backgrounds.
 * Convert grayscale tones to flat neutral black or dark gray.
-* Keep explicit color themes light enough for color laser printers.
 * Underline links.
 * Avoid page breaks directly after headings.
 * Avoid splitting tables, code blocks, and callouts across pages when possible.
@@ -352,20 +372,6 @@ Recommended print CSS:
   }
 }
 ```
-
-## Full visual direction
-
-The final page should feel like this:
-
-* Calm, editorial, and structured.
-* Mostly neutral colors.
-* Blue or indigo used as the main accent.
-* Soft callout backgrounds on screen.
-* Strong black-and-white clarity on paper.
-* No tiny text.
-* No full-width paragraphs.
-* No dark code blocks for print.
-* No reliance on color alone.
 
 ## Closing example
 

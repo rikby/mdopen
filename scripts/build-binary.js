@@ -289,8 +289,8 @@ if (!inputStat.isFile()) {
 const outdir = path.join(os.tmpdir(), "mdopen");
 const title = path.basename(input, path.extname(input));
 const output = path.join(outdir, \`\${title}.html\`);
-const reviewDir = path.join(BUILD_PROJECT_DIR, "review");
-const defaultStyle = pathStartsWith(input, reviewDir) ? "demo" : "default";
+const examplesDir = path.join(BUILD_PROJECT_DIR, "examples");
+const defaultStyle = pathStartsWith(input, examplesDir) ? "demo" : "default";
 const templatePath = path.join(outdir, "templates", "mdopen.html");
 
 writeEmbeddedRuntime(outdir);

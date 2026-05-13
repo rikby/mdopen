@@ -47,6 +47,20 @@ bun --version
 
 See `ARCHITECTURE.md` for the runtime flow, source layout, and component responsibilities.
 
+## GitHub Pages Demo
+
+The Pages workflow renders `examples/demo.md` to `_site/index.html` and deploys it from GitHub Actions.
+
+Local preview build:
+
+```bash
+bun run build:pages
+```
+
+Then open `_site/index.html`.
+
+In GitHub, set Pages source to **GitHub Actions** under repository settings. The demo deploys on pushes to `main` and can also be run manually from the Pages workflow.
+
 ## Install Layout
 
 ```text
@@ -83,3 +97,5 @@ bun run build:binary
 ```
 
 GitHub Actions builds release artifacts for macOS x64/arm64, Linux x64/arm64, Linux musl x64/arm64, and Windows x64/arm64.
+
+See `docs/binaries.md` for binary packaging and release details.
