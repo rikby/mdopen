@@ -29,7 +29,7 @@ Desktop, open
                                     └───────┬────────┘
                                             │
                               ┌─────────────┴─────────────┐
-                              │ Style  [Default       ▾]  │
+                              │ Theme  [Default       ▾]  │
                               │ Font   [Source        ▾]  │
                               │ Tone   [Default       ▾]  │
                               │ Color  [Default       ▾]  │
@@ -62,7 +62,7 @@ Mobile, open
 ┌──────────────────────────────────────────┐
 │              [Dark] [☰]                 │
 ├──────────────────────────────────────────┤
-│ Style                                    │
+│ Theme                                    │
 │ [Default                              ▾] │
 │ Font                                     │
 │ [Source                               ▾] │

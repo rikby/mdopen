@@ -9,7 +9,7 @@ ToolbarMenu
 ├── ThemeToggle
 ├── MenuButton
 └── MenuPanel
-    ├── StyleSelect
+    ├── ThemeSelect
     ├── FontSelect
     ├── ToneSelect
     ├── ColorSelect
@@ -30,7 +30,7 @@ ToolbarMenu
 - `ThemeToggle` remains the first item and keeps the existing label behavior: `Dark` in light mode, `Light` in dark mode.
 - `MenuButton` is a square icon button using `☰` or an equivalent dependency-free hamburger glyph.
 - `MenuPanel` opens below the toolbar, aligned to the right edge on desktop and stretched inside the mobile side margins.
-- Panel order is fixed: Style, Font, Tone, Color, Gap.
+- Panel order is fixed: Theme, Font, Tone, Color, Gap.
 - Keep the toolbar fixed at the current top-right placement on desktop.
 - On mobile, keep the toolbar centered/full-width within the current `8px` side inset.
 - Use the existing 30px control height, 4px toolbar gap, 6px control radius, and 8px toolbar radius.
@@ -42,7 +42,7 @@ ToolbarMenu
 |-------|---------|---------------|----------|
 | closed | page load, outside click, Escape, mobile menu option change | only `ThemeToggle` and `MenuButton` visible | menu controls hidden from tab order |
 | open | `MenuButton` click | `MenuPanel` appears below toolbar | focus can move into all select controls |
-| desktop selection | selecting Style, Font, Tone, Color, or Gap at `>= 768px` | selected value updates | menu remains open |
+| desktop selection | selecting Theme, Font, Tone, Color, or Gap at `>= 768px` | selected value updates | menu remains open |
 | theme toggled | `ThemeToggle` click | button label flips `Dark`/`Light`; pressed style follows current code | menu state is unchanged |
 | print | browser print | toolbar and menu panel hidden | print stays light per current styling contract |
 
