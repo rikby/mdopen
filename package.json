@@ -7,7 +7,8 @@
     "mdopen": "./bin/mdopen.js"
   },
   "scripts": {
-    "check": "bun -e \"process.env.MDOPEN_NO_OPEN='1'; process.argv=['bun','bin/mdopen.js','README.md']; require('./bin/mdopen.js');\""
+    "check": "bun -e \"process.env.MDOPEN_NO_OPEN='1'; process.argv=['bun','bin/mdopen.js','README.md']; require('./bin/mdopen.js');\"",
+    "build:binary": "bun scripts/build-binary.js"
   },
   "keywords": [],
   "author": "",

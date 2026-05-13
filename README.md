@@ -60,3 +60,26 @@ templates/             HTML template source
 ```
 
 MinGW/Git Bash is supported through the shell launcher. Native Windows shells can use `bin\mdopen.cmd` or `bin\mdopen.ps1`.
+
+## Binary Builds
+
+Standalone binaries are published on the [latest release](https://github.com/rikby/mdopen/releases/latest).
+
+Available release files:
+
+- `mdopen-darwin-x64`
+- `mdopen-darwin-arm64`
+- `mdopen-linux-x64`
+- `mdopen-linux-arm64`
+- `mdopen-linux-x64-musl`
+- `mdopen-linux-arm64-musl`
+- `mdopen-windows-x64.exe`
+- `mdopen-windows-arm64.exe`
+
+Build a standalone binary for the current platform:
+
+```bash
+bun run build:binary
+```
+
+GitHub Actions builds release artifacts for macOS x64/arm64, Linux x64/arm64, Linux musl x64/arm64, and Windows x64/arm64.
