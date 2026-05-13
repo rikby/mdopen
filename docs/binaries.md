@@ -47,15 +47,17 @@ Set `MDOPEN_NO_OPEN=1` to render without opening a browser.
 
 `.github/workflows/build.yml` builds release artifacts for:
 
-- `mdopen-darwin-x64`
-- `mdopen-darwin-arm64`
-- `mdopen-linux-x64`
-- `mdopen-linux-arm64`
-- `mdopen-linux-x64-musl`
-- `mdopen-linux-arm64-musl`
-- `mdopen-windows-x64.exe`
-- `mdopen-windows-arm64.exe`
+| Artifact | Build runner | Smoke tested |
+| --- | --- | --- |
+| `mdopen-darwin-arm64` | macOS arm64 | yes |
+| `mdopen-darwin-x64` | macOS arm64 cross-compile | no |
+| `mdopen-linux-arm64` | Linux arm64 | yes |
+| `mdopen-linux-x64` | Linux x64 | yes |
+| `mdopen-linux-arm64-musl` | Linux arm64 cross-target | no |
+| `mdopen-linux-x64-musl` | Linux x64 cross-target | no |
+| `mdopen-windows-arm64.exe` | Linux cross-compile | no |
+| `mdopen-windows-x64.exe` | Linux cross-compile | no |
 
-Native smoke tests run where the GitHub runner can execute the binary. Cross-compiled binaries are uploaded but not smoke-tested on incompatible runners.
+Smoke tests are intentionally excluded for artifacts that cannot run on their build runner. This avoids waiting on scarce Intel macOS runners and avoids Windows target extraction issues seen on Windows-hosted runners.
 
 Pushes to `main` and pull requests upload build artifacts. Tags matching `v*` also publish those artifacts to the GitHub release.
