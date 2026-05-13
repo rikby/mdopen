@@ -1,21 +1,22 @@
 # Architecture
 
-`mdopen` is a small macOS command-line helper. It renders one Markdown file into styled HTML, writes the output to a temp directory, and opens it in the default browser.
+`mdopen` is a small cross-platform command-line helper. It renders one Markdown file into styled HTML, writes the output to a temp directory, and opens it in the default browser.
 
 There is no server, build system, app framework, or frontend bundler.
 
 ## Runtime Flow
 
-1. `mdopen FILE.md` validates the input file and checks that `bun` is available.
-2. The script resolves its own directory, including symlink execution.
-3. It creates `${TMPDIR:-/tmp}/mdopen`, copies CSS and font assets there, and chooses a default style source.
+1. `mdopen FILE.md` validates the input file through the Bun CLI in `bin/mdopen.js`.
+2. Thin launchers in `bin/mdopen`, `bin/mdopen.cmd`, and `bin/mdopen.ps1` delegate to the Bun CLI.
+3. The CLI creates the platform temp `mdopen` directory, copies CSS and font assets there, and chooses a default style source.
 4. It runs `renderer.js` with the input path, template path, output path, page title, CSS filename, and default style.
 5. `renderer.js` renders Markdown into the HTML template and writes the final file.
-6. `mdopen` opens the generated HTML with macOS `open`.
+6. The CLI opens the generated HTML with the platform opener: `open`, `xdg-open`, or Windows `cmd.exe /c start`.
 
 ## Main Pieces
 
-- `mdopen`: Bash entrypoint and asset-copy orchestration.
+- `bin/mdopen.js`: cross-platform Bun CLI and asset-copy orchestration.
+- `bin/mdopen`, `bin/mdopen.cmd`, `bin/mdopen.ps1`: platform launchers.
 - `renderer.js`: Bun-executed CommonJS renderer using `markdown-it` and `highlight.js`.
 - `templates/mdopen.html`: HTML shell, toolbar markup, persisted view controls, and print theme behavior.
 - `templates/mermaid-script.html`: browser-side Mermaid rendering, fullscreen, pan, zoom, and diagram error handling.
@@ -70,7 +71,8 @@ Tone `default` and accent `default` remove their override attributes so the sele
 
 ## Constraints
 
-- Keep runtime requirements to macOS, Bun, `markdown-it`, and `highlight.js`.
+- Keep runtime requirements to Bun, `markdown-it`, and `highlight.js`.
+- Support macOS, Linux, Windows native shells, and MinGW/Git Bash.
 - Do not add dependencies for simple UI or formatting work.
 - Keep source CSS in `assets/`.
 - Keep template markup and browser UI scripts in `templates/`.
@@ -87,5 +89,5 @@ bun run check
 Smoke test the installed flow:
 
 ```bash
-./mdopen README.md
+./bin/mdopen README.md
 ```

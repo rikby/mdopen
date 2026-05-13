@@ -2,7 +2,7 @@
 
 ## Purpose
 
-`mdopen` is a small macOS helper that renders one Markdown file to styled HTML with Bun, `markdown-it`, and `highlight.js`, writes the result to a temp directory, and opens it in the default browser.
+`mdopen` is a small cross-platform helper that renders one Markdown file to styled HTML with Bun, `markdown-it`, and `highlight.js`, writes the result to a temp directory, and opens it in the default browser.
 
 ## Architecture
 
@@ -13,7 +13,8 @@ This file keeps agent-specific working rules only.
 ## Working Rules
 
 - Keep changes small and script-local unless docs need updating.
-- Preserve macOS + Bun + `markdown-it` + `highlight.js` as the only runtime requirements.
+- Preserve Bun + `markdown-it` + `highlight.js` as the only runtime requirements.
+- Keep macOS, Linux, Windows, and MinGW/Git Bash launchers working.
 - Keep source CSS in `assets/mdopen.css`.
 - Keep optional style-source CSS in `assets/styles/`.
 - Keep template markup and UI JavaScript in `templates/mdopen.html`.
@@ -24,14 +25,15 @@ This file keeps agent-specific working rules only.
 - Test script syntax with:
 
 ```bash
-bash -n mdopen
+bash -n bin/mdopen
+bun run check
 bun renderer.js README.md templates/mdopen.html /tmp/mdopen-check.html README mdopen.css
 ```
 
 - Smoke test with:
 
 ```bash
-./mdopen README.md
+./bin/mdopen README.md
 ```
 
 ## UI Notes

@@ -8,7 +8,7 @@ Quickly render a Markdown file as styled HTML and open it in the browser.
 mdopen file.md
 ```
 
-The generated HTML is written to a temporary directory and opened with the default macOS browser.
+The generated HTML is written to a temporary directory and opened with the platform default browser.
 
 ## Features
 
@@ -33,9 +33,9 @@ Print grayscale tones use flat neutral RGB values so near-black text stays clean
 
 ## Requirements
 
-- macOS
+- macOS, Linux, Windows, or MinGW/Git Bash
 - `bun`
-- installed packages: `markdown-it`, `highlight.js`
+- installed packages from this package, including `markdown-it` and `highlight.js`
 
 Check:
 
@@ -46,3 +46,17 @@ bun --version
 ## Architecture
 
 See `ARCHITECTURE.md` for the runtime flow, source layout, and component responsibilities.
+
+## Install Layout
+
+```text
+bin/mdopen.js          cross-platform Bun CLI
+bin/mdopen             macOS/Linux/MinGW shell launcher
+bin/mdopen.cmd         Windows Command Prompt launcher
+bin/mdopen.ps1         PowerShell launcher
+renderer.js            Bun + markdown-it + highlight.js renderer
+assets/                CSS, theme sources, and font assets
+templates/             HTML template source
+```
+
+MinGW/Git Bash is supported through the shell launcher. Native Windows shells can use `bin\mdopen.cmd` or `bin\mdopen.ps1`.
