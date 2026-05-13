@@ -475,20 +475,57 @@ html[data-mdopen-theme="dark"] .mermaid-container .mermaid-error {
   background: var(--button-default-bgColor-active, rgba(128, 128, 128, 0.18));
 }
 
-.mdopen-toolbar .mdopen-theme-button {
-  width: 30px;
-  min-width: 30px;
+.mdopen-toolbar .mdopen-theme-button,
+.mdopen-toolbar .mdopen-print-button,
+.mdopen-toolbar .mdopen-menu-button {
+  width: 34px;
+  min-width: 34px;
   padding: 0;
-  border-radius: 50%;
-  font-size: 18px;
   line-height: 30px;
 }
 
-.mdopen-menu-button {
-  width: 34px;
-  padding: 0;
+.mdopen-toolbar .mdopen-theme-button {
+  border-radius: 50%;
   font-size: 18px;
-  line-height: 30px;
+}
+
+.mdopen-menu-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mdopen-print-button {
+  font-size: 17px;
+}
+
+.mdopen-menu-button span,
+.mdopen-menu-button span::before,
+.mdopen-menu-button span::after {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.mdopen-menu-button span {
+  position: relative;
+}
+
+.mdopen-menu-button span::before,
+.mdopen-menu-button span::after {
+  position: absolute;
+  left: 0;
+  content: "";
+}
+
+.mdopen-menu-button span::before {
+  top: -5px;
+}
+
+.mdopen-menu-button span::after {
+  top: 5px;
 }
 
 .mdopen-menu-panel {

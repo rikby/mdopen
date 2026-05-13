@@ -7,6 +7,7 @@ Compact toolbar behavior for hiding long view controls behind a hamburger menu w
 ```text
 ToolbarMenu
 ├── ThemeToggle
+├── PrintButton
 ├── MenuButton
 └── MenuPanel
     ├── PinToggle
@@ -27,9 +28,11 @@ ToolbarMenu
 
 ## Layout
 
-- Collapsed toolbar shows exactly two controls: `[theme icon] [Menu]`.
+- Collapsed toolbar shows exactly three controls: `[theme icon] [Print] [Menu]`.
 - `ThemeToggle` remains the first item, is round, and shows an icon for the active state.
-- `MenuButton` is a square icon button using `☰` or an equivalent dependency-free hamburger glyph.
+- `PrintButton` sits between `ThemeToggle` and `MenuButton`, uses a dependency-free printer icon, and calls browser printing.
+- `MenuButton` is a square icon button using `☰` or an equivalent dependency-free hamburger icon.
+- Top-level toolbar icon buttons share the same fixed width.
 - `MenuPanel` opens below the toolbar, aligned to the right edge on desktop and stretched inside the mobile side margins.
 - Panel order is fixed: Theme, Font, Tone, Color, Gap.
 - `PinToggle` is absolutely positioned in the top-right corner and must not reserve a row or add vertical gap.
@@ -51,18 +54,20 @@ ToolbarMenu
 | option selected | option button click | clicked option gets `aria-pressed="true"`; siblings in same group are false | menu remains open |
 | pinned | Pin toggle click | pin button becomes pressed | outside clicks no longer close the menu |
 | theme toggled | `ThemeToggle` click | button icon flips between light and dark state; accessible label describes the next action | menu state is unchanged |
+| print requested | `PrintButton` click | browser print dialog opens | calls `window.print()`; menu state is unchanged |
 | print | browser print | toolbar and menu panel hidden | print stays light per current styling contract |
 
 ## Responsive
 
 | Breakpoint | Toolbar | Menu panel |
 |------------|---------|------------|
-| `< 768px` | `[☀/☾] [☰]`, centered in current mobile toolbar area | full available width inside `8px` page inset |
-| `>= 768px` | `[☀/☾] [☰]`, fixed top-right | right-aligned popover, width fits button groups |
+| `< 768px` | `[☀/☾] [🖨] [☰]`, centered in current mobile toolbar area | full available width inside `8px` page inset |
+| `>= 768px` | `[☀/☾] [🖨] [☰]`, fixed top-right | right-aligned popover, width fits button groups |
 
 ## Accessibility
 
 - `MenuButton` has `aria-label="View options"`, `aria-expanded`, and `aria-controls`.
+- `PrintButton` has `aria-label="Print document"` and does not use `aria-pressed`.
 - `MenuPanel` has an id referenced by `aria-controls`.
 - Closed menu controls must not be keyboard-focusable.
 - Each option group has a visible label and an accessible group label.
@@ -86,6 +91,7 @@ ToolbarMenu
 |---------|-------|--------|
 | toolbar | `.mdopen-toolbar` | existing CSS |
 | divider | `.mdopen-divider` | remove or hide in collapsed toolbar |
+| print button | `.mdopen-print-button` proposed | stable structure for print CTA |
 | menu button | `.mdopen-menu-button` proposed | stable structure for hamburger button |
 | menu panel | `.mdopen-menu-panel` proposed | stable structure for hidden controls |
 | option group | `.mdopen-option-group` proposed | fieldset reset and group spacing |
@@ -95,6 +101,6 @@ ToolbarMenu
 
 ## Extension notes
 
-- Keep theme separate from the menu. The collapsed toolbar contract is `[theme icon] [menu]`.
+- Keep theme and print separate from the menu. The collapsed toolbar contract is `[theme icon] [print] [menu]`.
 - Do not add dependencies for the menu interaction.
 - Keep current `data-mdopen-*` persistence behavior unchanged.

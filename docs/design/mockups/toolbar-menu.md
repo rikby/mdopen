@@ -7,9 +7,9 @@ Related spec: `docs/design/specs/toolbar-menu.md`
 ```wireframe
 Desktop, closed
 
-                                    ┌────────────────┐
-                                    │ [☀] [☰]        │
-                                    └────────────────┘
+                                    ┌─────────────────────┐
+                                    │ [☀] [🖨] [☰]        │
+                                    └─────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ Markdown document                                                            │
@@ -24,9 +24,9 @@ Desktop, closed
 ```wireframe state:toolbar-menu open
 Desktop, open
 
-                                    ┌────────────────┐
-                                    │ [☀] [☰]        │
-                                    └───────┬────────┘
+                                    ┌─────────────────────┐
+                                    │ [☀] [🖨] [☰]        │
+                                    └────────────┬────────┘
                                             │
                               ┌─────────────┴─────────────┐
                               │ Theme                [📍] │
@@ -48,7 +48,7 @@ Desktop, open
 Mobile, closed
 
 ┌──────────────────────────────────────────┐
-│              [☀] [☰]                    │
+│             [☀] [🖨] [☰]                │
 └──────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────┐
@@ -65,7 +65,7 @@ Mobile, closed
 Mobile, open
 
 ┌──────────────────────────────────────────┐
-│              [☀] [☰]                    │
+│             [☀] [🖨] [☰]                │
 ├──────────────────────────────────────────┤
 │ Theme                              [📍]  │
 │ [Default*] [Demo] [RTD]                 │
@@ -86,8 +86,9 @@ Mobile, open
 
 | Element | Token / color | Class / pattern | Notes |
 |---------|---------------|-----------------|-------|
-| Toolbar | `--bgColor-default`, current translucent mix | `.mdopen-toolbar` | fixed, compact, two visible controls |
+| Toolbar | `--bgColor-default`, current translucent mix | `.mdopen-toolbar` | fixed, compact, three visible controls |
 | Theme toggle | `--fgColor-default` | existing `#mdopen-theme-toggle` | stays outside menu |
+| Print button | `--fgColor-default` | proposed `.mdopen-print-button` | calls `window.print()`; stays outside menu |
 | Menu button | `--fgColor-default` | proposed `.mdopen-menu-button` | `aria-expanded` reflects open state |
 | Menu panel | `--bgColor-default`, existing border mix | proposed `.mdopen-menu-panel` | hidden when closed, fixed-position popover |
 | Option groups | `--fgColor-muted` labels | proposed `.mdopen-option-group` | fieldset/legend structure |

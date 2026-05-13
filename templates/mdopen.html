@@ -14,7 +14,8 @@
 <body>
   <nav class="mdopen-toolbar" aria-label="View and print controls">
     <button type="button" id="mdopen-theme-toggle" class="mdopen-theme-button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme">☀</button>
-    <button type="button" id="mdopen-menu-toggle" class="mdopen-menu-button" aria-label="View options" aria-expanded="false" aria-controls="mdopen-menu-panel">☰</button>
+    <button type="button" id="mdopen-print-button" class="mdopen-print-button" aria-label="Print document" title="Print document">🖨</button>
+    <button type="button" id="mdopen-menu-toggle" class="mdopen-menu-button" aria-label="View options" aria-expanded="false" aria-controls="mdopen-menu-panel"><span aria-hidden="true"></span></button>
     <div id="mdopen-menu-panel" class="mdopen-menu-panel" hidden>
       <button type="button" id="mdopen-pin-toggle" class="mdopen-pin-button" aria-label="Pin menu open" aria-pressed="false" title="Pin menu open">📍</button>
       <fieldset class="mdopen-option-group">
@@ -87,6 +88,7 @@
       var link = document.getElementById('mdopen-theme');
       var toolbar = document.querySelector('.mdopen-toolbar');
       var themeToggle = document.getElementById('mdopen-theme-toggle');
+      var printButton = document.getElementById('mdopen-print-button');
       var menuToggle = document.getElementById('mdopen-menu-toggle');
       var menuPanel = document.getElementById('mdopen-menu-panel');
       var pinToggle = document.getElementById('mdopen-pin-toggle');
@@ -188,6 +190,10 @@
 
       themeToggle.addEventListener('click', function () {
         setTheme(document.documentElement.dataset.mdopenTheme === 'dark' ? 'light' : 'dark');
+      });
+
+      printButton.addEventListener('click', function () {
+        window.print();
       });
 
       menuToggle.addEventListener('click', function () {
