@@ -4,6 +4,9 @@ Turn any local Markdown file into a styled browser page with one command.
 
 [View the rendered Markdown demo](demo.html).
 
+Repository: [github.com/rikby/mdopen](https://github.com/rikby/mdopen)  
+Latest release: [github.com/rikby/mdopen/releases/latest](https://github.com/rikby/mdopen/releases/latest)
+
 > **Write Markdown. Run `mdopen`. Read, tune, and print it in your browser.**
 >
 > `mdopen` is for quick local previews when a plain Markdown file needs to look like a finished document.
