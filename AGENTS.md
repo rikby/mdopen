@@ -37,7 +37,7 @@ bun renderer.js README.md templates/mdopen.html /tmp/mdopen-check.html README md
 ## UI Notes
 
 - Screen theme, style source, grayscale tone, color accent, font theme, and density are separate controls.
-- Use a single light/dark toggle and a hamburger menu with button groups for style, tone, color, font, and density.
+- Use a single round light/dark icon toggle and a hamburger menu with button groups for style, tone, color, font, and density.
 - Tone `default` and color `default` must not set override data attributes; preserve style-source colors.
 - Dark mode is for reading only; print output should stay light.
 - Grayscale tone affects the whole document.

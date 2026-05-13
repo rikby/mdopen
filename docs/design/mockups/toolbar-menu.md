@@ -8,7 +8,7 @@ Related spec: `docs/design/specs/toolbar-menu.md`
 Desktop, closed
 
                                     ┌────────────────┐
-                                    │ [Dark] [☰]     │
+                                    │ [☀] [☰]        │
                                     └────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -25,11 +25,11 @@ Desktop, closed
 Desktop, open
 
                                     ┌────────────────┐
-                                    │ [Dark] [☰]     │
+                                    │ [☀] [☰]        │
                                     └───────┬────────┘
                                             │
                               ┌─────────────┴─────────────┐
-                              │ Theme                    │
+                              │ Theme                [📍] │
                               │ [Default*] [Demo] [RTD]  │
                               │ Font                     │
                               │ [Source*] [System] [...] │
@@ -39,7 +39,6 @@ Desktop, open
                               │ [Default*] [None] [...]  │
                               │ Gap                      │
                               │ [Normal*] [-1] [-2] [-3] │
-                              │ Auto-hide          [On*] │
                               └───────────────────────────┘
 ```
 
@@ -49,7 +48,7 @@ Desktop, open
 Mobile, closed
 
 ┌──────────────────────────────────────────┐
-│              [Dark] [☰]                 │
+│              [☀] [☰]                    │
 └──────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────┐
@@ -66,9 +65,9 @@ Mobile, closed
 Mobile, open
 
 ┌──────────────────────────────────────────┐
-│              [Dark] [☰]                 │
+│              [☀] [☰]                    │
 ├──────────────────────────────────────────┤
-│ Theme                                    │
+│ Theme                              [📍]  │
 │ [Default*] [Demo] [RTD]                 │
 │ Font                                     │
 │ [Source*] [System] [Balanced] [Print]   │
@@ -80,7 +79,6 @@ Mobile, open
 │ [Default*] [None] [Blue] [Sage] [Rose]  │
 │ Gap                                      │
 │ [Normal*] [-1] [-2] [-3]                │
-│ Auto-hide                         [On*] │
 └──────────────────────────────────────────┘
 ```
 
@@ -94,4 +92,4 @@ Mobile, open
 | Menu panel | `--bgColor-default`, existing border mix | proposed `.mdopen-menu-panel` | hidden when closed, fixed-position popover |
 | Option groups | `--fgColor-muted` labels | proposed `.mdopen-option-group` | fieldset/legend structure |
 | Option buttons | existing button colors | proposed `.mdopen-segmented`, `.mdopen-button-grid` | `*` marks `aria-pressed="true"` |
-| Auto-hide | existing button colors | proposed `.mdopen-menu-preferences` | controls outside-click close behavior |
+| Pin button | existing button colors | proposed `.mdopen-pin-button` | absolute top-right overlay; does not reserve a row |

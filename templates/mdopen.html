@@ -13,9 +13,10 @@
 </head>
 <body>
   <nav class="mdopen-toolbar" aria-label="View and print controls">
-    <button type="button" id="mdopen-theme-toggle" aria-pressed="false">Dark</button>
+    <button type="button" id="mdopen-theme-toggle" class="mdopen-theme-button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme">☀</button>
     <button type="button" id="mdopen-menu-toggle" class="mdopen-menu-button" aria-label="View options" aria-expanded="false" aria-controls="mdopen-menu-panel">☰</button>
     <div id="mdopen-menu-panel" class="mdopen-menu-panel" hidden>
+      <button type="button" id="mdopen-pin-toggle" class="mdopen-pin-button" aria-label="Pin menu open" aria-pressed="false" title="Pin menu open">📍</button>
       <fieldset class="mdopen-option-group">
         <legend>Theme</legend>
         <div class="mdopen-segmented" aria-label="Theme style">
@@ -66,15 +67,17 @@
           <button type="button" data-mdopen-control="density" data-mdopen-value="compact">-3</button>
         </div>
       </fieldset>
-      <div class="mdopen-menu-preferences">
-        <span>Auto-hide</span>
-        <button type="button" id="mdopen-autohide-toggle" aria-pressed="true">On</button>
-      </div>
     </div>
   </nav>
   <article class="markdown-body">
 {{body}}
   </article>
+  <a class="mdopen-github-link" href="https://github.com/rikby/mdopen" target="_blank" rel="noopener noreferrer" aria-label="Open mdopen on GitHub">
+    <span class="mdopen-github-label">MDopen</span>
+    <svg aria-hidden="true" viewBox="0 0 16 16" width="20" height="20">
+      <path fill="currentColor" d="M8 0C3.58 0 0 3.67 0 8.2c0 3.62 2.29 6.69 5.47 7.77.4.08.55-.18.55-.4 0-.2-.01-.86-.01-1.56-2.01.38-2.53-.5-2.69-.96-.09-.24-.48-.96-.82-1.15-.28-.15-.68-.52-.01-.53.63-.01 1.08.59 1.23.84.72 1.24 1.87.89 2.33.68.07-.53.28-.89.51-1.09-1.78-.21-3.64-.91-3.64-4.03 0-.89.31-1.62.82-2.19-.08-.21-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.4 7.4 0 0 1 8 3.99c.68 0 1.36.09 2 .27 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.95.08 2.16.51.57.82 1.3.82 2.19 0 3.13-1.87 3.82-3.65 4.03.29.26.54.75.54 1.52 0 1.09-.01 1.97-.01 2.24 0 .22.15.48.55.4A8.12 8.12 0 0 0 16 8.2C16 3.67 12.42 0 8 0Z"/>
+    </svg>
+  </a>
   <script>
     (function () {
       var styles = {
@@ -86,7 +89,7 @@
       var themeToggle = document.getElementById('mdopen-theme-toggle');
       var menuToggle = document.getElementById('mdopen-menu-toggle');
       var menuPanel = document.getElementById('mdopen-menu-panel');
-      var autohideToggle = document.getElementById('mdopen-autohide-toggle');
+      var pinToggle = document.getElementById('mdopen-pin-toggle');
 
       function setMenuOpen(open, restoreFocus) {
         menuPanel.hidden = !open;
@@ -117,10 +120,12 @@
         });
       }
 
-      function setAutohide(enabled) {
-        localStorage.setItem('mdopen-autohide-menu', enabled ? 'true' : 'false');
-        autohideToggle.setAttribute('aria-pressed', String(enabled));
-        autohideToggle.textContent = enabled ? 'On' : 'Off';
+      function setMenuPinned(pinned) {
+        localStorage.setItem('mdopen-autohide-menu', pinned ? 'false' : 'true');
+        pinToggle.setAttribute('aria-pressed', String(pinned));
+        pinToggle.textContent = pinned ? '📌' : '📍';
+        pinToggle.setAttribute('aria-label', pinned ? 'Unpin menu' : 'Pin menu open');
+        pinToggle.setAttribute('title', pinned ? 'Unpin menu' : 'Pin menu open');
       }
 
       function setTheme(theme) {
@@ -129,7 +134,9 @@
         link.href = styles[theme];
         localStorage.setItem('mdopen-theme', theme);
         themeToggle.setAttribute('aria-pressed', String(theme === 'dark'));
-        themeToggle.textContent = theme === 'dark' ? 'Light' : 'Dark';
+        themeToggle.textContent = theme === 'dark' ? '☾' : '☀';
+        themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+        themeToggle.setAttribute('title', theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
         document.dispatchEvent(new CustomEvent('mdopen-theme-change'));
         queueHeadingFontPreview();
       }
@@ -198,12 +205,12 @@
         if (button.dataset.mdopenControl === 'density') setDensity(value);
       });
 
-      autohideToggle.addEventListener('click', function () {
-        setAutohide(autohideToggle.getAttribute('aria-pressed') !== 'true');
+      pinToggle.addEventListener('click', function () {
+        setMenuPinned(pinToggle.getAttribute('aria-pressed') !== 'true');
       });
 
       document.addEventListener('click', function (event) {
-        if (!menuPanel.hidden && autohideToggle.getAttribute('aria-pressed') === 'true' && !toolbar.contains(event.target)) {
+        if (!menuPanel.hidden && pinToggle.getAttribute('aria-pressed') !== 'true' && !toolbar.contains(event.target)) {
           setMenuOpen(false);
         }
       });
@@ -222,7 +229,7 @@
       setAccent(params.get('accent') || (defaultStyle !== 'default' ? 'default' : localStorage.getItem('mdopen-accent')) || 'default');
       setFont(params.get('font') || localStorage.getItem('mdopen-font') || 'source');
       setDensity(params.get('density') || localStorage.getItem('mdopen-density') || 'normal');
-      setAutohide(localStorage.getItem('mdopen-autohide-menu') !== 'false');
+      setMenuPinned(localStorage.getItem('mdopen-autohide-menu') === 'false');
       link.addEventListener('load', queueHeadingFontPreview);
       if (document.fonts && document.fonts.ready) {
         document.fonts.ready.then(queueHeadingFontPreview);

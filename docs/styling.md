@@ -91,12 +91,20 @@ The risk pattern is any theme source setting element margins with `!important` a
 
 ## Toolbar Controls
 
-- Use a single light/dark toggle.
-- Keep the fixed toolbar collapsed to the light/dark toggle and menu button.
+- Use a single round light/dark icon toggle.
+- Keep the fixed toolbar collapsed to the light/dark icon toggle and menu button.
 - Keep theme, font, tone, color, and density controls inside `.mdopen-menu-panel`.
 - Use native buttons with `aria-pressed` for menu customizations so the current state is visible without opening dropdowns.
-- Keep outside-click closing controlled by the persisted Auto-hide toggle.
+- Keep outside-click closing controlled by the persisted pin toggle in the menu corner.
 - Keep toolbar classes structural only; selected values belong in `data-mdopen-*` attributes.
+
+## Repo Link
+
+- Keep the repo back link fixed in the bottom-right corner.
+- Use `.mdopen-github-link` and `.mdopen-github-label` as structural classes.
+- The collapsed state shows only the GitHub icon; hover and keyboard focus expand the chip to show `MDopen` plus the icon.
+- Do not use the native `title` tooltip for this link; the visible hover/focus chip is the label.
+- Hide fixed chrome, including the repo back link, in print.
 
 ## Variant Rules
 
