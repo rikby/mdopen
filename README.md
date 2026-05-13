@@ -41,14 +41,6 @@ Check:
 bun --version
 ```
 
-## Install Layout
+## Architecture
 
-```text
-~/home/mdopen/mdopen   source script
-~/home/mdopen/renderer.js Bun + markdown-it + highlight.js renderer
-~/home/mdopen/assets/  CSS source
-~/home/mdopen/templates/ HTML template source
-~/home/mdopen/package.json
-~/home/mdopen/README.md
-~/bin/mdopen           symlink to source script
-```
+See `ARCHITECTURE.md` for the runtime flow, source layout, and component responsibilities.

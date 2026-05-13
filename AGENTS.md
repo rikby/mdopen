@@ -6,20 +6,9 @@
 
 ## Architecture
 
-- `mdopen`: the whole app. Bash script that:
-  - validates input and Bun
-  - resolves the project directory, including symlink execution
-  - copies the CSS asset to the temp render directory
-  - runs `renderer.js` and opens the generated HTML
-- `renderer.js`: Bun-executed CommonJS renderer using `markdown-it` and direct `highlight.js` integration.
-- `assets/mdopen.css`: screen, density, grayscale tone, color accent, and print styling.
-- `assets/styles/demo.css`: optional screen style source adapted from `review/markdown_html_render_demo.html`.
-- `templates/mdopen.html`: HTML template, GitHub Markdown CSS link, toolbar, and UI JavaScript.
-- `docs/styling.md`: local styling contract for CSS structure, data attributes, themes, tones, accents, fonts, and print rules.
-- `docs/design/specs/` and `docs/design/mockups/`: UX contracts and wireframes for UI surfaces.
-- `README.md`: user-facing usage and install notes.
+`ARCHITECTURE.md` is the source of truth for runtime flow, component responsibilities, and constraints.
 
-There is no build system, server, or app framework.
+This file keeps agent-specific working rules only.
 
 ## Working Rules
 
@@ -29,6 +18,7 @@ There is no build system, server, or app framework.
 - Keep optional style-source CSS in `assets/styles/`.
 - Keep template markup and UI JavaScript in `templates/mdopen.html`.
 - Mermaid support should keep the `.mermaid-container` / `.mermaid` structure and load Mermaid only when needed.
+- Follow `ARCHITECTURE.md` for runtime/component boundaries.
 - Follow `docs/styling.md` for CSS and template styling conventions.
 - Do not add dependencies for simple UI or formatting changes.
 - Test script syntax with:

@@ -379,6 +379,17 @@ html[data-mdopen-tone] .markdown-body a {
   height: auto;
 }
 
+.mermaid-container .mermaid-error {
+  display: block;
+  min-width: 0;
+  color: #9a3412;
+  white-space: pre-wrap;
+}
+
+html[data-mdopen-theme="dark"] .mermaid-container .mermaid-error {
+  color: #b45309;
+}
+
 .mermaid-fullscreen-btn {
   position: absolute;
   top: 8px;
@@ -938,6 +949,10 @@ html[data-mdopen-density="compact"] .markdown-body hr {
 
   .mermaid-fullscreen-btn {
     display: none;
+  }
+
+  .mermaid-container .mermaid-error {
+    color: #333333;
   }
 
   html[data-mdopen-density="tight"] .markdown-body {
