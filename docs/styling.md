@@ -55,7 +55,7 @@ Use semantic tokens for shared controls. A theme source may use its own private 
 
 Recommended shared token groups:
 
-- `--mdopen-text-gap`: paragraph, list, blockquote, table, pre, and details spacing.
+- `--mdopen-text-gap`: paragraph, list, blockquote, table, pre, details, and footnote spacing.
 - `--mdopen-heading-major-top`, `--mdopen-heading-major-bottom`: `h1` and `h2` spacing.
 - `--mdopen-heading-minor-top`, `--mdopen-heading-minor-bottom`: `h3` through `h6` spacing.
 - `--mdopen-list-item-gap`: sibling list item spacing.
@@ -79,6 +79,7 @@ The durable approach is:
 - Keep theme-specific layout choices, such as document width, card border, and page padding, inside the theme source.
 - Do not add `html[data-mdopen-style="name"][data-mdopen-density="..."]` blocks unless a style has a real exceptional layout need.
 - Density must not create a top gap for the first rendered Markdown block. If a theme source starts H1 at `margin-top: 0`, `tight`, `dense`, and `compact` must preserve that.
+- Density must cover generated Markdown structures such as `.footnotes`, `.footnotes-list`, and `.footnote-item`, not only raw `p`, `ol`, and `li` elements.
 
 The risk pattern is any theme source setting element margins with `!important` after `mdopen.css`. Those rules can override density rules if density lives in `mdopen.css`. Keep final density rules in `mdopen-overrides.css` and make new theme sources consume density tokens.
 

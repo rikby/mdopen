@@ -149,6 +149,36 @@ html[data-mdopen-density="compact"] .markdown-body hr {
   background-color: var(--borderColor-default, #d0d7de) !important;
 }
 
+html[data-mdopen-density="tight"] .markdown-body .footnotes,
+html[data-mdopen-density="dense"] .markdown-body .footnotes,
+html[data-mdopen-density="compact"] .markdown-body .footnotes {
+  margin-top: var(--mdopen-rule-gap) !important;
+  margin-bottom: 0 !important;
+  padding-top: var(--mdopen-text-gap) !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body .footnotes-list,
+html[data-mdopen-density="dense"] .markdown-body .footnotes-list,
+html[data-mdopen-density="compact"] .markdown-body .footnotes-list {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body .footnote-item + .footnote-item {
+  margin-top: 0.12em !important;
+}
+
+html[data-mdopen-density="dense"] .markdown-body .footnote-item + .footnote-item,
+html[data-mdopen-density="compact"] .markdown-body .footnote-item + .footnote-item {
+  margin-top: 0 !important;
+}
+
+html[data-mdopen-density="tight"] .markdown-body .footnote-item > :last-child,
+html[data-mdopen-density="dense"] .markdown-body .footnote-item > :last-child,
+html[data-mdopen-density="compact"] .markdown-body .footnote-item > :last-child {
+  margin-bottom: 0 !important;
+}
+
 html[data-mdopen-density="tight"] .markdown-body > :first-child,
 html[data-mdopen-density="dense"] .markdown-body > :first-child,
 html[data-mdopen-density="compact"] .markdown-body > :first-child {
