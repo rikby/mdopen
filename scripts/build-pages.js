@@ -33,28 +33,34 @@ copyFile(path.join(assetsDir, "mdopen-overrides.css"), path.join(siteDir, "mdope
 copyFile(path.join(stylesDir, "demo.css"), path.join(siteDir, "demo.css"));
 copyFile(path.join(stylesDir, "readthedocs.css"), path.join(siteDir, "readthedocs.css"));
 copyDirectory(path.join(stylesDir, "fonts"), path.join(siteDir, "fonts"));
+copyFile(path.join(projectDir, "README.md"), path.join(siteDir, "README.md"));
 copyFile(path.join(projectDir, "examples", "demo.md"), path.join(siteDir, "demo.md"));
 fs.writeFileSync(path.join(siteDir, ".nojekyll"), "");
 
-const render = spawnSync(process.execPath, [
-  path.join(projectDir, "renderer.js"),
-  path.join(projectDir, "examples", "demo.md"),
-  path.join(projectDir, "templates", "mdopen.html"),
-  path.join(siteDir, "index.html"),
-  "Markdown HTML Render Demo",
-  "mdopen.css",
-  "demo",
-], {
-  stdio: "inherit",
-});
+renderPage("README.md", "index.html", "mdopen", "default");
+renderPage(path.join("examples", "demo.md"), "demo.html", "Markdown HTML Render Demo", "demo");
 
-if (render.error) {
-  console.error(`build-pages: renderer failed: ${render.error.message}`);
-  process.exit(1);
-}
+function renderPage(inputRelativePath, outputFile, title, defaultStyle) {
+  const render = spawnSync(process.execPath, [
+    path.join(projectDir, "renderer.js"),
+    path.join(projectDir, inputRelativePath),
+    path.join(projectDir, "templates", "mdopen.html"),
+    path.join(siteDir, outputFile),
+    title,
+    "mdopen.css",
+    defaultStyle,
+  ], {
+    stdio: "inherit",
+  });
 
-if (typeof render.status === "number" && render.status !== 0) {
-  process.exit(render.status);
+  if (render.error) {
+    console.error(`build-pages: renderer failed: ${render.error.message}`);
+    process.exit(1);
+  }
+
+  if (typeof render.status === "number" && render.status !== 0) {
+    process.exit(render.status);
+  }
 }
 
 console.log(path.join(siteDir, "index.html"));

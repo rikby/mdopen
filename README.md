@@ -1,6 +1,20 @@
 # mdopen
 
-Quickly render a Markdown file as styled HTML and open it in the browser.
+Turn any local Markdown file into a styled browser page with one command.
+
+[View the rendered Markdown demo](demo.html).
+
+> **Write Markdown. Run `mdopen`. Read, tune, and print it in your browser.**
+>
+> `mdopen` is for quick local previews when a plain Markdown file needs to look like a finished document.
+
+```mermaid
+flowchart LR
+    A[Write file.md] --> B[Run mdopen file.md]
+    B --> C[Styled HTML opens in browser]
+    C --> D[Choose theme, font, color, and spacing]
+    C --> E[Print or save as PDF]
+```
 
 ## Usage
 
@@ -8,7 +22,7 @@ Quickly render a Markdown file as styled HTML and open it in the browser.
 mdopen file.md
 ```
 
-The generated HTML is written to a temporary directory and opened with the platform default browser.
+The generated HTML is written to a temporary directory and opened with the platform default browser. No server, project setup, or manual export step is required.
 
 ## Features
 
@@ -47,9 +61,9 @@ bun --version
 
 See `ARCHITECTURE.md` for the runtime flow, source layout, and component responsibilities.
 
-## GitHub Pages Demo
+## GitHub Pages
 
-The Pages workflow renders `examples/demo.md` to `_site/index.html` and deploys it from GitHub Actions.
+The Pages workflow renders `README.md` to `_site/index.html`, renders `examples/demo.md` to `_site/demo.html`, and deploys both from GitHub Actions.
 
 Local preview build:
 
@@ -57,9 +71,9 @@ Local preview build:
 bun run build:pages
 ```
 
-Then open `_site/index.html`.
+Then open `_site/index.html` or `_site/demo.html`.
 
-In GitHub, set Pages source to **GitHub Actions** under repository settings. The demo deploys on pushes to `main` and can also be run manually from the Pages workflow.
+In GitHub, set Pages source to **GitHub Actions** under repository settings. Pages deploys on pushes to `main` and can also be run manually from the Pages workflow.
 
 ## Install Layout
 
