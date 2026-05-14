@@ -92,6 +92,6 @@ Mobile, open
 | Print button | `--fgColor-default` | proposed `.mdopen-print-button` | calls `window.print()`; stays outside menu |
 | Menu button | `--fgColor-default` | proposed `.mdopen-menu-button` | `aria-expanded` reflects open state |
 | Menu panel | `--bgColor-default`, existing border mix | proposed `.mdopen-menu-panel` | hidden when closed, fixed-position popover |
-| Option groups | `--fgColor-muted` labels | proposed `.mdopen-option-group` | fieldset/legend structure |
+| Option groups | `--fgColor-muted` labels | proposed `.mdopen-option-group` | includes Copy, Theme, Font, Tone, Color, and Gap fieldsets |
 | Option buttons | existing button colors | proposed `.mdopen-segmented`, `.mdopen-button-grid` | `*` marks `aria-pressed="true"` |
 | Pin button | existing button colors | proposed `.mdopen-pin-button` | absolute top-right overlay; does not reserve a row |

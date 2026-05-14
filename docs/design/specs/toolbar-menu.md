@@ -35,7 +35,7 @@ ToolbarMenu
 - `MenuButton` is a square icon button using `☰` or an equivalent dependency-free hamburger icon.
 - Top-level toolbar icon buttons share the same fixed width.
 - `MenuPanel` opens below the toolbar, aligned to the right edge on desktop and stretched inside the mobile side margins.
-- Panel order is fixed: Theme, Font, Tone, Color, Gap.
+- Panel order is fixed: Copy, Theme, Font, Tone, Color, Gap.
 - `PinToggle` is absolutely positioned in the top-right corner and must not reserve a row or add vertical gap.
 - Customization controls use native buttons with `aria-pressed`, not dropdowns.
 - Selected options must be visible without opening a native select popup.
@@ -49,12 +49,14 @@ ToolbarMenu
 
 | State | Trigger | Visual change | Behavior |
 |-------|---------|---------------|----------|
-| closed | page load, outside click when unpinned, Escape | only `ThemeToggle` and `MenuButton` visible | menu controls hidden from tab order |
+| closed | page load, outside click when unpinned, Escape | top-level toolbar buttons visible | menu controls hidden from tab order |
 | open | `MenuButton` click | `MenuPanel` appears below toolbar | focus can move into all option buttons |
 | desktop selection | selecting Theme, Font, Tone, Color, or Gap at `>= 768px` | selected value updates | menu remains open |
 | option selected | option button click | clicked option gets `aria-pressed="true"`; siblings in same group are false | menu remains open |
 | pinned | Pin toggle click | pin button becomes pressed | outside clicks no longer close the menu |
 | theme toggled | `ThemeToggle` click | button icon flips between light and dark state; accessible label describes the next action | menu state is unchanged |
+| rich copy requested | `CopyRichButton` click | button briefly shows success | copies rendered document HTML and plain text |
+| menu copy requested | Copy group button click | clicked button briefly shows success | copies Rich, Plain text, or Google Docs semantic HTML mode |
 | print requested | `PrintButton` click | browser print dialog opens | calls `window.print()`; menu state is unchanged |
 | print | browser print | toolbar and menu panel hidden | print stays light per current styling contract |
 
@@ -68,11 +70,12 @@ ToolbarMenu
 ## Accessibility
 
 - `MenuButton` has `aria-label="View options"`, `aria-expanded`, and `aria-controls`.
+- `CopyRichButton` has `aria-label="Copy rich document"` and does not use `aria-pressed`.
 - `PrintButton` has `aria-label="Print document"` and does not use `aria-pressed`.
 - `MenuPanel` has an id referenced by `aria-controls`.
 - Closed menu controls must not be keyboard-focusable.
 - Each option group has a visible label and an accessible group label.
-- Every option button uses `aria-pressed` to expose the active value.
+- Every customization option button uses `aria-pressed` to expose the active value.
 - Escape closes the menu and returns focus to `MenuButton`.
 - Clicking outside the toolbar/menu closes the menu only when the menu is unpinned.
 - Pin preference is persisted in `localStorage`.
@@ -92,7 +95,7 @@ ToolbarMenu
 |---------|-------|--------|
 | toolbar | `.mdopen-toolbar` | existing CSS |
 | divider | `.mdopen-divider` | remove or hide in collapsed toolbar |
-| rich-copy button | `.mdopen-copy-rich-button` | stable structure for rich document copy |
+| rich-copy button | `.mdopen-copy-rich-button` | stable structure for default rich document copy |
 | print button | `.mdopen-print-button` proposed | stable structure for print CTA |
 | menu button | `.mdopen-menu-button` proposed | stable structure for hamburger button |
 | menu panel | `.mdopen-menu-panel` proposed | stable structure for hidden controls |

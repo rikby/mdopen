@@ -20,6 +20,14 @@
     <div id="mdopen-menu-panel" class="mdopen-menu-panel" hidden>
       <button type="button" id="mdopen-pin-toggle" class="mdopen-pin-button" aria-label="Pin menu open" aria-pressed="false" title="Pin menu open">📍</button>
       <fieldset class="mdopen-option-group">
+        <legend>Copy</legend>
+        <div class="mdopen-segmented" aria-label="Copy document">
+          <button type="button" data-mdopen-copy="rich">Rich</button>
+          <button type="button" data-mdopen-copy="plain">Plain text</button>
+          <button type="button" data-mdopen-copy="docs">Google Docs</button>
+        </div>
+      </fieldset>
+      <fieldset class="mdopen-option-group">
         <legend>Theme</legend>
         <div class="mdopen-segmented" aria-label="Theme style">
           <button type="button" data-mdopen-control="style" data-mdopen-value="default">Default</button>
@@ -191,7 +199,7 @@
         queueHeadingFontPreview();
       }
 
-      function getDocumentCopyHtml() {
+      function getRichCopyHtml() {
         var clone = article.cloneNode(true);
         Array.prototype.forEach.call(clone.querySelectorAll('.mermaid-fullscreen-btn'), function (button) {
           button.remove();
@@ -199,7 +207,54 @@
         return '<!doctype html><html><body>' + clone.outerHTML + '</body></html>';
       }
 
-      function copyDocumentSelection() {
+      function getDocsCopyHtml() {
+        var clone = article.cloneNode(true);
+        Array.prototype.forEach.call(clone.querySelectorAll('.mermaid-fullscreen-btn, script, style'), function (element) {
+          element.remove();
+        });
+        Array.prototype.forEach.call(clone.querySelectorAll('*'), function (element) {
+          element.removeAttribute('class');
+          element.removeAttribute('style');
+          element.removeAttribute('data-mdopen-control');
+          element.removeAttribute('data-mdopen-value');
+          element.removeAttribute('data-mermaid-id');
+          element.removeAttribute('id');
+          element.removeAttribute('width');
+          element.removeAttribute('height');
+          element.removeAttribute('fill');
+          element.removeAttribute('stroke');
+          element.removeAttribute('color');
+          element.removeAttribute('bgcolor');
+        });
+        clone.removeAttribute('class');
+        return '<!doctype html><html><body>' + clone.innerHTML + '</body></html>';
+      }
+
+      function writePlainText(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          return navigator.clipboard.writeText(text).catch(function () {
+            writePlainTextSelectionFallback(text);
+          });
+        }
+
+        writePlainTextSelectionFallback(text);
+        return Promise.resolve();
+      }
+
+      function writePlainTextSelectionFallback(text) {
+        var textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        var copied = document.execCommand('copy');
+        textarea.remove();
+        if (!copied) throw new Error('Browser copy command failed.');
+      }
+
+      function copyDocumentSelection(node) {
         var selection = window.getSelection();
         var previousRanges = [];
         if (selection) {
@@ -209,7 +264,7 @@
         }
 
         var range = document.createRange();
-        range.selectNodeContents(article);
+        range.selectNodeContents(node);
         if (!selection) throw new Error('Browser selection is unavailable.');
         selection.removeAllRanges();
         selection.addRange(range);
@@ -222,21 +277,21 @@
         if (!copied) throw new Error('Browser copy command failed.');
       }
 
-      function setCopyRichStatus(copied) {
-        copyRichButton.textContent = copied ? '✓' : '⧉';
-        copyRichButton.setAttribute('aria-label', copied ? 'Rich document copied' : 'Copy rich document');
-        copyRichButton.setAttribute('title', copied ? 'Rich document copied' : 'Copy rich document');
-        if (copied) {
-          window.setTimeout(function () {
-            setCopyRichStatus(false);
-          }, 1400);
+      function copyHtmlSelectionFallback(html) {
+        var container = document.createElement('div');
+        container.innerHTML = html;
+        container.style.position = 'fixed';
+        container.style.left = '-9999px';
+        container.style.top = '0';
+        document.body.appendChild(container);
+        try {
+          copyDocumentSelection(container);
+        } finally {
+          container.remove();
         }
       }
 
-      function copyRichDocument() {
-        var html = getDocumentCopyHtml();
-        var text = article.innerText;
-
+      function writeHtml(html, text) {
         if (navigator.clipboard && window.ClipboardItem) {
           var item = new ClipboardItem({
             'text/html': new Blob([html], { type: 'text/html' }),
@@ -244,15 +299,45 @@
           });
 
           return navigator.clipboard.write([item]).catch(function () {
-            copyDocumentSelection();
-          }).then(function () {
-            setCopyRichStatus(true);
+            copyHtmlSelectionFallback(html);
           });
         }
 
-        copyDocumentSelection();
-        setCopyRichStatus(true);
+        copyHtmlSelectionFallback(html);
         return Promise.resolve();
+      }
+
+      function setCopyStatus(button, copied) {
+        var originalText = button.dataset.mdopenOriginalText || button.textContent;
+        var originalLabel = button.dataset.mdopenOriginalLabel || button.getAttribute('aria-label') || originalText;
+        var originalTitle = button.dataset.mdopenOriginalTitle || button.getAttribute('title') || originalLabel;
+        button.dataset.mdopenOriginalText = originalText;
+        button.dataset.mdopenOriginalLabel = originalLabel;
+        button.dataset.mdopenOriginalTitle = originalTitle;
+        button.textContent = copied ? '✓' : originalText;
+        button.setAttribute('aria-label', copied ? 'Document copied' : originalLabel);
+        button.setAttribute('title', copied ? 'Document copied' : originalTitle);
+        if (copied) {
+          window.setTimeout(function () {
+            setCopyStatus(button, false);
+          }, 1400);
+        }
+      }
+
+      function copyDocument(mode, button) {
+        var text = article.innerText;
+
+        if (mode === 'plain') {
+          return writePlainText(text).then(function () {
+            setCopyStatus(button, true);
+          });
+        }
+
+        var html = mode === 'docs' ? getDocsCopyHtml() : getRichCopyHtml();
+
+        return writeHtml(html, text).then(function () {
+          setCopyStatus(button, true);
+        });
       }
 
       themeToggle.addEventListener('click', function () {
@@ -260,7 +345,7 @@
       });
 
       copyRichButton.addEventListener('click', function () {
-        copyRichDocument().catch(function () {
+        copyDocument('rich', copyRichButton).catch(function () {
           copyRichButton.setAttribute('title', 'Copy failed');
         });
       });
@@ -274,6 +359,14 @@
       });
 
       menuPanel.addEventListener('click', function (event) {
+        var copyButton = event.target.closest('button[data-mdopen-copy]');
+        if (copyButton) {
+          copyDocument(copyButton.dataset.mdopenCopy, copyButton).catch(function () {
+            copyButton.setAttribute('title', 'Copy failed');
+          });
+          return;
+        }
+
         var button = event.target.closest('button[data-mdopen-control]');
         if (!button) return;
         var value = button.dataset.mdopenValue;

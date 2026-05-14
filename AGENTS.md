@@ -15,6 +15,7 @@ This file keeps agent-specific working rules only.
 - Keep changes small and script-local unless docs need updating.
 - Preserve Bun + `markdown-it` + `highlight.js` as the only runtime requirements.
 - Keep macOS, Linux, Windows, and MinGW/Git Bash launchers working.
+- Keep renderer, template, CSS, and asset changes compatible with `bun run build:binary`.
 - Keep source CSS in `assets/mdopen.css`.
 - Keep optional style-source CSS in `assets/styles/`.
 - Keep template markup and UI JavaScript in `templates/mdopen.html`.
