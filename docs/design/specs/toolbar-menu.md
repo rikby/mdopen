@@ -28,9 +28,10 @@ ToolbarMenu
 
 ## Layout
 
-- Collapsed toolbar shows exactly three controls: `[theme icon] [Print] [Menu]`.
+- Collapsed toolbar shows four controls: `[theme icon] [Copy rich] [Print] [Menu]`.
 - `ThemeToggle` remains the first item, is round, and shows an icon for the active state.
-- `PrintButton` sits between `ThemeToggle` and `MenuButton`, uses a dependency-free printer icon, and calls browser printing.
+- `CopyRichButton` and `PrintButton` sit between `ThemeToggle` and `MenuButton`.
+- `PrintButton` uses a dependency-free printer icon and calls browser printing.
 - `MenuButton` is a square icon button using `☰` or an equivalent dependency-free hamburger icon.
 - Top-level toolbar icon buttons share the same fixed width.
 - `MenuPanel` opens below the toolbar, aligned to the right edge on desktop and stretched inside the mobile side margins.
@@ -61,8 +62,8 @@ ToolbarMenu
 
 | Breakpoint | Toolbar | Menu panel |
 |------------|---------|------------|
-| `< 768px` | `[☀/☾] [🖨] [☰]`, centered in current mobile toolbar area | full available width inside `8px` page inset |
-| `>= 768px` | `[☀/☾] [🖨] [☰]`, fixed top-right | right-aligned popover, width fits button groups |
+| `< 768px` | `[☀/☾] [⧉] [🖨] [☰]`, centered in current mobile toolbar area | full available width inside `8px` page inset |
+| `>= 768px` | `[☀/☾] [⧉] [🖨] [☰]`, fixed top-right | right-aligned popover, width fits button groups |
 
 ## Accessibility
 
@@ -91,6 +92,7 @@ ToolbarMenu
 |---------|-------|--------|
 | toolbar | `.mdopen-toolbar` | existing CSS |
 | divider | `.mdopen-divider` | remove or hide in collapsed toolbar |
+| rich-copy button | `.mdopen-copy-rich-button` | stable structure for rich document copy |
 | print button | `.mdopen-print-button` proposed | stable structure for print CTA |
 | menu button | `.mdopen-menu-button` proposed | stable structure for hamburger button |
 | menu panel | `.mdopen-menu-panel` proposed | stable structure for hidden controls |
@@ -101,6 +103,6 @@ ToolbarMenu
 
 ## Extension notes
 
-- Keep theme and print separate from the menu. The collapsed toolbar contract is `[theme icon] [print] [menu]`.
+- Keep theme, rich copy, and print separate from the menu. The collapsed toolbar contract is `[theme icon] [copy rich] [print] [menu]`.
 - Do not add dependencies for the menu interaction.
 - Keep current `data-mdopen-*` persistence behavior unchanged.

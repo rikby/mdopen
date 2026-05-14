@@ -86,8 +86,9 @@ Mobile, open
 
 | Element | Token / color | Class / pattern | Notes |
 |---------|---------------|-----------------|-------|
-| Toolbar | `--bgColor-default`, current translucent mix | `.mdopen-toolbar` | fixed, compact, three visible controls |
+| Toolbar | `--bgColor-default`, current translucent mix | `.mdopen-toolbar` | fixed, compact, four visible controls |
 | Theme toggle | `--fgColor-default` | existing `#mdopen-theme-toggle` | stays outside menu |
+| Rich-copy button | `--fgColor-default` | `.mdopen-copy-rich-button` | copies rendered document HTML and text; stays outside menu |
 | Print button | `--fgColor-default` | proposed `.mdopen-print-button` | calls `window.print()`; stays outside menu |
 | Menu button | `--fgColor-default` | proposed `.mdopen-menu-button` | `aria-expanded` reflects open state |
 | Menu panel | `--bgColor-default`, existing border mix | proposed `.mdopen-menu-panel` | hidden when closed, fixed-position popover |

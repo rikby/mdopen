@@ -476,6 +476,7 @@ html[data-mdopen-theme="dark"] .mermaid-container .mermaid-error {
 }
 
 .mdopen-toolbar .mdopen-theme-button,
+.mdopen-toolbar .mdopen-copy-rich-button,
 .mdopen-toolbar .mdopen-print-button,
 .mdopen-toolbar .mdopen-menu-button {
   width: 34px;
@@ -497,6 +498,10 @@ html[data-mdopen-theme="dark"] .mermaid-container .mermaid-error {
 
 .mdopen-print-button {
   font-size: 17px;
+}
+
+.mdopen-copy-rich-button {
+  font-size: 18px;
 }
 
 .mdopen-menu-button span,

@@ -14,6 +14,7 @@
 <body>
   <nav class="mdopen-toolbar" aria-label="View and print controls">
     <button type="button" id="mdopen-theme-toggle" class="mdopen-theme-button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme">☀</button>
+    <button type="button" id="mdopen-copy-rich-button" class="mdopen-copy-rich-button" aria-label="Copy rich document" title="Copy rich document">⧉</button>
     <button type="button" id="mdopen-print-button" class="mdopen-print-button" aria-label="Print document" title="Print document">🖨</button>
     <button type="button" id="mdopen-menu-toggle" class="mdopen-menu-button" aria-label="View options" aria-expanded="false" aria-controls="mdopen-menu-panel"><span aria-hidden="true"></span></button>
     <div id="mdopen-menu-panel" class="mdopen-menu-panel" hidden>
@@ -87,7 +88,9 @@
       };
       var link = document.getElementById('mdopen-theme');
       var toolbar = document.querySelector('.mdopen-toolbar');
+      var article = document.querySelector('.markdown-body');
       var themeToggle = document.getElementById('mdopen-theme-toggle');
+      var copyRichButton = document.getElementById('mdopen-copy-rich-button');
       var printButton = document.getElementById('mdopen-print-button');
       var menuToggle = document.getElementById('mdopen-menu-toggle');
       var menuPanel = document.getElementById('mdopen-menu-panel');
@@ -188,8 +191,78 @@
         queueHeadingFontPreview();
       }
 
+      function getDocumentCopyHtml() {
+        var clone = article.cloneNode(true);
+        Array.prototype.forEach.call(clone.querySelectorAll('.mermaid-fullscreen-btn'), function (button) {
+          button.remove();
+        });
+        return '<!doctype html><html><body>' + clone.outerHTML + '</body></html>';
+      }
+
+      function copyDocumentSelection() {
+        var selection = window.getSelection();
+        var previousRanges = [];
+        if (selection) {
+          for (var index = 0; index < selection.rangeCount; index += 1) {
+            previousRanges.push(selection.getRangeAt(index));
+          }
+        }
+
+        var range = document.createRange();
+        range.selectNodeContents(article);
+        if (!selection) throw new Error('Browser selection is unavailable.');
+        selection.removeAllRanges();
+        selection.addRange(range);
+        var copied = document.execCommand('copy');
+        selection.removeAllRanges();
+        previousRanges.forEach(function (previousRange) {
+          selection.addRange(previousRange);
+        });
+
+        if (!copied) throw new Error('Browser copy command failed.');
+      }
+
+      function setCopyRichStatus(copied) {
+        copyRichButton.textContent = copied ? '✓' : '⧉';
+        copyRichButton.setAttribute('aria-label', copied ? 'Rich document copied' : 'Copy rich document');
+        copyRichButton.setAttribute('title', copied ? 'Rich document copied' : 'Copy rich document');
+        if (copied) {
+          window.setTimeout(function () {
+            setCopyRichStatus(false);
+          }, 1400);
+        }
+      }
+
+      function copyRichDocument() {
+        var html = getDocumentCopyHtml();
+        var text = article.innerText;
+
+        if (navigator.clipboard && window.ClipboardItem) {
+          var item = new ClipboardItem({
+            'text/html': new Blob([html], { type: 'text/html' }),
+            'text/plain': new Blob([text], { type: 'text/plain' })
+          });
+
+          return navigator.clipboard.write([item]).catch(function () {
+            copyDocumentSelection();
+          }).then(function () {
+            setCopyRichStatus(true);
+          });
+        }
+
+        copyDocumentSelection();
+        setCopyRichStatus(true);
+        return Promise.resolve();
+      }
+
       themeToggle.addEventListener('click', function () {
         setTheme(document.documentElement.dataset.mdopenTheme === 'dark' ? 'light' : 'dark');
+      });
+
+      copyRichButton.addEventListener('click', function () {
+        copyRichDocument().catch(function () {
+          copyRichButton.setAttribute('title', 'Copy failed');
+        });
       });
 
       printButton.addEventListener('click', function () {
