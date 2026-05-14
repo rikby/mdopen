@@ -54,12 +54,12 @@
   font-size: 17px;
 }
 
-/* When editor is open, shift article to 60% */
+/* When editor is open, shift article to right 60% */
 html[data-mdopen-editor="open"] .markdown-body {
-  max-width: none;
   margin-left: 40%;
   width: 60%;
-  padding: 48px 32px;
+  box-sizing: border-box;
+  overflow-x: auto;
 }
 
 /* Hide pencil button on pages without editor */
@@ -100,10 +100,9 @@ html[data-mdopen-editor="open"] .markdown-body {
   }
 
   html[data-mdopen-editor="open"] .markdown-body {
-    margin-left: 0;
+    margin: 0 auto;
     width: auto;
     max-width: 980px;
-    margin-right: auto;
     padding: 0;
   }
 
