@@ -24,6 +24,7 @@ const inputDir = path.dirname(input);
 
 const md = new MarkdownIt({
   html: true,
+  breaks: true,
   linkify: true,
   typographer: true,
   highlight(code, language) {
