@@ -1,0 +1,117 @@
+/* Editor panel — GitHub Pages only. Not included in binary builds. */
+
+.mdopen-editor-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--borderColor-default, #d0d7de);
+}
+
+.mdopen-editor-back {
+  font-size: 13px;
+  color: var(--fgColor-muted, #57606a);
+  text-decoration: none;
+}
+
+.mdopen-editor-back:hover {
+  color: var(--fgColor-default, #1f2328);
+}
+
+.mdopen-editor-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 40%;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--borderColor-default, #d0d7de);
+  background: var(--bgColor-default, #ffffff);
+}
+
+.mdopen-editor-panel textarea {
+  flex: 1;
+  width: 100%;
+  padding: 16px;
+  border: 0;
+  outline: 0;
+  resize: none;
+  background: transparent;
+  color: var(--fgColor-default, #1f2328);
+  font-family: var(--mdopen-font-code, ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace);
+  font-size: 14px;
+  line-height: 1.5;
+  tab-size: 2;
+}
+
+.mdopen-editor-panel textarea::placeholder {
+  color: var(--fgColor-muted, #57606a);
+}
+
+/* Pencil button in toolbar */
+.mdopen-editor-button {
+  font-size: 17px;
+}
+
+/* When editor is open, shift article to 60% */
+html[data-mdopen-editor="open"] .markdown-body {
+  max-width: none;
+  margin-left: 40%;
+  width: 60%;
+  padding: 48px 32px;
+}
+
+/* Hide pencil button on pages without editor */
+.mdopen-editor-button[data-mdopen-editor-hidden] {
+  display: none;
+}
+
+/* Mobile: vertical stack */
+@media (max-width: 767px) {
+  .mdopen-editor-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 50%;
+    width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid var(--borderColor-default, #d0d7de);
+  }
+
+  html[data-mdopen-editor="open"] .markdown-body {
+    margin-left: 0;
+    margin-top: 50vh;
+    width: 100%;
+    padding: 32px 16px;
+  }
+
+  html[data-mdopen-editor="open"] .mdopen-toolbar {
+    top: auto;
+    bottom: calc(50% + 4px);
+  }
+}
+
+/* Print: hide editor panel, restore full-width article */
+@media print {
+  .mdopen-editor-panel {
+    display: none;
+  }
+
+  html[data-mdopen-editor="open"] .markdown-body {
+    margin-left: 0;
+    width: auto;
+    max-width: 980px;
+    margin-right: auto;
+    padding: 0;
+  }
+
+  html[data-mdopen-editor="open"] .mdopen-toolbar {
+    display: none;
+  }
+
+  .mdopen-editor-button {
+    display: none;
+  }
+}

@@ -35,10 +35,12 @@ copyFile(path.join(stylesDir, "readthedocs.css"), path.join(siteDir, "readthedoc
 copyDirectory(path.join(stylesDir, "fonts"), path.join(siteDir, "fonts"));
 copyFile(path.join(projectDir, "README.md"), path.join(siteDir, "README.md"));
 copyFile(path.join(projectDir, "examples", "demo.md"), path.join(siteDir, "demo.md"));
+copyFile(path.join(assetsDir, "editor.css"), path.join(siteDir, "editor.css"));
 fs.writeFileSync(path.join(siteDir, ".nojekyll"), "");
 
 renderPage("README.md", "index.html", "mdopen", "default");
 renderPage(path.join("examples", "demo.md"), "demo.html", "Markdown HTML Render Demo", "demo");
+generateEditPage();
 
 function renderPage(inputRelativePath, outputFile, title, defaultStyle) {
   const render = spawnSync(process.execPath, [
@@ -61,6 +63,24 @@ function renderPage(inputRelativePath, outputFile, title, defaultStyle) {
   if (typeof render.status === "number" && render.status !== 0) {
     process.exit(render.status);
   }
+}
+
+function generateEditPage() {
+  const template = fs.readFileSync(path.join(projectDir, "templates", "mdopen.html"), "utf8");
+  const editorScript = fs.readFileSync(path.join(projectDir, "templates", "editor-script.html"), "utf8");
+  const mdopenScript = fs.readFileSync(path.join(projectDir, "templates", "mdopen-script.html"), "utf8");
+
+  const html = template
+    .replaceAll("{{pageTitle}}", "Mermaid Editor - MDopen")
+    .replaceAll("{{cssHref}}", "mdopen.css")
+    .replaceAll("{{mdopenScript}}", mdopenScript)
+    .replaceAll("{{editorScript}}", editorScript)
+    .replaceAll("{{defaultStyle}}", "default")
+    .replaceAll("{{mermaidScript}}", "")
+    .replaceAll("{{body}}", "")
+    .replace(' data-mdopen-editor-hidden', '');
+
+  fs.writeFileSync(path.join(siteDir, "edit.html"), html);
 }
 
 console.log(path.join(siteDir, "index.html"));

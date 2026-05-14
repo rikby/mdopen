@@ -3,6 +3,7 @@
 Turn any local Markdown file into a styled browser page with one command.
 
 [View the rendered Markdown demo](demo.html).
+[Try the live Mermaid editor](https://rikby.github.io/mdopen/edit.html).
 
 Repository: [github.com/rikby/mdopen](https://github.com/rikby/mdopen)  
 Latest release: [github.com/rikby/mdopen/releases/latest](https://github.com/rikby/mdopen/releases/latest)

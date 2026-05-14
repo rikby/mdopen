@@ -70,6 +70,36 @@ Use `data-mdopen-*` attributes for selected view options:
 
 Tone `default` and accent `default` remove their override attributes so the selected style source can keep its native colors. Dark mode is for screen reading only; print output stays light.
 
+## GitHub Pages Editor
+
+The editor is a client-side Markdown editor added to mdopen's GitHub Pages site. It is a slide-in panel toggled by a pencil button in the toolbar. The editor uses CDN-loaded markdown-it and highlight.js to render live previews after 1 second of inactivity.
+
+### Scope
+
+The editor is GitHub Pages only. It is NOT included in the binary build. The binary embeds templates and scripts at compile time — editor CDN scripts and the pencil button have no place there.
+
+### Components
+
+- `assets/editor.css`: editor panel layout, textarea styling, responsive rules, scoped under `.mdopen-editor-panel`.
+- `templates/editor-script.html`: browser-side script for CDN loading, markdown-it initialization, textarea binding, debounce rendering, and mermaid lazy-loading.
+- The pencil button (`.mdopen-editor-button`) is added to the toolbar in `templates/mdopen.html` with `data-mdopen-editor-hidden` to hide it on non-editor pages.
+- `scripts/build-pages.js` generates `edit.html` with the pencil button visible and the editor script injected via `{{editorScript}}`.
+
+### Rendering Pipeline
+
+The browser-side rendering uses the same markdown-it configuration as the CLI `renderer.js`:
+
+1. Same plugins: deflist, footnote, mark, sub, sup, task-lists.
+2. Same highlight.js integration for code blocks.
+3. Same callout regex (`enhanceHtml()`) for GitHub-style callout blockquotes.
+4. Same mermaid container structure for mermaid diagrams.
+
+Differences from CLI renderer:
+
+- Image path resolution is skipped (URL images only).
+- Rendering is triggered by 1s debounce on textarea input instead of CLI invocation.
+- CDN scripts are loaded only when the editor opens.
+
 ## Constraints
 
 - Keep runtime requirements to Bun, `markdown-it`, and `highlight.js`.

@@ -1,0 +1,337 @@
+  <script>
+    (function () {
+      var pencilButton = document.getElementById('mdopen-editor-toggle');
+      var article = document.querySelector('.markdown-body');
+      if (!pencilButton || !article) return;
+
+      var panel = null;
+      var textarea = null;
+      var debounceTimer = null;
+      var md = null;
+      var scriptsLoaded = false;
+      var mermaidLoaded = false;
+      var mermaidModule = null;
+      var mermaidRenderCounter = 0;
+      var isOpen = false;
+
+      var sampleContent = [
+        '# mdopen Editor',
+        '',
+        'Welcome to the live Markdown editor.',
+        '',
+        '## Features',
+        '',
+        '- **Bold** and *italic* text',
+        '- `Inline code` and code blocks',
+        '- Lists, blockquotes, and more',
+        '',
+        '> This is a blockquote.',
+        '',
+        '## Code Example',
+        '',
+        '```javascript',
+        'function hello() {',
+        '  console.log("Hello, world!");',
+        '}',
+        '```',
+        '',
+        '---',
+        '',
+        '## Diagram',
+        '',
+        '```mermaid',
+        'graph LR',
+        '    MD[Markdown file] -->|mdopen| HTML[Styled HTML]',
+        '    HTML --> Browser[Browser]',
+        '    Browser -->|read| You[Reader 😊]',
+        '```',
+        '',
+        'Edit on the left, preview updates on the right after a brief pause.',
+        '',
+        'Visit [mdopen on GitHub](https://github.com/rikby/mdopen) for more info.',
+      ].join('\n');
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function enhanceHtml(value) {
+        return value.replace(
+          /<blockquote>\s*<p>\[!(NOTE|TIP|WARNING|IMPORTANT)\]\s*(?:<br>\s*)?([\s\S]*?)<\/blockquote>/gi,
+          function (match, type, body) {
+            return '<section class="callout ' + type.toLowerCase() + '"><p class="callout-title">' + type + '</p><p>' + body + '</section>';
+          }
+        );
+      }
+
+      function loadScripts(callback) {
+        if (scriptsLoaded) {
+          callback();
+          return;
+        }
+
+        var remaining = 2;
+        function done() {
+          remaining -= 1;
+          if (remaining === 0) {
+            scriptsLoaded = true;
+            callback();
+          }
+        }
+
+        var hljsScript = document.createElement('script');
+        hljsScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js';
+        hljsScript.onload = done;
+        hljsScript.onerror = done;
+        document.head.appendChild(hljsScript);
+
+        var mditScript = document.createElement('script');
+        mditScript.src = 'https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js';
+        mditScript.onload = done;
+        mditScript.onerror = done;
+        document.head.appendChild(mditScript);
+      }
+
+      function loadPlugins(callback) {
+        var plugins = [
+          'https://cdn.jsdelivr.net/npm/markdown-it-deflist@3.0.0/dist/markdown-it-deflist.min.js',
+          'https://cdn.jsdelivr.net/npm/markdown-it-footnote@4.0.0/dist/markdown-it-footnote.min.js',
+          'https://cdn.jsdelivr.net/npm/markdown-it-mark@4.0.0/dist/markdown-it-mark.min.js',
+          'https://cdn.jsdelivr.net/npm/markdown-it-sub@2.0.0/dist/markdown-it-sub.min.js',
+          'https://cdn.jsdelivr.net/npm/markdown-it-sup@2.0.0/dist/markdown-it-sup.min.js',
+          'https://cdn.jsdelivr.net/npm/markdown-it-task-lists@2.1.1/dist/markdown-it-task-lists.min.js',
+        ];
+
+        var loaded = 0;
+        function check() {
+          loaded += 1;
+          if (loaded === plugins.length) callback();
+        }
+
+        plugins.forEach(function (url) {
+          var s = document.createElement('script');
+          s.src = url;
+          s.onload = check;
+          s.onerror = check;
+          document.head.appendChild(s);
+        });
+      }
+
+      function initMarkdownIt() {
+        if (md) return;
+
+        var hljs = window.hljs;
+
+        md = window.markdownit({
+          html: true,
+          linkify: true,
+          typographer: true,
+          highlight: function (code, language) {
+            var normalizedLanguage = language && language.trim();
+            if (normalizedLanguage && hljs && hljs.getLanguage(normalizedLanguage)) {
+              try {
+                var highlighted = hljs.highlight(code, {
+                  language: normalizedLanguage,
+                  ignoreIllegals: true,
+                }).value;
+                return '<pre><code class="hljs language-' + escapeHtml(normalizedLanguage) + '">' + highlighted + '</code></pre>';
+              } catch (e) {
+                /* fall through */
+              }
+            }
+            return '<pre><code class="hljs">' + escapeHtml(code) + '</code></pre>';
+          },
+        });
+
+        var mermaidCounter = 0;
+        var defaultFence = md.renderer.rules.fence ||
+          function (tokens, idx, options, env, self) { return self.renderToken(tokens, idx, options); };
+
+        md.renderer.rules.fence = function (tokens, idx, options, env, self) {
+          var token = tokens[idx];
+          var language = token.info.trim().split(/\s+/)[0];
+          if (language === 'mermaid') {
+            var id = 'mermaid-diagram-' + (++mermaidCounter);
+            return [
+              '<div class="mermaid-container" data-mermaid-id="' + id + '">',
+              '<button type="button" class="mermaid-fullscreen-btn" aria-label="Open diagram fullscreen">Full</button>',
+              '<div class="mermaid" id="' + id + '">' + escapeHtml(token.content) + '</div>',
+              '</div>',
+            ].join('');
+          }
+          return defaultFence(tokens, idx, options, env, self);
+        };
+
+        if (window.markdownitDeflist) md.use(window.markdownitDeflist);
+        if (window.markdownitFootnote) md.use(window.markdownitFootnote);
+        if (window.markdownitMark) md.use(window.markdownitMark);
+        if (window.markdownitSub) md.use(window.markdownitSub);
+        if (window.markdownitSup) md.use(window.markdownitSup);
+        if (window.markdownitTaskLists) md.use(window.markdownitTaskLists, { enabled: true, label: true });
+      }
+
+      function hasMermaidFence(text) {
+        return /^```mermaid\b/m.test(text);
+      }
+
+      function loadMermaid(callback) {
+        if (mermaidLoaded) {
+          callback();
+          return;
+        }
+
+        var s = document.createElement('script');
+        s.type = 'module';
+        s.textContent = [
+          'import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";',
+          'window._mdopenMermaid = mermaid;',
+          'document.dispatchEvent(new Event("mdopen-mermaid-loaded"));',
+        ].join('\n');
+        document.head.appendChild(s);
+
+        document.addEventListener('mdopen-mermaid-loaded', function onLoaded() {
+          document.removeEventListener('mdopen-mermaid-loaded', onLoaded);
+          mermaidModule = window._mdopenMermaid;
+          mermaidLoaded = true;
+          callback();
+        });
+      }
+
+      function renderMermaidDiagrams() {
+        if (!mermaidModule) return;
+
+        var theme = document.documentElement.dataset.mdopenTheme === 'dark' ? 'dark' : 'default';
+        mermaidModule.initialize({
+          startOnLoad: false,
+          theme: theme,
+          securityLevel: 'strict',
+          fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif',
+        });
+
+        var containers = document.querySelectorAll('.mermaid-container');
+        containers.forEach(function (container) {
+          var diagram = container.querySelector('.mermaid');
+          if (!diagram) return;
+
+          if (!diagram.dataset.source) {
+            diagram.dataset.source = diagram.textContent || '';
+          }
+
+          diagram.classList.remove('mermaid-error');
+          diagram.removeAttribute('data-processed');
+          diagram.textContent = diagram.dataset.source;
+
+          mermaidModule.render(diagram.id + '-svg-' + (++mermaidRenderCounter), diagram.dataset.source)
+            .then(function (result) {
+              diagram.innerHTML = result.svg;
+              if (result.bindFunctions) result.bindFunctions(diagram);
+            })
+            .catch(function (error) {
+              diagram.classList.add('mermaid-error');
+              diagram.textContent = 'Mermaid render failed: ' + (error.message || error);
+            });
+        });
+      }
+
+      function render() {
+        if (!md || !textarea) return;
+        var text = textarea.value;
+        var html = enhanceHtml(md.render(text));
+        article.innerHTML = html;
+
+        if (hasMermaidFence(text)) {
+          loadMermaid(function () {
+            renderMermaidDiagrams();
+          });
+        }
+      }
+
+      function scheduleRender() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(render, 1000);
+      }
+
+      function createPanel() {
+        if (panel) return;
+
+        panel = document.createElement('div');
+        panel.className = 'mdopen-editor-panel';
+
+        var header = document.createElement('div');
+        header.className = 'mdopen-editor-header';
+        var backLink = document.createElement('a');
+        backLink.href = 'https://rikby.github.io/mdopen/';
+        backLink.className = 'mdopen-editor-back';
+        backLink.textContent = '← mdopen';
+        header.appendChild(backLink);
+        panel.appendChild(header);
+
+        textarea = document.createElement('textarea');
+        textarea.placeholder = 'Type Markdown here...';
+        textarea.spellcheck = false;
+        textarea.value = sampleContent;
+
+        textarea.addEventListener('input', scheduleRender);
+
+        textarea.addEventListener('keydown', function (event) {
+          if (event.key === 'Tab') {
+            event.preventDefault();
+            var start = textarea.selectionStart;
+            var end = textarea.selectionEnd;
+            textarea.value = textarea.value.substring(0, start) + '  ' + textarea.value.substring(end);
+            textarea.selectionStart = textarea.selectionEnd = start + 2;
+            scheduleRender();
+          }
+        });
+
+        panel.appendChild(textarea);
+        document.body.insertBefore(panel, document.body.firstChild);
+      }
+
+      function openEditor() {
+        if (isOpen) return;
+        isOpen = true;
+        document.documentElement.dataset.mdopenEditor = 'open';
+        pencilButton.setAttribute('aria-pressed', 'true');
+
+        createPanel();
+
+        loadScripts(function () {
+          loadPlugins(function () {
+            initMarkdownIt();
+            render();
+          });
+        });
+      }
+
+      function closeEditor() {
+        if (!isOpen) return;
+        isOpen = false;
+        document.documentElement.removeAttribute('data-mdopen-editor');
+        pencilButton.setAttribute('aria-pressed', 'false');
+
+        if (panel) {
+          panel.remove();
+          panel = null;
+          textarea = null;
+        }
+
+        clearTimeout(debounceTimer);
+      }
+
+      pencilButton.addEventListener('click', function () {
+        if (isOpen) {
+          closeEditor();
+        } else {
+          openEditor();
+        }
+      });
+
+      // Auto-open on editor pages (edit.html)
+      openEditor();
+    }());
+  </script>

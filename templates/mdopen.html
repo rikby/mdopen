@@ -10,9 +10,11 @@
   <link rel="stylesheet" href="demo.css">
   <link rel="stylesheet" href="readthedocs.css">
   <link rel="stylesheet" href="mdopen-overrides.css">
+  <link rel="stylesheet" href="editor.css">
 </head>
 <body>
   <nav class="mdopen-toolbar" aria-label="View and print controls">
+    <button type="button" id="mdopen-editor-toggle" class="mdopen-editor-button" aria-label="Open editor" aria-pressed="false" title="Open editor" data-mdopen-editor-hidden>✏️</button>
     <button type="button" id="mdopen-theme-toggle" class="mdopen-theme-button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme">☀</button>
     <button type="button" id="mdopen-copy-rich-button" class="mdopen-copy-rich-button" aria-label="Copy rich document" title="Copy rich document">⧉</button>
     <button type="button" id="mdopen-print-button" class="mdopen-print-button" aria-label="Print document" title="Print document">🖨</button>
@@ -89,6 +91,7 @@
     </svg>
   </a>
 {{mdopenScript}}
+{{editorScript}}
 {{mermaidScript}}
 </body>
 </html>

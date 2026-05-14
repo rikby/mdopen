@@ -12,6 +12,8 @@ This file keeps agent-specific working rules only.
 
 ## Working Rules
 
+- The editor panel (pencil button, editor CSS, editor script) is GitHub Pages only — it must NOT be included in the binary build. Only `build-pages.js` generates the editor page (`edit.html`).
+
 - Keep changes small and script-local unless docs need updating.
 - Preserve Bun + `markdown-it` + `highlight.js` as the only runtime requirements.
 - Keep macOS, Linux, Windows, and MinGW/Git Bash launchers working.

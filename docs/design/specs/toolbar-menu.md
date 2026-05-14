@@ -6,6 +6,7 @@ Compact toolbar behavior for hiding long view controls behind a hamburger menu w
 
 ```text
 ToolbarMenu
+├── EditorToggle (GitHub Pages only, hidden on CLI pages)
 ├── ThemeToggle
 ├── CopyRichButton
 ├── PrintButton
@@ -30,7 +31,7 @@ ToolbarMenu
 
 ## Layout
 
-- Collapsed toolbar shows four controls: `[theme icon] [Copy rich] [Print] [Menu]`.
+- Collapsed toolbar shows five controls: `[pencil] [theme icon] [Copy rich] [Print] [Menu]`.
 - `ThemeToggle` remains the first item, is round, and shows an icon for the active state.
 - `CopyRichButton` and `PrintButton` sit between `ThemeToggle` and `MenuButton`.
 - `CopyRichButton` is the fast-path default and always uses the same behavior as the menu's `Rich` copy action.
@@ -90,8 +91,8 @@ ToolbarMenu
 
 | Breakpoint | Toolbar | Menu panel |
 |------------|---------|------------|
-| `< 768px` | `[☀/☾] [⧉] [🖨] [☰]`, centered in current mobile toolbar area | full available width inside `8px` page inset |
-| `>= 768px` | `[☀/☾] [⧉] [🖨] [☰]`, fixed top-right | right-aligned popover, width fits button groups |
+| `< 768px` | `[✏️] [☀/☾] [⧉] [🖨] [☰]`, centered in current mobile toolbar area | full available width inside `8px` page inset |
+| `>= 768px` | `[✏️] [☀/☾] [⧉] [🖨] [☰]`, fixed top-right | right-aligned popover, width fits button groups |
 
 ## Accessibility
 
@@ -132,6 +133,6 @@ ToolbarMenu
 
 ## Extension notes
 
-- Keep theme, rich copy, and print separate from the menu. The collapsed toolbar contract is `[theme icon] [copy rich] [print] [menu]`.
+- Keep theme, rich copy, and print separate from the menu. The collapsed toolbar contract is `[pencil] [theme icon] [copy rich] [print] [menu]`.
 - Do not add dependencies for the menu interaction.
 - Keep current `data-mdopen-*` persistence behavior unchanged.

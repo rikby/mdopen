@@ -119,6 +119,7 @@ const html = template
   .replaceAll("{{mdopenScript}}", readTemplatePart(templatePath, "mdopen-script.html"))
   .replaceAll("{{defaultStyle}}", escapeHtml(defaultStyle))
   .replaceAll("{{mermaidScript}}", hasMermaid ? readTemplatePart(templatePath, "mermaid-script.html") : "")
+  .replaceAll("{{editorScript}}", "")
   .replaceAll("{{body}}", body);
 
 fs.writeFileSync(output, html);
