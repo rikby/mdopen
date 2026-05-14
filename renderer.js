@@ -116,16 +116,18 @@ const body = enhanceHtml(md.render(markdown));
 const html = template
   .replaceAll("{{pageTitle}}", escapeHtml(pageTitle))
   .replaceAll("{{cssHref}}", escapeHtml(cssHref))
+  .replaceAll("{{mdopenScript}}", readTemplatePart(templatePath, "mdopen-script.html"))
   .replaceAll("{{defaultStyle}}", escapeHtml(defaultStyle))
-  .replaceAll("{{mermaidScript}}", hasMermaid ? readMermaidScript(templatePath) : "")
+  .replaceAll("{{mermaidScript}}", hasMermaid ? readTemplatePart(templatePath, "mermaid-script.html") : "")
   .replaceAll("{{body}}", body);
 
 fs.writeFileSync(output, html);
 
 /**
  * @param {string} value
+ * @param {string} name
  * @returns {string}
  */
-function readMermaidScript(value) {
-  return fs.readFileSync(path.join(path.dirname(value), "mermaid-script.html"), "utf8");
+function readTemplatePart(value, name) {
+  return fs.readFileSync(path.join(path.dirname(value), name), "utf8");
 }

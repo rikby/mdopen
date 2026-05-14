@@ -18,7 +18,8 @@ This file keeps agent-specific working rules only.
 - Keep renderer, template, CSS, and asset changes compatible with `bun run build:binary`.
 - Keep source CSS in `assets/mdopen.css`.
 - Keep optional style-source CSS in `assets/styles/`.
-- Keep template markup and UI JavaScript in `templates/mdopen.html`.
+- Keep template markup in `templates/mdopen.html`.
+- Keep toolbar and copy UI JavaScript in `templates/mdopen-script.html`.
 - Mermaid support should keep the `.mermaid-container` / `.mermaid` structure and load Mermaid only when needed.
 - Follow `ARCHITECTURE.md` for runtime/component boundaries.
 - Follow `docs/styling.md` for CSS and template styling conventions.

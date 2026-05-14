@@ -1,6 +1,6 @@
 # Styling Guide
 
-`mdopen` uses a small CSS cascade and one HTML template. Keep styling changes small, explicit, and dependency-free.
+`mdopen` uses a small CSS cascade, one HTML shell template, and focused script partials. Keep styling changes small, explicit, and dependency-free.
 
 For runtime flow and component ownership, use `ARCHITECTURE.md` as the source of truth. This file is only the styling contract.
 
@@ -11,7 +11,8 @@ For runtime flow and component ownership, use `ARCHITECTURE.md` as the source of
 - `assets/styles/demo.css`: optional theme-source CSS adapted from the Markdown example demo.
 - `assets/styles/readthedocs.css`: optional theme-source CSS adapted from the Read the Docs Sphinx theme document styles.
 - `assets/styles/fonts/`: local Read the Docs font assets used by `readthedocs.css`.
-- `templates/mdopen.html`: toolbar markup, control wiring, persisted preferences, and print theme behavior.
+- `templates/mdopen.html`: HTML shell and toolbar markup.
+- `templates/mdopen-script.html`: toolbar control wiring, persisted preferences, copy behavior, and print theme behavior.
 
 Do not add Tailwind, component CSS folders, or a frontend build step.
 

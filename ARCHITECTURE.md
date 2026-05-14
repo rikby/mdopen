@@ -18,7 +18,8 @@ There is no server, build system, app framework, or frontend bundler.
 - `bin/mdopen.js`: cross-platform Bun CLI and asset-copy orchestration.
 - `bin/mdopen`, `bin/mdopen.cmd`, `bin/mdopen.ps1`: platform launchers.
 - `renderer.js`: Bun-executed CommonJS renderer using `markdown-it` and `highlight.js`.
-- `templates/mdopen.html`: HTML shell, toolbar markup, persisted view controls, and print theme behavior.
+- `templates/mdopen.html`: HTML shell and toolbar markup.
+- `templates/mdopen-script.html`: browser-side toolbar controls, persisted view controls, copy behavior, and print theme behavior.
 - `templates/mermaid-script.html`: browser-side Mermaid rendering, fullscreen, pan, zoom, and diagram error handling.
 - `assets/mdopen.css`: shared layout, toolbar, Mermaid, base tokens, and print defaults.
 - `assets/mdopen-overrides.css`: final user-control override layer.

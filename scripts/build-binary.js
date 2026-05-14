@@ -34,6 +34,7 @@ const fontAssets = Object.fromEntries(
 );
 
 const template = readText("templates/mdopen.html");
+const mdopenScript = readText("templates/mdopen-script.html");
 const mermaidScript = readText("templates/mermaid-script.html");
 const rendererSource = readText("renderer.js");
 
@@ -42,6 +43,7 @@ fs.writeFileSync(entryPath, renderEntry({
   textAssets,
   fontAssets,
   template,
+  mdopenScript,
   mermaidScript,
   rendererSource,
 }));
@@ -127,6 +129,7 @@ const RENDERER_REQUIRE_CACHE = {
 
 const BUILD_PROJECT_DIR = ${JSON.stringify(data.buildProjectDir)};
 const TEMPLATE = ${JSON.stringify(data.template)};
+const MDOPEN_SCRIPT = ${JSON.stringify(data.mdopenScript)};
 const MERMAID_SCRIPT = ${JSON.stringify(data.mermaidScript)};
 const RENDERER_SOURCE = ${JSON.stringify(data.rendererSource)};
 const TEXT_ASSETS = ${JSON.stringify(data.textAssets, null, 2)};
@@ -222,6 +225,7 @@ function writeEmbeddedRuntime(outdir) {
   const templatesDir = path.join(outdir, "templates");
   fs.mkdirSync(templatesDir, { recursive: true });
   fs.writeFileSync(path.join(templatesDir, "mdopen.html"), TEMPLATE);
+  fs.writeFileSync(path.join(templatesDir, "mdopen-script.html"), MDOPEN_SCRIPT);
   fs.writeFileSync(path.join(templatesDir, "mermaid-script.html"), MERMAID_SCRIPT);
 
   const fontsDir = path.join(outdir, "fonts");

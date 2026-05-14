@@ -7,10 +7,12 @@ Compact toolbar behavior for hiding long view controls behind a hamburger menu w
 ```text
 ToolbarMenu
 ├── ThemeToggle
+├── CopyRichButton
 ├── PrintButton
 ├── MenuButton
 └── MenuPanel
     ├── PinToggle
+    ├── CopyButtonGroup
     ├── ThemeButtonGroup
     ├── FontButtonGroup
     ├── ToneButtonGroup
@@ -31,6 +33,7 @@ ToolbarMenu
 - Collapsed toolbar shows four controls: `[theme icon] [Copy rich] [Print] [Menu]`.
 - `ThemeToggle` remains the first item, is round, and shows an icon for the active state.
 - `CopyRichButton` and `PrintButton` sit between `ThemeToggle` and `MenuButton`.
+- `CopyRichButton` is the fast-path default and always uses the same behavior as the menu's `Rich` copy action.
 - `PrintButton` uses a dependency-free printer icon and calls browser printing.
 - `MenuButton` is a square icon button using `☰` or an equivalent dependency-free hamburger icon.
 - Top-level toolbar icon buttons share the same fixed width.
@@ -45,6 +48,29 @@ ToolbarMenu
 - Use the existing 30px control height, 4px toolbar gap, 6px control radius, and 8px toolbar radius.
 - No control changes should affect the rendered Markdown article layout.
 
+## Copy Modes
+
+| Control | Location | Clipboard payload | Intended use |
+|---------|----------|-------------------|--------------|
+| `CopyRichButton` | top-level toolbar | rendered article as `text/html` plus `text/plain` | fastest default copy for rich targets |
+| `Rich` | Copy menu group | same payload as `CopyRichButton` | discoverable duplicate of the toolbar default |
+| `Plain text` | Copy menu group | article text only | paste without Markdown styling or HTML formatting |
+| `Google Docs` | Copy menu group | semantic HTML with mdopen classes, inline styles, color attributes, and chrome removed, plus plain text fallback | preserve document structure while avoiding mdopen theme colors in Google Docs |
+
+- Copy actions are commands, not persistent modes; they do not use `aria-pressed`.
+- Copy actions must not alter current theme, style source, tone, color, font, or density preferences.
+- The copied document excludes mdopen toolbar chrome and Mermaid fullscreen buttons.
+
+## Copy Behavior
+
+- Clicking `CopyRichButton` immediately copies the current rendered article using the `Rich` payload.
+- Opening the menu and clicking `Rich`, `Plain text`, or `Google Docs` copies that specific payload; the menu remains open so users can retry or choose another copy target.
+- Successful copy replaces only the clicked button label with `✓`, then restores the original label after a short delay.
+- Failed copy keeps the button in place and changes its tooltip/title to `Copy failed`; no modal, toast, or layout shift is shown.
+- Rich HTML copy should use the async Clipboard API when available, with a selection-based HTML copy fallback for browsers that block or lack rich clipboard writes.
+- Plain text copy should use text clipboard write when available, with a hidden textarea selection fallback.
+- Google Docs copy should preserve semantic document structure, for example headings, lists, tables, links, code, emphasis, and blockquotes, while stripping mdopen classes, inline styles, ids, and color-related attributes.
+
 ## States
 
 | State | Trigger | Visual change | Behavior |
@@ -52,7 +78,7 @@ ToolbarMenu
 | closed | page load, outside click when unpinned, Escape | top-level toolbar buttons visible | menu controls hidden from tab order |
 | open | `MenuButton` click | `MenuPanel` appears below toolbar | focus can move into all option buttons |
 | desktop selection | selecting Theme, Font, Tone, Color, or Gap at `>= 768px` | selected value updates | menu remains open |
-| option selected | option button click | clicked option gets `aria-pressed="true"`; siblings in same group are false | menu remains open |
+| customization selected | customization option button click | clicked option gets `aria-pressed="true"`; siblings in same group are false | menu remains open |
 | pinned | Pin toggle click | pin button becomes pressed | outside clicks no longer close the menu |
 | theme toggled | `ThemeToggle` click | button icon flips between light and dark state; accessible label describes the next action | menu state is unchanged |
 | rich copy requested | `CopyRichButton` click | button briefly shows success | copies rendered document HTML and plain text |
