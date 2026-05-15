@@ -13,6 +13,15 @@
       var mermaidModule = null;
       var mermaidRenderCounter = 0;
       var isOpen = false;
+      var savedContent = null;
+      var panelWidth = 40;
+      var divider = null;
+      var hasFileSystem = 'showOpenFilePicker' in window;
+      var fileHandle = null;
+      var lastSavedContent = '';
+      var dirtyDot = null;
+      var openBtn = null;
+      var saveBtn = null;
 
       var sampleContent = [
         '# mdopen Editor',
@@ -172,6 +181,13 @@
         if (window.markdownitSub) md.use(window.markdownitSub);
         if (window.markdownitSup) md.use(window.markdownitSup);
         if (window.markdownitTaskLists) md.use(window.markdownitTaskLists, { enabled: true, label: true });
+
+        var defaultHeadingOpen = md.renderer.rules.heading_open ||
+          function (tokens, idx, options, env, self) { return self.renderToken(tokens, idx, options); };
+        md.renderer.rules.heading_open = function (tokens, idx, options, env, self) {
+          tokens[idx].attrSet('data-source-line', tokens[idx + 1].map ? tokens[idx + 1].map[0] : 0);
+          return defaultHeadingOpen(tokens, idx, options, env, self);
+        };
       }
 
       function hasMermaidFence(text) {
@@ -255,6 +271,89 @@
         debounceTimer = setTimeout(render, 1000);
       }
 
+      function openFile() {
+        window.showOpenFilePicker({
+          types: [{
+            description: 'Markdown',
+            accept: { 'text/markdown': ['.md', '.markdown'] }
+          }]
+        }).then(function (handles) {
+          var handle = handles[0];
+          return handle.getFile().then(function (file) {
+            return file.text().then(function (text) {
+              fileHandle = handle;
+              lastSavedContent = text;
+              if (textarea) {
+                textarea.value = text;
+              }
+              if (saveBtn) {
+                saveBtn.style.display = '';
+              }
+              updateDirtyState();
+              render();
+            });
+          });
+        }).catch(function () {
+          // User cancelled picker or error
+        });
+      }
+
+      function saveFile() {
+        if (!fileHandle || !textarea) return;
+        fileHandle.createWritable().then(function (writable) {
+          return writable.write(textarea.value).then(function () {
+            return writable.close();
+          });
+        }).then(function () {
+          lastSavedContent = textarea.value;
+          updateDirtyState();
+          if (saveBtn) {
+            var original = saveBtn.textContent;
+            saveBtn.textContent = '✓';
+            setTimeout(function () {
+              saveBtn.textContent = original;
+            }, 1200);
+          }
+        }).catch(function () {
+          // Save failed
+        });
+      }
+
+      function updateDirtyState() {
+        if (!dirtyDot) return;
+        if (!fileHandle) {
+          dirtyDot.style.display = 'none';
+          return;
+        }
+        var dirty = textarea && textarea.value !== lastSavedContent;
+        dirtyDot.style.display = dirty ? '' : 'none';
+      }
+
+      function syncScroll() {
+        if (!textarea) return;
+        var article = document.querySelector('.markdown-body');
+        if (!article) return;
+
+        var lineCount = textarea.value.substring(0, textarea.selectionStart).split('\n').length - 1;
+        var approximateTopLine = Math.floor(textarea.scrollTop / 21);
+
+        var headings = article.querySelectorAll('[data-source-line]');
+        if (headings.length === 0) return;
+
+        var best = headings[0];
+        var bestDist = Infinity;
+        for (var i = 0; i < headings.length; i++) {
+          var line = parseInt(headings[i].getAttribute('data-source-line'), 10);
+          var dist = Math.abs(line - approximateTopLine);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = headings[i];
+          }
+        }
+
+        article.scrollTop = best.offsetTop - article.offsetTop - 16;
+      }
+
       function createPanel() {
         if (panel) return;
 
@@ -268,14 +367,45 @@
         backLink.className = 'mdopen-editor-back';
         backLink.textContent = '← mdopen';
         header.appendChild(backLink);
+
+        if (hasFileSystem) {
+          openBtn = document.createElement('button');
+          openBtn.type = 'button';
+          openBtn.className = 'mdopen-editor-open';
+          openBtn.textContent = '\uD83D\uDCC2';
+          openBtn.title = 'Open file (Ctrl+O)';
+          openBtn.addEventListener('click', openFile);
+          header.appendChild(openBtn);
+
+          saveBtn = document.createElement('button');
+          saveBtn.type = 'button';
+          saveBtn.className = 'mdopen-editor-save';
+          saveBtn.textContent = '\uD83D\uDCBE';
+          saveBtn.title = 'Save file (Ctrl+S)';
+          saveBtn.style.display = 'none';
+          saveBtn.addEventListener('click', saveFile);
+          header.appendChild(saveBtn);
+
+          dirtyDot = document.createElement('span');
+          dirtyDot.className = 'mdopen-editor-dirty';
+          dirtyDot.textContent = '\u2022';
+          dirtyDot.style.display = 'none';
+          header.appendChild(dirtyDot);
+        }
+
         panel.appendChild(header);
 
         textarea = document.createElement('textarea');
         textarea.placeholder = 'Type Markdown here...';
         textarea.spellcheck = false;
-        textarea.value = sampleContent;
+        textarea.value = savedContent !== null ? savedContent : sampleContent;
 
-        textarea.addEventListener('input', scheduleRender);
+        textarea.addEventListener('input', function () {
+          scheduleRender();
+          updateDirtyState();
+        });
+
+        textarea.addEventListener('scroll', syncScroll);
 
         textarea.addEventListener('keydown', function (event) {
           if (event.key === 'Tab') {
@@ -288,8 +418,50 @@
           }
         });
 
+        panel.style.width = panelWidth + '%';
         panel.appendChild(textarea);
+
+        divider = document.createElement('div');
+        divider.className = 'mdopen-editor-divider';
+        document.body.appendChild(divider);
+
+        initDividerDrag();
+        applyPanelWidth();
+
         document.body.insertBefore(panel, document.body.firstChild);
+      }
+
+      function applyPanelWidth() {
+        var article = document.querySelector('.markdown-body');
+        if (!panel || !article) return;
+        panel.style.width = panelWidth + '%';
+        article.style.marginLeft = panelWidth + '%';
+        article.style.width = (100 - panelWidth) + '%';
+        if (divider) divider.style.left = panelWidth + '%';
+      }
+
+      function initDividerDrag() {
+        if (!divider) return;
+        var dragging = false;
+        divider.addEventListener('mousedown', function (e) {
+          e.preventDefault();
+          dragging = true;
+          document.body.style.cursor = 'col-resize';
+          document.body.style.userSelect = 'none';
+        });
+        document.addEventListener('mousemove', function (e) {
+          if (!dragging) return;
+          var vw = window.innerWidth;
+          var pct = (e.clientX / vw) * 100;
+          panelWidth = Math.max(20, Math.min(80, pct));
+          applyPanelWidth();
+        });
+        document.addEventListener('mouseup', function () {
+          if (!dragging) return;
+          dragging = false;
+          document.body.style.cursor = '';
+          document.body.style.userSelect = '';
+        });
       }
 
       function openEditor() {
@@ -315,9 +487,16 @@
         pencilButton.setAttribute('aria-pressed', 'false');
 
         if (panel) {
+          if (textarea) savedContent = textarea.value;
           panel.remove();
           panel = null;
           textarea = null;
+          openBtn = null;
+          saveBtn = null;
+          dirtyDot = null;
+          if (divider) { divider.remove(); divider = null; }
+          var article = document.querySelector('.markdown-body');
+          if (article) { article.style.marginLeft = ''; article.style.width = ''; }
         }
 
         clearTimeout(debounceTimer);
@@ -328,6 +507,18 @@
           closeEditor();
         } else {
           openEditor();
+        }
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (!isOpen) return;
+        if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+          event.preventDefault();
+          saveFile();
+        }
+        if ((event.ctrlKey || event.metaKey) && event.key === 'o') {
+          event.preventDefault();
+          if (hasFileSystem) openFile();
         }
       });
 

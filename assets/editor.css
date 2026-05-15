@@ -22,10 +22,10 @@
   top: 0;
   left: 0;
   bottom: 0;
-  width: 40%;
   z-index: 8;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   border-right: 1px solid var(--borderColor-default, #d0d7de);
   background: var(--bgColor-default, #ffffff);
 }
@@ -33,10 +33,12 @@
 .mdopen-editor-panel textarea {
   flex: 1;
   width: 100%;
+  box-sizing: border-box;
   padding: 16px;
   border: 0;
   outline: 0;
   resize: none;
+  overflow: auto;
   background: transparent;
   color: var(--fgColor-default, #1f2328);
   font-family: var(--mdopen-font-code, ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace);
@@ -49,15 +51,54 @@
   color: var(--fgColor-muted, #57606a);
 }
 
+/* File open/save buttons in editor header */
+.mdopen-editor-open,
+.mdopen-editor-save {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px 6px;
+  color: var(--fgColor-default, #1f2328);
+  line-height: 1;
+}
+
+.mdopen-editor-open:hover,
+.mdopen-editor-save:hover {
+  opacity: 0.8;
+}
+
+.mdopen-editor-dirty {
+  font-size: 14px;
+  color: var(--fgColor-muted, #57606a);
+  line-height: 1;
+  padding-left: 2px;
+}
+
+/* Draggable divider between editor and preview */
+.mdopen-editor-divider {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  z-index: 9;
+  cursor: col-resize;
+  background: transparent;
+  margin-left: -3px;
+}
+
+.mdopen-editor-divider:hover,
+.mdopen-editor-divider:active {
+  background: var(--borderColor-default, #d0d7de);
+}
+
 /* Pencil button in toolbar */
 .mdopen-editor-button {
   font-size: 17px;
 }
 
-/* When editor is open, shift article to right 60% */
+/* When editor is open, article gets dynamic width via JS */
 html[data-mdopen-editor="open"] .markdown-body {
-  margin-left: 40%;
-  width: 60%;
   box-sizing: border-box;
   overflow-x: auto;
 }
@@ -75,15 +116,19 @@ html[data-mdopen-editor="open"] .markdown-body {
     left: 0;
     right: 0;
     bottom: 50%;
-    width: 100%;
+    width: 100% !important;
     border-right: 0;
     border-bottom: 1px solid var(--borderColor-default, #d0d7de);
   }
 
+  .mdopen-editor-divider {
+    display: none;
+  }
+
   html[data-mdopen-editor="open"] .markdown-body {
-    margin-left: 0;
+    margin-left: 0 !important;
     margin-top: 50vh;
-    width: 100%;
+    width: 100% !important;
     padding: 32px 16px;
   }
 
@@ -96,6 +141,10 @@ html[data-mdopen-editor="open"] .markdown-body {
 /* Print: hide editor panel, restore full-width article */
 @media print {
   .mdopen-editor-panel {
+    display: none;
+  }
+
+  .mdopen-editor-divider {
     display: none;
   }
 
