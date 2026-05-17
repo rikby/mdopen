@@ -36,6 +36,16 @@
         window.requestAnimationFrame(syncHeadingFontPreview);
       }
 
+      function syncCodeScrollbars() {
+        Array.prototype.forEach.call(document.querySelectorAll('.markdown-body pre'), function (pre) {
+          pre.classList.toggle('mdopen-has-x-scroll', pre.scrollWidth > pre.clientWidth + 1);
+        });
+      }
+
+      function queueCodeScrollbars() {
+        window.requestAnimationFrame(syncCodeScrollbars);
+      }
+
       function updatePressed(control, value) {
         var buttons = menuPanel.querySelectorAll('[data-mdopen-control="' + control + '"]');
         Array.prototype.forEach.call(buttons, function (button) {
@@ -62,6 +72,7 @@
         themeToggle.setAttribute('title', theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
         document.dispatchEvent(new CustomEvent('mdopen-theme-change'));
         queueHeadingFontPreview();
+        queueCodeScrollbars();
       }
 
       function setDensity(density) {
@@ -69,6 +80,7 @@
         document.documentElement.dataset.mdopenDensity = density;
         localStorage.setItem('mdopen-density', density);
         updatePressed('density', density);
+        queueCodeScrollbars();
       }
 
       function setStyle(style) {
@@ -77,6 +89,7 @@
         localStorage.setItem('mdopen-style', style);
         updatePressed('style', style);
         queueHeadingFontPreview();
+        queueCodeScrollbars();
       }
 
       function setTone(tone) {
@@ -107,6 +120,7 @@
         localStorage.setItem('mdopen-font', font);
         updatePressed('font', font);
         queueHeadingFontPreview();
+        queueCodeScrollbars();
       }
 
       function setPrintFrontmatter(enabled) {
@@ -127,6 +141,7 @@
         localStorage.setItem('mdopen-code-wrap', enabled ? 'true' : 'false');
         var button = menuPanel.querySelector('[data-mdopen-control="code-wrap"]');
         if (button) button.setAttribute('aria-pressed', String(enabled));
+        queueCodeScrollbars();
       }
 
       function getRichCopyHtml() {
@@ -332,9 +347,9 @@
       var params = new URLSearchParams(window.location.search);
       var defaultStyle = '{{defaultStyle}}';
       setTheme(params.get('theme') || localStorage.getItem('mdopen-theme') || 'light');
-      setStyle(params.get('style') || (defaultStyle !== 'default' ? defaultStyle : localStorage.getItem('mdopen-style')) || 'default');
-      setTone(params.get('tone') || (defaultStyle !== 'default' ? 'default' : localStorage.getItem('mdopen-tone')) || 'default');
-      setAccent(params.get('accent') || (defaultStyle !== 'default' ? 'default' : localStorage.getItem('mdopen-accent')) || 'default');
+      setStyle(params.get('style') || localStorage.getItem('mdopen-style') || defaultStyle || 'default');
+      setTone(params.get('tone') || localStorage.getItem('mdopen-tone') || 'default');
+      setAccent(params.get('accent') || localStorage.getItem('mdopen-accent') || 'default');
       setFont(params.get('font') || localStorage.getItem('mdopen-font') || 'source');
       setDensity(params.get('density') || localStorage.getItem('mdopen-density') || 'normal');
       setPrintFrontmatter(params.get('print-frontmatter') || localStorage.getItem('mdopen-print-frontmatter') || 'false');
@@ -342,9 +357,14 @@
       setMenuPinned(localStorage.getItem('mdopen-autohide-menu') === 'false');
       link.addEventListener('load', queueHeadingFontPreview);
       if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(queueHeadingFontPreview);
+        document.fonts.ready.then(function () {
+          queueHeadingFontPreview();
+          queueCodeScrollbars();
+        });
       }
       queueHeadingFontPreview();
+      queueCodeScrollbars();
+      window.addEventListener('resize', queueCodeScrollbars);
 
       var themeBeforePrint = null;
       var frontmatterOpenedForPrint = [];

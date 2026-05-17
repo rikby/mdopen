@@ -230,11 +230,18 @@ html[data-mdopen-style="readthedocs"] .markdown-body {
 html[data-mdopen-style="demo"] .markdown-body pre,
 html[data-mdopen-style="readthedocs"] .markdown-body pre {
   --mdopen-code-scrollbar-size: 10px;
+  --mdopen-code-scrollbar-thumb: transparent;
   overflow-x: auto !important;
   overflow-y: hidden !important;
   padding: 0 !important;
-  scrollbar-color: color-mix(in srgb, var(--fgColor-muted, #57606a) 42%, transparent) transparent;
+  scrollbar-color: transparent transparent;
   scrollbar-width: thin;
+}
+
+.markdown-body pre.mdopen-has-x-scroll:hover,
+html[data-mdopen-style="demo"] .markdown-body pre.mdopen-has-x-scroll:hover,
+html[data-mdopen-style="readthedocs"] .markdown-body pre.mdopen-has-x-scroll:hover {
+  --mdopen-code-scrollbar-thumb: color-mix(in srgb, var(--fgColor-muted, #57606a) 42%, transparent);
 }
 
 .markdown-body pre code,
@@ -243,8 +250,13 @@ html[data-mdopen-style="readthedocs"] .markdown-body pre {
   width: max-content;
   min-width: 100%;
   box-sizing: border-box;
-  padding: var(--mdopen-code-padding) var(--mdopen-code-padding) max(0px, calc(var(--mdopen-code-padding) - var(--mdopen-code-scrollbar-size))) var(--mdopen-code-padding);
+  padding: var(--mdopen-code-padding);
   overflow: visible;
+}
+
+.markdown-body pre.mdopen-has-x-scroll code,
+.markdown-body pre.mdopen-has-x-scroll tt {
+  padding-bottom: max(0px, calc(var(--mdopen-code-padding) - var(--mdopen-code-scrollbar-size)));
 }
 
 .markdown-body .mdopen-frontmatter {
@@ -287,7 +299,7 @@ html[data-mdopen-style="readthedocs"] .markdown-body pre {
   border: 3px solid transparent;
   border-radius: 999px;
   background-clip: content-box;
-  background-color: color-mix(in srgb, var(--fgColor-muted, #57606a) 42%, transparent);
+  background-color: var(--mdopen-code-scrollbar-thumb);
 }
 
 html:not([data-mdopen-code-wrap="false"]) .markdown-body pre code,
