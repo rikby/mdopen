@@ -1,6 +1,6 @@
 {
   "name": "mdopen",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "Quickly render a Markdown file as styled HTML and open it in the browser.",
   "main": "renderer.js",
   "bin": {
