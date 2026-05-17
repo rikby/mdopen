@@ -1,6 +1,6 @@
 # Editor Page — Wireframe Schema
 
-Related spec: `docs/design/specs/editor-page.md`
+Related spec: editor-page.spec.md
 
 ## Closed — Normal Reading Mode
 

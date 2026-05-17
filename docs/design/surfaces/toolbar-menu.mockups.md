@@ -1,6 +1,6 @@
 # Toolbar Menu — Wireframe Schema
 
-Related spec: `docs/design/specs/toolbar-menu.md`
+Related spec: toolbar-menu.spec.md
 
 ## Default Closed State
 

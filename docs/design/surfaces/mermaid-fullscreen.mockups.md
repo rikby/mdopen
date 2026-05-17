@@ -1,6 +1,6 @@
 # Mermaid Fullscreen — Wireframe Schema
 
-Related spec: `docs/design/specs/mermaid-fullscreen.md`
+Related spec: mermaid-fullscreen.spec.md
 
 ## Inline State
 
