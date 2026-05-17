@@ -234,7 +234,7 @@ html[data-mdopen-style="readthedocs"] .markdown-body pre {
   overflow-x: auto !important;
   overflow-y: hidden !important;
   padding: 0 !important;
-  scrollbar-color: transparent transparent;
+  scrollbar-color: var(--mdopen-code-scrollbar-thumb) transparent;
   scrollbar-width: thin;
 }
 
