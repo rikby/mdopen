@@ -180,7 +180,12 @@
     text-transform: uppercase;
   }
 
-  html[data-mdopen-style="demo"] .markdown-body .callout p:last-child {
+  html[data-mdopen-style="demo"] .markdown-body .callout > :not(.callout-title) {
+    margin-top: 0 !important;
+    margin-bottom: 0.65rem !important;
+  }
+
+  html[data-mdopen-style="demo"] .markdown-body .callout > :last-child {
     margin-bottom: 0 !important;
   }
 

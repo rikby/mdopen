@@ -296,11 +296,16 @@
   }
 
   html[data-mdopen-style="readthedocs"] .markdown-body .callout-title {
-    margin: -12px -12px 12px;
+    margin: -12px -12px 12px !important;
     padding: 6px 12px;
     background: var(--mdopen-rtd-info);
     color: #ffffff;
     font-weight: 700;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body .callout > :not(.callout-title) {
+    margin-top: 0 !important;
+    margin-bottom: 12px !important;
   }
 
   html[data-mdopen-style="readthedocs"] .markdown-body .callout.tip {

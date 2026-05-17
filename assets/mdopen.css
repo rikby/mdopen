@@ -434,6 +434,67 @@ html[data-mdopen-theme="dark"] .mermaid-container .mermaid-error {
   background: transparent !important;
 }
 
+.markdown-body .callout {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--borderColor-default, #d0d7de);
+  border-left: 0.25rem solid var(--mdopen-callout-accent, var(--accent-fgColor, #0969da));
+  border-radius: 6px;
+  background: var(--mdopen-callout-bg, var(--bgColor-muted, #f6f8fa));
+  color: var(--fgColor-default, #1f2328);
+}
+
+.markdown-body .callout-title {
+  margin: 0 0 0.5rem !important;
+  color: var(--mdopen-callout-accent, var(--accent-fgColor, #0969da));
+  font-size: 0.9em;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.markdown-body .callout > :not(.callout-title) {
+  margin-top: 0 !important;
+  margin-bottom: 0.65rem !important;
+}
+
+.markdown-body .callout > :last-child {
+  margin-bottom: 0 !important;
+}
+
+.markdown-body .callout.tip {
+  --mdopen-callout-accent: #1a7f37;
+  --mdopen-callout-bg: #dafbe1;
+}
+
+.markdown-body .callout.warning {
+  --mdopen-callout-accent: #9a6700;
+  --mdopen-callout-bg: #fff8c5;
+}
+
+.markdown-body .callout.important {
+  --mdopen-callout-accent: #cf222e;
+  --mdopen-callout-bg: #ffebe9;
+}
+
+html[data-mdopen-theme="dark"] .markdown-body .callout {
+  --mdopen-callout-bg: rgba(56, 139, 253, 0.12);
+}
+
+html[data-mdopen-theme="dark"] .markdown-body .callout.tip {
+  --mdopen-callout-accent: #3fb950;
+  --mdopen-callout-bg: rgba(63, 185, 80, 0.12);
+}
+
+html[data-mdopen-theme="dark"] .markdown-body .callout.warning {
+  --mdopen-callout-accent: #d29922;
+  --mdopen-callout-bg: rgba(210, 153, 34, 0.12);
+}
+
+html[data-mdopen-theme="dark"] .markdown-body .callout.important {
+  --mdopen-callout-accent: #f85149;
+  --mdopen-callout-bg: rgba(248, 81, 73, 0.12);
+}
+
 .markdown-body pre {
   overflow-x: auto;
   overflow-y: hidden;

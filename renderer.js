@@ -146,7 +146,11 @@ function renderFrontmatter(value) {
 function enhanceHtml(value) {
   return value.replace(
     /<blockquote>\s*<p>\[!(NOTE|TIP|WARNING|IMPORTANT)\]\s*(?:<br>\s*)?([\s\S]*?)<\/blockquote>/gi,
-    (_match, type, body) => `<section class="callout ${type.toLowerCase()}"><p class="callout-title">${type}</p><p>${body}</section>`,
+    (_match, type, body) => {
+      const content = body.trim();
+      const calloutBody = content.startsWith("</p>") ? content.slice(4).trimStart() : `<p>${content}`;
+      return `<section class="callout ${type.toLowerCase()}"><p class="callout-title">${type}</p>${calloutBody}</section>`;
+    },
   );
 }
 
