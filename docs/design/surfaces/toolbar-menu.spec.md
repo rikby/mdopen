@@ -14,8 +14,7 @@ ToolbarMenu
 └── MenuPanel
     ├── PinToggle
     ├── CopyButtonGroup
-    ├── PrintButtonGroup
-    ├── CodeButtonGroup
+    ├── OtherButtonGroup
     ├── ThemeButtonGroup
     ├── FontButtonGroup
     ├── ToneButtonGroup
@@ -41,7 +40,7 @@ ToolbarMenu
 - `MenuButton` is a square icon button using `☰` or an equivalent dependency-free hamburger icon.
 - Top-level toolbar icon buttons share the same fixed width.
 - `MenuPanel` opens below the toolbar, aligned to the right edge on desktop and stretched inside the mobile side margins.
-- Panel order is fixed: Copy, Print, Code, Theme, Font, Tone, Color, Gap.
+- Panel order is fixed: Copy, Other, Theme, Font, Tone, Color, Gap.
 - `PinToggle` is absolutely positioned in the top-right corner and must not reserve a row or add vertical gap.
 - Customization controls use native buttons with `aria-pressed`, not dropdowns.
 - Selected options must be visible without opening a native select popup.
@@ -78,9 +77,9 @@ ToolbarMenu
 
 | Control | Location | Persistent value | Intended use |
 |---------|----------|------------------|--------------|
-| `Frontmatter` | Print menu group | `mdopen-print-frontmatter` boolean | include the document metadata block in browser print output |
+| `Print frontmatter` | Other menu group | `mdopen-print-frontmatter` boolean | include the document metadata block in browser print output |
 
-- `Frontmatter` is a persistent view/print option and uses `aria-pressed`.
+- `Print frontmatter` is a persistent view/print option and uses `aria-pressed`.
 - Default value is off.
 - Enabling the option sets `html[data-mdopen-print-frontmatter="true"]`.
 - Disabling the option removes that data attribute.
@@ -91,9 +90,9 @@ ToolbarMenu
 
 | Control | Location | Persistent value | Intended use |
 |---------|----------|------------------|--------------|
-| `Wrap` | Code menu group | `mdopen-code-wrap` boolean | wrap long code lines instead of requiring horizontal scrolling |
+| `Wrap code` | Other menu group | `mdopen-code-wrap` boolean | wrap long code lines instead of requiring horizontal scrolling |
 
-- `Wrap` is a persistent view option and uses `aria-pressed`.
+- `Wrap code` is a persistent view option and uses `aria-pressed`.
 - Default value is on.
 - Enabling the option sets `html[data-mdopen-code-wrap="true"]`.
 - Disabling the option sets `html[data-mdopen-code-wrap="false"]`.
@@ -107,8 +106,8 @@ ToolbarMenu
 | open | `MenuButton` click | `MenuPanel` appears below toolbar | focus can move into all option buttons |
 | desktop selection | selecting Theme, Font, Tone, Color, or Gap at `>= 768px` | selected value updates | menu remains open |
 | customization selected | customization option button click | clicked option gets `aria-pressed="true"`; siblings in same group are false | menu remains open |
-| print frontmatter toggled | `Frontmatter` option click | option flips `aria-pressed` | future prints include or exclude frontmatter |
-| code wrap toggled | `Wrap` option click | option flips `aria-pressed` | code blocks wrap or preserve long-line scrolling |
+| print frontmatter toggled | `Print frontmatter` option click | option flips `aria-pressed` | future prints include or exclude frontmatter |
+| code wrap toggled | `Wrap code` option click | option flips `aria-pressed` | code blocks wrap or preserve long-line scrolling |
 | pinned | Pin toggle click | pin button becomes pressed | outside clicks no longer close the menu |
 | theme toggled | `ThemeToggle` click | button icon flips between light and dark state; accessible label describes the next action | menu state is unchanged |
 | rich copy requested | `CopyRichButton` click | button briefly shows success | copies rendered document HTML and plain text |
@@ -120,7 +119,7 @@ ToolbarMenu
 
 | Breakpoint | Toolbar | Menu panel |
 |------------|---------|------------|
-| `< 768px` | `[✏️] [☀/☾] [⧉] [🖨] [☰]`, centered in current mobile toolbar area | full available width inside `8px` page inset; Print and Code groups appear after Copy |
+| `< 768px` | `[✏️] [☀/☾] [⧉] [🖨] [☰]`, centered in current mobile toolbar area | full available width inside `8px` page inset; Other group appears after Copy |
 | `>= 768px` | `[✏️] [☀/☾] [⧉] [🖨] [☰]`, fixed top-right | right-aligned popover, width fits button groups |
 
 ## Accessibility
@@ -132,8 +131,8 @@ ToolbarMenu
 - Closed menu controls must not be keyboard-focusable.
 - Each option group has a visible label and an accessible group label.
 - Every customization option button uses `aria-pressed` to expose the active value.
-- The print frontmatter option uses `aria-pressed` because it is a persistent boolean setting.
-- The code wrap option uses `aria-pressed` because it is a persistent boolean setting.
+- The `Print frontmatter` option uses `aria-pressed` because it is a persistent boolean setting.
+- The `Wrap code` option uses `aria-pressed` because it is a persistent boolean setting.
 - Escape closes the menu and returns focus to `MenuButton`.
 - Clicking outside the toolbar/menu closes the menu only when the menu is unpinned.
 - Pin preference is persisted in `localStorage`.
@@ -167,5 +166,4 @@ ToolbarMenu
 - Keep theme, rich copy, and print separate from the menu. The collapsed toolbar contract is `[pencil] [theme icon] [copy rich] [print] [menu]`.
 - Do not add dependencies for the menu interaction.
 - Keep current `data-mdopen-*` persistence behavior unchanged.
-- Keep print-specific metadata options in the menu, not in the top-level toolbar.
-- Keep code readability options in the menu, not in the top-level toolbar.
+- Keep print-specific metadata and code readability options in the `Other` menu group, not in the top-level toolbar.

@@ -95,7 +95,7 @@ The risk pattern is any theme source setting element margins with `!important` a
 
 - Use a single round light/dark icon toggle.
 - Keep the fixed toolbar collapsed to the light/dark icon toggle, rich-copy button, print button, and menu button.
-- Keep copy modes, print options, code options, theme, font, tone, color, and density controls inside `.mdopen-menu-panel`.
+- Keep copy modes, other options, theme, font, tone, color, and density controls inside `.mdopen-menu-panel`.
 - Use native buttons with `aria-pressed` for menu customizations so the current state is visible without opening dropdowns.
 - Keep outside-click closing controlled by the persisted pin toggle in the menu corner.
 - Keep toolbar classes structural only; selected values belong in `data-mdopen-*` attributes.

@@ -75,10 +75,9 @@ Desktop, menu open
                               ┌─────────────┴─────────────┐
                               │ Copy                 [📍] │
                               │ [Rich] [Plain] [Docs]    │
-                              │ Print                    │
-                              │ [Frontmatter]            │
-                              │ Code                     │
-                              │ [Wrap*]                  │
+                              │ Other                    │
+                              │ [Print frontmatter]      │
+                              │ [Wrap code*]             │
                               │ Theme                    │
                               │ [Default*] [Demo] [RTD]  │
                               │ Font                     │
@@ -108,5 +107,5 @@ Mobile, collapsed
 | Frontmatter root | active code-block surface | `.mdopen-frontmatter` | native collapsed disclosure above body; single visual block |
 | Summary | `--fgColor-muted` fallback | `.mdopen-frontmatter summary` | visible label only; no explanatory copy |
 | Metadata content | transparent inner pre/code | `.mdopen-frontmatter pre > code` | raw escaped source text; no nested panel |
-| Print flag | existing option button styling | `data-mdopen-control="print-frontmatter"` proposed | persistent boolean option in menu |
+| Print flag | existing option button styling | `data-mdopen-control="print-frontmatter"` proposed | persistent boolean option in Other menu group |
 | Print visibility | print tokens | `html[data-mdopen-print-frontmatter="true"]` | default hidden in print |
