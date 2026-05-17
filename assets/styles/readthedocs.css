@@ -64,6 +64,7 @@
     --mdopen-rtd-border-strong: #c9c9c9;
     --mdopen-rtd-code-bg: #ffffff;
     --mdopen-rtd-code: #e74c3c;
+    --mdopen-code-radius: 0;
     --mdopen-rtd-soft-blue: #e7f2fa;
     --mdopen-rtd-soft-green: #dbfaf4;
     --mdopen-rtd-soft-yellow: #ffedcc;
@@ -171,22 +172,41 @@
 
   html[data-mdopen-style="readthedocs"] .markdown-body ul,
   html[data-mdopen-style="readthedocs"] .markdown-body ol {
-    padding-left: 24px !important;
+    padding-left: 0 !important;
   }
 
   html[data-mdopen-style="readthedocs"] .markdown-body li {
-    margin: 0 !important;
+    margin: 0 0 0 24px !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body ul,
+  html[data-mdopen-style="readthedocs"] .markdown-body ul li {
+    list-style: disc !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body ul ul li {
+    list-style: circle !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body ul ul ul li {
+    list-style: square !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body ol,
+  html[data-mdopen-style="readthedocs"] .markdown-body ol li {
+    list-style: decimal !important;
   }
 
   html[data-mdopen-style="readthedocs"] .markdown-body li + li {
-    margin-top: 6px !important;
+    margin-top: 0 !important;
   }
 
   html[data-mdopen-style="readthedocs"] .markdown-body blockquote {
     margin-left: 24px !important;
-    padding: 0 0 0 24px !important;
-    border-left: 3px solid var(--mdopen-rtd-border-strong) !important;
-    color: var(--mdopen-rtd-muted) !important;
+    padding: 0 !important;
+    border-left: 0 !important;
+    color: var(--mdopen-rtd-text) !important;
+    line-height: 24px;
   }
 
   html[data-mdopen-style="readthedocs"] .markdown-body hr {
@@ -236,14 +256,35 @@
   html[data-mdopen-style="readthedocs"] .markdown-body th,
   html[data-mdopen-style="readthedocs"] .markdown-body td {
     padding: 8px 16px !important;
-    border: 1px solid var(--mdopen-rtd-border) !important;
+    border: 0 !important;
+    border-left: 1px solid var(--mdopen-rtd-border) !important;
     text-align: left;
-    vertical-align: top;
+    vertical-align: middle;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body th:first-child,
+  html[data-mdopen-style="readthedocs"] .markdown-body td:first-child {
+    border-left-width: 0 !important;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body td {
+    border-bottom: 1px solid var(--mdopen-rtd-border) !important;
+    background: transparent !important;
   }
 
   html[data-mdopen-style="readthedocs"] .markdown-body th {
-    background: var(--mdopen-rtd-soft-blue) !important;
+    border-bottom: 2px solid var(--mdopen-rtd-border) !important;
+    background: transparent !important;
     font-weight: 700;
+    vertical-align: bottom;
+  }
+
+  html[data-mdopen-style="readthedocs"] .markdown-body tr:nth-child(2n-1) td {
+    background: #f3f6f6 !important;
+  }
+
+  html[data-mdopen-style="readthedocs"][data-mdopen-theme="dark"] .markdown-body tr:nth-child(2n-1) td {
+    background: rgba(243, 246, 246, 0.06) !important;
   }
 
   html[data-mdopen-style="readthedocs"] .markdown-body .callout {
@@ -251,7 +292,6 @@
     margin: 24px 0;
     padding: 12px;
     border: 0;
-    border-left: 3px solid var(--mdopen-rtd-info);
     background: var(--mdopen-rtd-soft-blue);
   }
 
@@ -264,7 +304,6 @@
   }
 
   html[data-mdopen-style="readthedocs"] .markdown-body .callout.tip {
-    border-left-color: var(--mdopen-rtd-success);
     background: var(--mdopen-rtd-soft-green);
   }
 
@@ -273,7 +312,6 @@
   }
 
   html[data-mdopen-style="readthedocs"] .markdown-body .callout.warning {
-    border-left-color: var(--mdopen-rtd-warning);
     background: var(--mdopen-rtd-soft-yellow);
   }
 
@@ -282,7 +320,6 @@
   }
 
   html[data-mdopen-style="readthedocs"] .markdown-body .callout.important {
-    border-left-color: var(--mdopen-rtd-danger);
     background: var(--mdopen-rtd-soft-red);
   }
 

@@ -15,6 +15,7 @@
     --mdopen-demo-h5: #6d28d9;
     --mdopen-demo-h6: #be123c;
     --mdopen-demo-radius: 14px;
+    --mdopen-code-radius: var(--mdopen-demo-radius);
     --mdopen-demo-shadow: 0 24px 70px rgba(17, 24, 39, 0.10);
   }
 
@@ -215,8 +216,7 @@
   }
 
   html[data-mdopen-style="demo"] .markdown-body pre {
-    margin: 1.5rem 0 !important;
-    padding: 1rem 1.1rem !important;
+    padding: 1rem !important;
     border: 1px solid var(--mdopen-demo-border-soft);
     border-radius: var(--mdopen-demo-radius);
     font-size: 0.9rem;

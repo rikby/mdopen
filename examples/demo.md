@@ -1,3 +1,12 @@
+---
+title: Markdown HTML Render Demo
+description: Demo document for mdopen screen reading, controls, and print output.
+tags:
+  - markdown
+  - print
+  - frontmatter
+---
+
 # Markdown HTML Render Demo
 
 > A compact public demo for testing Markdown rendering, screen reading controls, and print output.
@@ -14,6 +23,15 @@ This page exercises the Markdown features that usually expose renderer and CSS p
 * Code highlighting, inline code, and long code lines.
 * Blockquotes, GitHub-style callouts, definition lists, marks, subscript, superscript, Mermaid diagrams, images, and footnotes.
 * Screen themes, spacing controls, and print behavior.
+
+## Long code line wrap smoke test
+
+This block starts with one intentionally long line so the code-wrap control can be tested immediately.
+
+```js
+const intentionallyLongCodeLineForWrapTesting = "ThisIsAnExtremelyLongUnbrokenCodeTokenDesignedToExposeWhetherCodeBlocksWrapWordsCorrectlyOrForceHorizontalScrollingAtTheBeginningOfTheDemoDocument_BecauseTheFirstVisibleCodeBlockShouldMakeTheWrapBehaviorObviousWithoutScrollingDeepIntoThePage_1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const shortLine = "The next line is short, so height changes should be easy to notice.";
+```
 
 ## Design goals
 

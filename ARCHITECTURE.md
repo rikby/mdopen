@@ -33,6 +33,8 @@ Code fences with a known language are highlighted by `highlight.js`. Unknown or 
 
 Relative image paths are resolved against the input Markdown file directory so rendered HTML can display local images from the source document.
 
+Leading `---` frontmatter is extracted before Markdown rendering. Valid frontmatter renders as a collapsed `.mdopen-frontmatter` details block above the document body; invalid or non-leading markers stay in normal Markdown flow.
+
 GitHub-style callout blockquotes are post-processed into `.callout` sections after Markdown rendering.
 
 ## Mermaid
@@ -67,6 +69,8 @@ Use `data-mdopen-*` attributes for selected view options:
 - `data-mdopen-accent`
 - `data-mdopen-font`
 - `data-mdopen-density`
+- `data-mdopen-print-frontmatter`
+- `data-mdopen-code-wrap`
 
 Tone `default` and accent `default` remove their override attributes so the selected style source can keep its native colors. Dark mode is for screen reading only; print output stays light.
 

@@ -105,6 +105,44 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
+function extractFrontmatter(value) {
+  if (!value.startsWith("---\n") && !value.startsWith("---\r\n")) {
+    return { frontmatter: "", body: value };
+  }
+
+  const marker = value.startsWith("---\r\n") ? "---\r\n" : "---\n";
+  let searchIndex = marker.length;
+
+  while (searchIndex < value.length) {
+    const nextLineIndex = value.indexOf("\n", searchIndex);
+    const lineEnd = nextLineIndex === -1 ? value.length : nextLineIndex + 1;
+    const line = value.slice(searchIndex, lineEnd).replace(/\r?\n$/, "");
+
+    if (line === "---") {
+      const frontmatter = value.slice(marker.length, searchIndex).replace(/\r?\n$/, "");
+      return {
+        frontmatter,
+        body: value.slice(lineEnd),
+      };
+    }
+
+    if (nextLineIndex === -1) break;
+    searchIndex = lineEnd;
+  }
+
+  return { frontmatter: "", body: value };
+}
+
+function renderFrontmatter(value) {
+  if (!value.trim()) return "";
+  return [
+    '<details class="mdopen-frontmatter">',
+    "<summary>Frontmatter</summary>",
+    `<pre><code>${escapeHtml(value)}</code></pre>`,
+    "</details>\n",
+  ].join("");
+}
+
 function enhanceHtml(value) {
   return value.replace(
     /<blockquote>\s*<p>\[!(NOTE|TIP|WARNING|IMPORTANT)\]\s*(?:<br>\s*)?([\s\S]*?)<\/blockquote>/gi,
@@ -112,7 +150,9 @@ function enhanceHtml(value) {
   );
 }
 
-const body = enhanceHtml(md.render(markdown));
+const parsedMarkdown = extractFrontmatter(markdown);
+const frontmatter = renderFrontmatter(parsedMarkdown.frontmatter);
+const body = enhanceHtml(md.render(parsedMarkdown.body));
 
 const html = template
   .replaceAll("{{pageTitle}}", escapeHtml(pageTitle))
@@ -121,6 +161,7 @@ const html = template
   .replaceAll("{{defaultStyle}}", escapeHtml(defaultStyle))
   .replaceAll("{{mermaidScript}}", hasMermaid ? readTemplatePart(templatePath, "mermaid-script.html") : "")
   .replaceAll("{{editorScript}}", "")
+  .replaceAll("{{frontmatter}}", frontmatter)
   .replaceAll("{{body}}", body);
 
 fs.writeFileSync(output, html);

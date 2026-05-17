@@ -109,6 +109,26 @@
         queueHeadingFontPreview();
       }
 
+      function setPrintFrontmatter(enabled) {
+        enabled = enabled === true || enabled === 'true' || enabled === '1';
+        if (enabled) {
+          document.documentElement.dataset.mdopenPrintFrontmatter = 'true';
+        } else {
+          delete document.documentElement.dataset.mdopenPrintFrontmatter;
+        }
+        localStorage.setItem('mdopen-print-frontmatter', enabled ? 'true' : 'false');
+        var button = menuPanel.querySelector('[data-mdopen-control="print-frontmatter"]');
+        if (button) button.setAttribute('aria-pressed', String(enabled));
+      }
+
+      function setCodeWrap(enabled) {
+        enabled = enabled !== false && enabled !== 'false' && enabled !== '0';
+        document.documentElement.dataset.mdopenCodeWrap = enabled ? 'true' : 'false';
+        localStorage.setItem('mdopen-code-wrap', enabled ? 'true' : 'false');
+        var button = menuPanel.querySelector('[data-mdopen-control="code-wrap"]');
+        if (button) button.setAttribute('aria-pressed', String(enabled));
+      }
+
       function getRichCopyHtml() {
         var clone = article.cloneNode(true);
         Array.prototype.forEach.call(clone.querySelectorAll('.mermaid-fullscreen-btn'), function (button) {
@@ -285,6 +305,12 @@
         if (button.dataset.mdopenControl === 'tone') setTone(value);
         if (button.dataset.mdopenControl === 'accent') setAccent(value);
         if (button.dataset.mdopenControl === 'density') setDensity(value);
+        if (button.dataset.mdopenControl === 'print-frontmatter') {
+          setPrintFrontmatter(button.getAttribute('aria-pressed') !== 'true');
+        }
+        if (button.dataset.mdopenControl === 'code-wrap') {
+          setCodeWrap(button.getAttribute('aria-pressed') !== 'true');
+        }
       });
 
       pinToggle.addEventListener('click', function () {
@@ -311,6 +337,8 @@
       setAccent(params.get('accent') || (defaultStyle !== 'default' ? 'default' : localStorage.getItem('mdopen-accent')) || 'default');
       setFont(params.get('font') || localStorage.getItem('mdopen-font') || 'source');
       setDensity(params.get('density') || localStorage.getItem('mdopen-density') || 'normal');
+      setPrintFrontmatter(params.get('print-frontmatter') || localStorage.getItem('mdopen-print-frontmatter') || 'false');
+      setCodeWrap(params.get('code-wrap') || localStorage.getItem('mdopen-code-wrap') || 'true');
       setMenuPinned(localStorage.getItem('mdopen-autohide-menu') === 'false');
       link.addEventListener('load', queueHeadingFontPreview);
       if (document.fonts && document.fonts.ready) {
@@ -319,12 +347,26 @@
       queueHeadingFontPreview();
 
       var themeBeforePrint = null;
+      var frontmatterOpenedForPrint = [];
       window.addEventListener('beforeprint', function () {
         themeBeforePrint = localStorage.getItem('mdopen-theme') || 'light';
         link.href = styles.light;
         document.documentElement.dataset.mdopenTheme = 'light';
+        frontmatterOpenedForPrint = [];
+        if (document.documentElement.dataset.mdopenPrintFrontmatter === 'true') {
+          Array.prototype.forEach.call(document.querySelectorAll('.mdopen-frontmatter'), function (details) {
+            if (!details.open) {
+              details.open = true;
+              frontmatterOpenedForPrint.push(details);
+            }
+          });
+        }
       });
       window.addEventListener('afterprint', function () {
+        frontmatterOpenedForPrint.forEach(function (details) {
+          details.open = false;
+        });
+        frontmatterOpenedForPrint = [];
         setTheme(themeBeforePrint || localStorage.getItem('mdopen-theme') || 'light');
       });
     }());

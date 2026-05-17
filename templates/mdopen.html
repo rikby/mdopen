@@ -30,6 +30,18 @@
         </div>
       </fieldset>
       <fieldset class="mdopen-option-group">
+        <legend>Print</legend>
+        <div class="mdopen-segmented" aria-label="Print options">
+          <button type="button" data-mdopen-control="print-frontmatter" data-mdopen-value="true" aria-pressed="false">Frontmatter</button>
+        </div>
+      </fieldset>
+      <fieldset class="mdopen-option-group">
+        <legend>Code</legend>
+        <div class="mdopen-segmented" aria-label="Code options">
+          <button type="button" data-mdopen-control="code-wrap" data-mdopen-value="true" aria-pressed="true">Wrap</button>
+        </div>
+      </fieldset>
+      <fieldset class="mdopen-option-group">
         <legend>Theme</legend>
         <div class="mdopen-segmented" aria-label="Theme style">
           <button type="button" data-mdopen-control="style" data-mdopen-value="default">Default</button>
@@ -82,6 +94,7 @@
     </div>
   </nav>
   <article class="markdown-body">
+{{frontmatter}}
 {{body}}
   </article>
   <a class="mdopen-github-link" href="https://github.com/rikby/mdopen" target="_blank" rel="noopener noreferrer" aria-label="Open mdopen on GitHub">

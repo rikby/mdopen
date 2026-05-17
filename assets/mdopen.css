@@ -2,6 +2,7 @@
   color-scheme: light dark;
   --mdopen-mermaid-bg: #ffffff;
   --mdopen-mermaid-border: var(--mdopen-preview-border, #d0d7de);
+  --mdopen-code-radius: 6px;
   --mdopen-mermaid-button-bg: rgba(255, 255, 255, 0.88);
   --mdopen-mermaid-button-fg: #1f2328;
 }
@@ -375,7 +376,7 @@ html[data-mdopen-tone] .markdown-body a {
   margin: 1.5rem 0;
   padding: 1rem;
   border: 1px solid var(--mdopen-mermaid-border);
-  border-radius: 8px;
+  border-radius: var(--mdopen-code-radius, 6px);
   background: var(--mdopen-mermaid-bg);
 }
 
@@ -400,6 +401,60 @@ html[data-mdopen-tone] .markdown-body a {
 
 html[data-mdopen-theme="dark"] .mermaid-container .mermaid-error {
   color: #b45309;
+}
+
+.markdown-body .mdopen-frontmatter {
+  margin: 0 0 1rem;
+  padding: 0;
+  border: 1px solid var(--borderColor-default, var(--mdopen-preview-border, rgba(128, 128, 128, 0.28)));
+  border-radius: 6px;
+  background: var(--mdopen-preview-code-bg, var(--bgColor-muted, rgba(175, 184, 193, 0.16)));
+  overflow: hidden;
+}
+
+.markdown-body .mdopen-frontmatter summary {
+  margin: 0;
+  padding: 0.55rem 0.75rem;
+  border: 0;
+  background: transparent;
+  color: var(--fgColor-muted, #57606a);
+  font-size: 0.92em;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.markdown-body .mdopen-frontmatter[open] summary {
+  border-bottom: 1px solid var(--borderColor-default, var(--mdopen-preview-border, rgba(128, 128, 128, 0.28)));
+}
+
+.markdown-body .mdopen-frontmatter pre {
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.markdown-body pre {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.markdown-body pre > code,
+.markdown-body pre > tt {
+  overflow: visible;
+}
+
+.markdown-body pre::-webkit-scrollbar {
+  height: 7px;
+}
+
+.markdown-body pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.markdown-body pre::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(140, 148, 158, 0.6);
 }
 
 .mermaid-fullscreen-btn {
@@ -904,6 +959,28 @@ html[data-mdopen-theme="dark"] .mermaid-container .mermaid-error {
   .markdown-body details {
     margin-top: 0 !important;
     margin-bottom: 5pt !important;
+  }
+
+  .markdown-body .mdopen-frontmatter {
+    display: none !important;
+  }
+
+  html[data-mdopen-print-frontmatter="true"] .markdown-body .mdopen-frontmatter {
+    display: block !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: #ffffff !important;
+    color: var(--mdopen-print-text) !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  html[data-mdopen-print-frontmatter="true"] .markdown-body .mdopen-frontmatter summary {
+    display: none !important;
+  }
+
+  html[data-mdopen-print-frontmatter="true"] .markdown-body .mdopen-frontmatter > :not(summary) {
+    display: block !important;
   }
 
   .markdown-body hr {

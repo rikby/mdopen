@@ -77,6 +77,42 @@
         );
       }
 
+      function extractFrontmatter(value) {
+        if (value.indexOf('---\n') !== 0 && value.indexOf('---\r\n') !== 0) {
+          return { frontmatter: '', body: value };
+        }
+
+        var marker = value.indexOf('---\r\n') === 0 ? '---\r\n' : '---\n';
+        var searchIndex = marker.length;
+        while (searchIndex < value.length) {
+          var nextLineIndex = value.indexOf('\n', searchIndex);
+          var lineEnd = nextLineIndex === -1 ? value.length : nextLineIndex + 1;
+          var line = value.slice(searchIndex, lineEnd).replace(/\r?\n$/, '');
+
+          if (line === '---') {
+            return {
+              frontmatter: value.slice(marker.length, searchIndex).replace(/\r?\n$/, ''),
+              body: value.slice(lineEnd)
+            };
+          }
+
+          if (nextLineIndex === -1) break;
+          searchIndex = lineEnd;
+        }
+
+        return { frontmatter: '', body: value };
+      }
+
+      function renderFrontmatter(value) {
+        if (!value.trim()) return '';
+        return [
+          '<details class="mdopen-frontmatter">',
+          '<summary>Frontmatter</summary>',
+          '<pre><code>' + escapeHtml(value) + '</code></pre>',
+          '</details>'
+        ].join('');
+      }
+
       function loadScripts(callback) {
         if (scriptsLoaded) {
           callback();
@@ -256,10 +292,11 @@
       function render() {
         if (!md || !textarea) return;
         var text = textarea.value;
-        var html = enhanceHtml(md.render(text));
+        var parsed = extractFrontmatter(text);
+        var html = renderFrontmatter(parsed.frontmatter) + enhanceHtml(md.render(parsed.body));
         article.innerHTML = html;
 
-        if (hasMermaidFence(text)) {
+        if (hasMermaidFence(parsed.body)) {
           loadMermaid(function () {
             renderMermaidDiagrams();
           });

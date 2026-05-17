@@ -12,7 +12,7 @@ For runtime flow and component ownership, use `ARCHITECTURE.md` as the source of
 - `assets/styles/readthedocs.css`: optional theme-source CSS adapted from the Read the Docs Sphinx theme document styles.
 - `assets/styles/fonts/`: local Read the Docs font assets used by `readthedocs.css`.
 - `templates/mdopen.html`: HTML shell and toolbar markup.
-- `templates/mdopen-script.html`: toolbar control wiring, persisted preferences, copy behavior, and print theme behavior.
+- `templates/mdopen-script.html`: toolbar control wiring, persisted preferences, copy behavior, print options, and print theme behavior.
 
 Do not add Tailwind, component CSS folders, or a frontend build step.
 
@@ -95,7 +95,7 @@ The risk pattern is any theme source setting element margins with `!important` a
 
 - Use a single round light/dark icon toggle.
 - Keep the fixed toolbar collapsed to the light/dark icon toggle, rich-copy button, print button, and menu button.
-- Keep copy modes, theme, font, tone, color, and density controls inside `.mdopen-menu-panel`.
+- Keep copy modes, print options, code options, theme, font, tone, color, and density controls inside `.mdopen-menu-panel`.
 - Use native buttons with `aria-pressed` for menu customizations so the current state is visible without opening dropdowns.
 - Keep outside-click closing controlled by the persisted pin toggle in the menu corner.
 - Keep toolbar classes structural only; selected values belong in `data-mdopen-*` attributes.
@@ -118,10 +118,14 @@ Use data attributes for semantic or user-selected values:
 - `data-mdopen-accent`
 - `data-mdopen-font`
 - `data-mdopen-density`
+- `data-mdopen-print-frontmatter`
+- `data-mdopen-code-wrap`
 
 Tone `default` and accent `default` must remove their override attributes so the selected theme source can keep its native colors.
 Font `source` must preserve the selected theme-source fonts. Other font values are user overrides and must be applied from `assets/mdopen-overrides.css`, after all theme-source CSS.
 Density `normal` keeps the selected theme source spacing. Other density values are user overrides and must be applied from `assets/mdopen-overrides.css`, after all theme-source CSS.
+Print-only options, such as `data-mdopen-print-frontmatter`, belong in `assets/mdopen.css` with the shared print rules unless they need to override a theme source.
+User code options, such as `data-mdopen-code-wrap`, belong in `assets/mdopen-overrides.css` because they must win over theme-source code block rules.
 
 Use classes for stable structure only. Do not add separate classes for every tone, accent, font, or density value.
 

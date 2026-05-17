@@ -77,6 +77,7 @@ function generateEditPage() {
     .replaceAll("{{editorScript}}", editorScript)
     .replaceAll("{{defaultStyle}}", "default")
     .replaceAll("{{mermaidScript}}", "")
+    .replaceAll("{{frontmatter}}", "")
     .replaceAll("{{body}}", "")
     .replace(' data-mdopen-editor-hidden', '');
 

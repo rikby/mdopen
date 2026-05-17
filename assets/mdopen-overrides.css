@@ -216,3 +216,97 @@ html[data-mdopen-font]:not([data-mdopen-font="source"]) .markdown-body blockquot
 html[data-mdopen-font]:not([data-mdopen-font="source"]) .markdown-body table {
   font-family: var(--mdopen-font-ui) !important;
 }
+
+/* Code wrapping is a user override, so it wins over theme-source code rules. */
+.markdown-body {
+  --mdopen-code-padding: var(--mdopen-pre-padding, var(--mdopen-theme-pre-padding, 1rem));
+}
+
+html[data-mdopen-style="readthedocs"] .markdown-body {
+  --mdopen-theme-pre-padding: 12px;
+}
+
+.markdown-body pre,
+html[data-mdopen-style="demo"] .markdown-body pre,
+html[data-mdopen-style="readthedocs"] .markdown-body pre {
+  --mdopen-code-scrollbar-size: 10px;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 0 !important;
+  scrollbar-color: color-mix(in srgb, var(--fgColor-muted, #57606a) 42%, transparent) transparent;
+  scrollbar-width: thin;
+}
+
+.markdown-body pre code,
+.markdown-body pre tt {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+  box-sizing: border-box;
+  padding: var(--mdopen-code-padding) var(--mdopen-code-padding) max(0px, calc(var(--mdopen-code-padding) - var(--mdopen-code-scrollbar-size))) var(--mdopen-code-padding);
+  overflow: visible;
+}
+
+.markdown-body .mdopen-frontmatter {
+  margin: 0 0 var(--mdopen-text-gap, 1rem) !important;
+  padding: 0 !important;
+  border: 1px solid var(--borderColor-default, var(--mdopen-preview-border, rgba(128, 128, 128, 0.28))) !important;
+  border-radius: 6px !important;
+  background: var(--mdopen-preview-code-bg, var(--bgColor-muted, rgba(175, 184, 193, 0.16))) !important;
+  overflow: hidden !important;
+}
+
+.markdown-body .mdopen-frontmatter summary {
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.markdown-body .mdopen-frontmatter[open] summary {
+  border-bottom: 1px solid var(--borderColor-default, var(--mdopen-preview-border, rgba(128, 128, 128, 0.28))) !important;
+}
+
+.markdown-body .mdopen-frontmatter pre {
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.markdown-body pre::-webkit-scrollbar {
+  width: var(--mdopen-code-scrollbar-size);
+  height: var(--mdopen-code-scrollbar-size);
+}
+
+.markdown-body pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.markdown-body pre::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+  background-color: color-mix(in srgb, var(--fgColor-muted, #57606a) 42%, transparent);
+}
+
+html:not([data-mdopen-code-wrap="false"]) .markdown-body pre code,
+html:not([data-mdopen-code-wrap="false"]) .markdown-body pre tt,
+html:not([data-mdopen-code-wrap="false"]) .markdown-body pre span {
+  white-space: pre-wrap !important;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+html:not([data-mdopen-code-wrap="false"]) .markdown-body pre code,
+html:not([data-mdopen-code-wrap="false"]) .markdown-body pre tt {
+  width: auto;
+}
+
+html[data-mdopen-code-wrap="false"] .markdown-body pre code,
+html[data-mdopen-code-wrap="false"] .markdown-body pre tt,
+html[data-mdopen-code-wrap="false"] .markdown-body pre span {
+  white-space: pre !important;
+  overflow-wrap: normal;
+  word-break: normal;
+}
