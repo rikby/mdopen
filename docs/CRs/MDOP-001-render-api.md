@@ -126,9 +126,9 @@ Deferred to `mdt:architecture`:
 - `ARCHITECTURE.md` §Constraints — "keep changes small and local; this project is intentionally script-sized"
 - quick-share — separate local HTTP file server with public tunnel (external project; consumer-side integration deferred)
 
-> Architecture notes: [architecture.md](./MDOP-001-render-api/architecture.md)
-> Assessment: [assess.md](./MDOP-001-render-api/assess.md)
-> Requirements: [requirements.md](./MDOP-001-render-api/requirements.md)
-> Tests: [tests.md](./MDOP-001-render-api/tests.md)
-> Tasks: [tasks.md](./MDOP-001-render-api/tasks.md)
+> Architecture notes: [architecture.md](./MDOP-001/architecture.md)
+> Assessment: [assess.md](./MDOP-001/assess.md)
+> Requirements: [requirements.md](./MDOP-001/requirements.md)
+> Tests: [tests.md](./MDOP-001/tests.md)
+> Tasks: [tasks.md](./MDOP-001/tasks.md)
 > ADR: [docs/decisions/0001-expose-rendermarkdown-as-library-api.md](../../decisions/0001-expose-rendermarkdown-as-library-api.md)

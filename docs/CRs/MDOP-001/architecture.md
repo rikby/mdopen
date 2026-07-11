@@ -104,7 +104,7 @@ package.json         # UNCHANGED: main already points to renderer.js
 bin/mdopen.js        # UNCHANGED: still spawns renderer.js
 templates/           # UNCHANGED
 assets/              # UNCHANGED
-docs/CRs/MDOP-001-render-api/
+docs/CRs/MDOP-001/
   architecture.md    # THIS FILE
 docs/decisions/
   0001-expose-rendermarkdown-as-library-api.md  # ADR (NEW)

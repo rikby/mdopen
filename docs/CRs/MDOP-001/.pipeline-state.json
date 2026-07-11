@@ -7,7 +7,7 @@
   "discovery": {
     "projectDocs": ["AGENTS.md", "ARCHITECTURE.md", "docs/styling.md", "docs/binaries.md"],
     "ticketSource": "docs/CRs/MDOP-001-render-api.md",
-    "artifactDirectory": "docs/CRs/MDOP-001-render-api",
+    "artifactDirectory": "docs/CRs/MDOP-001",
     "ticketStatusModel": "mdt-cli status: In Progress",
     "workflowSkills": "MDT (mdt-cli at /Users/kirby/home/markdown-ticket/cli/bin/mdt-cli; spec-trace at /usr/local/bin/spec-trace)",
     "languageRuntime": "Bun + JavaScript (CommonJS) + markdown-it + highlight.js",
