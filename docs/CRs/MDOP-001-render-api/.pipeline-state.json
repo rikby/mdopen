@@ -1,0 +1,44 @@
+{
+  "pipeline": "mdt-pipeline-e2e",
+  "version": 4,
+  "ticket": "MDOP-001",
+  "currentMilestone": "user-review",
+  "completedMilestones": ["pre-flight", "assess", "requirements", "scenarios-skipped", "architecture", "tests", "tasks", "implement", "review"],
+  "discovery": {
+    "projectDocs": ["AGENTS.md", "ARCHITECTURE.md", "docs/styling.md", "docs/binaries.md"],
+    "ticketSource": "docs/CRs/MDOP-001-render-api.md",
+    "artifactDirectory": "docs/CRs/MDOP-001-render-api",
+    "ticketStatusModel": "mdt-cli status: In Progress",
+    "workflowSkills": "MDT (mdt-cli at /Users/kirby/home/markdown-ticket/cli/bin/mdt-cli; spec-trace at /usr/local/bin/spec-trace)",
+    "languageRuntime": "Bun + JavaScript (CommonJS) + markdown-it + highlight.js",
+    "verificationCommands": ["bash -n bin/mdopen", "bun run check", "bun test", "bun renderer.js README.md templates/mdopen.html /tmp/mdopen-check.html README mdopen.css", "./bin/mdopen README.md", "bun run build:binary"],
+    "dirtyWorktreeBoundary": "README.md, bin/mdopen.js, scripts/build-binary.js, docs/design/surfaces/* — pre-existing, unrelated"
+  },
+  "artifacts": {
+    "pre-flight": ".pipeline-state.json",
+    "assess": "assess.md",
+    "requirements": "requirements.md",
+    "scenarios": "bdd.md (skipped — internal refactor)",
+    "architecture": "architecture.md + docs/decisions/0001-expose-rendermarkdown-as-library-api.md",
+    "tests": "tests.md + test/renderer.test.js + test/cli-parity.test.js",
+    "tasks": "tasks.md",
+    "implement": "renderer.js (refactored), package.json (test script), ARCHITECTURE.md (docs)",
+    "review": "all gates pass"
+  },
+  "baseline": {
+    "check": "pass",
+    "cliOutputBytes": 39676,
+    "cliOutputPath": "/tmp/mdop001-before.html",
+    "timestamp": "2026-07-11T15:30:00Z"
+  },
+  "gates": {
+    "tests": "pass (8/8)",
+    "bash -n": "pass",
+    "bun run check": "pass",
+    "cli parity": "byte-identical (39676 bytes)",
+    "build:binary": "pass (214 modules)"
+  },
+  "approvals": {},
+  "commits": [],
+  "updatedAt": "2026-07-11T16:00:00Z"
+}

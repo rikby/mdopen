@@ -1,23 +1,24 @@
 # Architecture
 
-`mdopen` is a small cross-platform command-line helper. It renders one Markdown file into styled HTML, writes the output to a temp directory, and opens it in the default browser.
+`mdopen` is a small cross-platform command-line helper. It renders one Markdown file, or one local directory of Markdown files, into styled browser output written to a temp directory and opened in the default browser.
 
 There is no server, build system, app framework, or frontend bundler.
 
 ## Runtime Flow
 
-1. `mdopen FILE.md` validates the input file through the Bun CLI in `bin/mdopen.js`.
+1. `mdopen FILE.md|DIR` validates the input path through the Bun CLI in `bin/mdopen.js`.
 2. Thin launchers in `bin/mdopen`, `bin/mdopen.cmd`, and `bin/mdopen.ps1` delegate to the Bun CLI.
 3. The CLI creates the platform temp `mdopen` directory, copies CSS and font assets there, and chooses a default style source.
-4. It runs `renderer.js` with the input path, template path, output path, page title, CSS filename, and default style.
+4. For a file input, it runs `renderer.js` with the input path, template path, output path, page title, CSS filename, and default style.
 5. `renderer.js` renders Markdown into the HTML template and writes the final file.
-6. The CLI opens the generated HTML with the platform opener: `open`, `xdg-open`, or Windows `cmd.exe /c start`.
+6. For a directory input, the CLI scans Markdown files, writes one local HTML viewer page, and embeds a file manifest plus browser-side Markdown rendering script.
+7. The CLI opens the generated HTML with the platform opener: `open`, `xdg-open`, or Windows `cmd.exe /c start`.
 
 ## Main Pieces
 
 - `bin/mdopen.js`: cross-platform Bun CLI and asset-copy orchestration.
 - `bin/mdopen`, `bin/mdopen.cmd`, `bin/mdopen.ps1`: platform launchers.
-- `renderer.js`: Bun-executed CommonJS renderer using `markdown-it` and `highlight.js`.
+- `renderer.js`: Bun-executed CommonJS renderer using `markdown-it` and `highlight.js`. Exports `renderMarkdown(markdown, options)` so the rendering pipeline is importable as a library; the CLI path runs only when invoked directly via `require.main === module`.
 - `templates/mdopen.html`: HTML shell and toolbar markup.
 - `templates/mdopen-script.html`: browser-side toolbar controls, persisted view controls, copy behavior, and print theme behavior.
 - `templates/mermaid-script.html`: browser-side Mermaid rendering, fullscreen, pan, zoom, and diagram error handling.
@@ -36,6 +37,22 @@ Relative image paths are resolved against the input Markdown file directory so r
 Leading `---` frontmatter is extracted before Markdown rendering. Valid frontmatter renders as a collapsed `.mdopen-frontmatter` details block above the document body; invalid or non-leading markers stay in normal Markdown flow.
 
 GitHub-style callout blockquotes are post-processed into `.callout` sections after Markdown rendering.
+
+The rendering pipeline is importable via `require('./renderer.js').renderMarkdown(markdown, options)`. The `resolveImage` option controls relative image path resolution: the CLI passes a filesystem resolver (`path.resolve`), while HTTP consumers pass a URL resolver. When omitted, relative paths are left unchanged.
+
+## Directory Viewer
+
+`mdopen DIR` is a local viewer mode for navigating a small Markdown tree. It does not generate one HTML file per Markdown file. Instead, the CLI:
+
+1. Scans `.md` and `.markdown` files up to 5 levels deep.
+2. Skips hidden directories and common generated directories such as `.git`, `.n8n`, `node_modules`, `dist`, `build`, and `_site`.
+3. Embeds the discovered Markdown content and source file URLs in one generated HTML page.
+4. Adds a left-side `.mdopen-directory-nav` file list.
+5. Renders the selected file in-browser into the existing `.markdown-body` article.
+
+The viewer keeps the existing toolbar, theme controls, copy controls, print behavior, and document CSS cascade. Relative image paths in selected Markdown files resolve against the selected source file's directory.
+
+The directory viewer is CLI-only. It is not the GitHub Pages editor and does not expose write access to source files.
 
 ## Mermaid
 

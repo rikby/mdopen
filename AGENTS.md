@@ -31,6 +31,7 @@ This file keeps agent-specific working rules only.
 ```bash
 bash -n bin/mdopen
 bun run check
+bun test
 bun renderer.js README.md templates/mdopen.html /tmp/mdopen-check.html README mdopen.css
 ```
 
