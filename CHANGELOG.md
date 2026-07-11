@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+
+- `renderer.js` exports `renderMarkdown(markdown, options)` so the rendering pipeline is importable as a library, not just callable via CLI. The CLI path runs only when invoked directly (`require.main === module`).
+- Optional `resolveImage` callback parameterizes relative image path resolution: the CLI passes a filesystem resolver; HTTP consumers pass a URL resolver; omitted leaves relative paths unchanged.
+- Test suite using Bun's built-in test runner (`bun test`) with CLI output parity and render export interface coverage.
+- Architectural Decision Record for the render API: `docs/decisions/0001-expose-rendermarkdown-as-library-api.md`.
+
+### Changed
+
+- `ARCHITECTURE.md` documents the library entry point and `resolveImage` option.
+
 ## [0.2.0] - 2026-05-17
 
 ### Added
