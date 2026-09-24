@@ -69,6 +69,7 @@ function generateEditPage() {
   const template = fs.readFileSync(path.join(projectDir, "templates", "mdopen.html"), "utf8");
   const editorScript = fs.readFileSync(path.join(projectDir, "templates", "editor-script.html"), "utf8");
   const mdopenScript = fs.readFileSync(path.join(projectDir, "templates", "mdopen-script.html"), "utf8");
+  const mermaidOverlay = fs.readFileSync(path.join(projectDir, "templates", "mermaid-overlay.html"), "utf8");
 
   const html = template
     .replaceAll("{{pageTitle}}", "Mermaid Editor - MDopen")
@@ -76,7 +77,7 @@ function generateEditPage() {
     .replaceAll("{{mdopenScript}}", mdopenScript)
     .replaceAll("{{editorScript}}", editorScript)
     .replaceAll("{{defaultStyle}}", "default")
-    .replaceAll("{{mermaidScript}}", "")
+    .replaceAll("{{mermaidScript}}", mermaidOverlay)
     .replaceAll("{{frontmatter}}", "")
     .replaceAll("{{body}}", "")
     .replace(' data-mdopen-editor-hidden', '');

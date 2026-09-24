@@ -141,7 +141,6 @@ function renderMarkdown(markdown, options) {
       const id = `mermaid-diagram-${++mermaidCounter}`;
       return [
         `<div class="mermaid-container" data-mermaid-id="${id}">`,
-        '<button type="button" class="mermaid-fullscreen-btn" aria-label="Open diagram fullscreen">Full</button>',
         `<div class="mermaid" id="${id}">${escapeHtml(token.content)}</div>`,
         "</div>",
       ].join("");
