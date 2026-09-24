@@ -24,9 +24,13 @@ flowchart LR
 
 ```bash
 mdopen file.md
+mdopen path/to/dir/
+mdopen --help
 ```
 
 The generated HTML is written to a temporary directory and opened with the platform default browser. No server, project setup, or manual export step is required.
+
+Directory input scans Markdown files up to 5 levels deep, skips hidden and common generated directories like `.git`, `node_modules`, `.n8n`, `dist`, and `_site`, then opens one local viewer page with a file list and in-browser rendering.
 
 ## Features
 

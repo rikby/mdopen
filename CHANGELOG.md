@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- `-h` / `--help` prints CLI help (usage, arguments, options, environment, examples) to stdout and exits 0; wrong arguments still print a short usage to stderr and exit 2.
 - `renderer.js` exports `renderMarkdown(markdown, options)` so the rendering pipeline is importable as a library, not just callable via CLI. The CLI path runs only when invoked directly (`require.main === module`).
 - Optional `resolveImage` callback parameterizes relative image path resolution: the CLI passes a filesystem resolver; HTTP consumers pass a URL resolver; omitted leaves relative paths unchanged.
 - Test suite using Bun's built-in test runner (`bun test`) with CLI output parity and render export interface coverage.
