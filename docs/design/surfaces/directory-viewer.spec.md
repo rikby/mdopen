@@ -71,7 +71,7 @@ The toolbar in viewer mode gains a `NavToggleButton` (inserted by the viewer scr
 |------|----------|
 | Structure | The flat manifest is grouped client-side into a folder tree; folders sort first, then files, alphabetically per level |
 | Folders | Native `details`/`summary` (`details.mdopen-directory-group`); no JS toggling logic, keyboard and screen-reader behavior come free |
-| Labels | Folders and files show their basename; the full path is a `title` tooltip |
+| Labels | Folders show their basename; file buttons show the document title — first H1 outside fenced code blocks, filename fallback (markdown-ticket MDT-064 rule, extracted at generation time into the manifest `title`); the full path is a `title` tooltip |
 | Default state | Folders are expanded; collapsing persists to `localStorage` (`mdopen-directory-tree` as an array of closed folder paths) |
 | Auto-reveal | Selecting a file (button or rendered link) expands its ancestor folders (`setActiveButton` walks up from the active button) |
 | Guides | Nested branches indent with a quiet 1px left guide; caret is a rotating `▸` pseudo-element |

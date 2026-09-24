@@ -349,13 +349,27 @@ function escapeScriptJson(value) {
     .replace(/\\u2029/g, "\\\\u2029");
 }
 
+function extractDocTitle(content) {
+  let inFence = false;
+  for (const line of content.split("\\n")) {
+    if (/^\\s*(\\x60\\x60\\x60|~~~)/.test(line)) {
+      inFence = !inFence;
+    } else if (!inFence) {
+      const match = line.trim().match(/^#\\s+(.+)$/);
+      if (match) return match[1].trim();
+    }
+  }
+  return null;
+}
+
 function renderDirectoryViewer(templatePath, output, pageTitle, cssHref, defaultStyle, inputDir, markdownFiles) {
   const documents = markdownFiles.map((file) => {
     const relative = path.relative(inputDir, file);
+    const content = fs.readFileSync(file, "utf8");
     return {
       path: toPosixPath(relative),
-      title: path.basename(file, path.extname(file)),
-      content: fs.readFileSync(file, "utf8"),
+      title: extractDocTitle(content) || path.basename(file, path.extname(file)),
+      content,
       dirUrl: pathToFileURL(\`\${path.dirname(file)}\${path.sep}\`).href,
       fileUrl: pathToFileURL(file).href,
     };
@@ -405,7 +419,7 @@ function renderDirectoryViewerScript(data) {
     "var TREE_KEY='mdopen-directory-tree',NAV_HIDDEN_KEY='mdopen-directory-nav-hidden';",
     "function closedFolders(){try{var s=JSON.parse(localStorage.getItem(TREE_KEY)||'[]');return Array.isArray(s)?s:[];}catch(e){return[];}}",
     "function saveClosed(c){try{localStorage.setItem(TREE_KEY,JSON.stringify(c));}catch(e){}}",
-    "function fileBtn(f){var b=document.createElement('button');b.type='button';b.dataset.mdopenPath=f.path;b.textContent=f.path.split('/').pop();b.title=f.path;return b;}",
+    "function fileBtn(f){var b=document.createElement('button');b.type='button';b.dataset.mdopenPath=f.path;b.textContent=f.title||f.path.split('/').pop();b.title=f.path;return b;}",
     "function branchEl(c,n,p,cl){Object.keys(n.folders).sort(function(a,b){return a.localeCompare(b);}).forEach(function(name){var ch=n.folders[name],seg=p.concat([name]),full=seg.join('/'),d=document.createElement('details');d.className='mdopen-directory-group';d.dataset.mdopenFolder=full;if(cl.indexOf(full)===-1)d.open=true;var s=document.createElement('summary');s.textContent=name;s.title=full+'/';d.appendChild(s);var b=document.createElement('div');b.className='mdopen-directory-branch';d.appendChild(b);branchEl(b,ch,seg,cl);c.appendChild(d);});n.files.forEach(function(f){c.appendChild(fileBtn(f));});}",
     "function tree(){var r={folders:{},files:[]};directoryData.files.forEach(function(f){var s=f.path.split('/'),n=r;for(var i=0;i<s.length-1;i++){if(!n.folders[s[i]])n.folders[s[i]]={folders:{},files:[]};n=n.folders[s[i]];}n.files.push(f);});return r;}",
     "function toggleBtn(n){var t=document.querySelector('.mdopen-toolbar');if(!t)return;var b=document.createElement('button');b.type='button';b.className='mdopen-directory-toggle';b.textContent='\\uD83D\\uDDC2';b.setAttribute('aria-label','Toggle file list');b.setAttribute('aria-controls',n.id);b.setAttribute('aria-pressed',n.hidden?'false':'true');b.title='Toggle file list';b.addEventListener('click',function(){n.hidden=!n.hidden;b.setAttribute('aria-pressed',n.hidden?'false':'true');try{localStorage.setItem(NAV_HIDDEN_KEY,n.hidden?'true':'false');}catch(e){}});t.insertBefore(b,t.querySelector('.mdopen-theme-button'));}",

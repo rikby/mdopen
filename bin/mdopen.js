@@ -228,14 +228,29 @@ function readTemplatePart(value, name) {
   return fs.readFileSync(path.join(path.dirname(value), name), "utf8");
 }
 
+// First H1 outside fenced code blocks (markdown-ticket MDT-064 rule); null when absent.
+function extractDocTitle(content) {
+  let inFence = false;
+  for (const line of content.split("\n")) {
+    if (/^\s*(```|~~~)/.test(line)) {
+      inFence = !inFence;
+    } else if (!inFence) {
+      const match = line.trim().match(/^#\s+(.+)$/);
+      if (match) return match[1].trim();
+    }
+  }
+  return null;
+}
+
 function renderDirectoryViewer(templatePath, output, pageTitle, cssHref, defaultStyle, inputDir, markdownFiles) {
   const template = fs.readFileSync(templatePath, "utf8");
   const documents = markdownFiles.map((file) => {
     const relative = path.relative(inputDir, file);
+    const content = fs.readFileSync(file, "utf8");
     return {
       path: toPosixPath(relative),
-      title: path.basename(file, path.extname(file)),
-      content: fs.readFileSync(file, "utf8"),
+      title: extractDocTitle(content) || path.basename(file, path.extname(file)),
+      content,
       dirUrl: pathToFileURL(`${path.dirname(file)}${path.sep}`).href,
       fileUrl: pathToFileURL(file).href,
     };
@@ -862,7 +877,7 @@ function renderDirectoryViewerScript(data) {
         var button = document.createElement('button');
         button.type = 'button';
         button.dataset.mdopenPath = file.path;
-        button.textContent = file.path.split('/').pop();
+        button.textContent = file.title || file.path.split('/').pop();
         button.title = file.path;
         return button;
       }

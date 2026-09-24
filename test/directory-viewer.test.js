@@ -21,8 +21,11 @@ function makeTempDir(prefix) {
 test("directory viewer generator embeds the collapsible tree UI", () => {
   const srcDir = makeTempDir("mdoptree-src-");
   fs.mkdirSync(path.join(srcDir, "docs", "inner"), { recursive: true });
-  fs.writeFileSync(path.join(srcDir, "README.md"), "# Root\n");
-  fs.writeFileSync(path.join(srcDir, "docs", "guide.md"), "# Guide\n");
+  fs.writeFileSync(path.join(srcDir, "README.md"), "# Root Doc\n");
+  fs.writeFileSync(
+    path.join(srcDir, "docs", "guide.md"),
+    "---\ntitle: front\n---\n\n```js\n# not a heading\n```\n\n# Styling Guide\n",
+  );
   fs.writeFileSync(path.join(srcDir, "docs", "inner", "deep.md"), "# Deep\n");
   const outDir = makeTempDir("mdoptree-out-");
 
@@ -39,6 +42,8 @@ test("directory viewer generator embeds the collapsible tree UI", () => {
   assert.ok(html.includes("'aria-controls'"), "toggle controls the nav");
   assert.ok(html.includes("mdopen-directory-nav[hidden]"), "hidden-state CSS is present");
   assert.ok(html.includes("mdopen-directory-tree"), "folder state persists to localStorage");
+  assert.ok(html.includes('"title":"Root Doc"'), "H1 becomes the manifest title");
+  assert.ok(html.includes('"title":"Styling Guide"'), "fenced # ignored, real H1 found after fence");
 });
 
 test("single-file mode does not include directory viewer UI", () => {
