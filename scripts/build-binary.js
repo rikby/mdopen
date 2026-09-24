@@ -114,6 +114,7 @@ function renderEntry(data) {
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
+const { pathToFileURL } = require("node:url");
 const { spawnSync } = require("node:child_process");
 
 const RENDERER_REQUIRE_CACHE = {
@@ -136,7 +137,7 @@ const TEXT_ASSETS = ${JSON.stringify(data.textAssets, null, 2)};
 const FONT_ASSETS = ${JSON.stringify(data.fontAssets, null, 2)};
 
 function usage() {
-  console.error("Usage: mdopen FILE.md");
+  console.error("Usage: mdopen FILE.md|DIR");
 }
 
 function fail(message, code = 1) {
@@ -176,6 +177,67 @@ function commandExists(command) {
   const args = process.platform === "win32" ? [command] : ["-v", command];
   const result = spawnSync(probe, args, { stdio: "ignore", shell: process.platform !== "win32" });
   return result.status === 0;
+}
+
+const DIRECTORY_SCAN_DEPTH = 5;
+const IGNORED_DIRECTORY_NAMES = new Set([
+  ".git",
+  ".hg",
+  ".svn",
+  ".n8n",
+  ".next",
+  ".nuxt",
+  ".svelte-kit",
+  ".turbo",
+  ".vite",
+  ".cache",
+  ".parcel-cache",
+  ".pytest_cache",
+  ".venv",
+  "__pycache__",
+  "build",
+  "coverage",
+  "dist",
+  "node_modules",
+  "vendor",
+  "_site",
+]);
+
+function isMarkdownFile(value) {
+  const ext = path.extname(value).toLowerCase();
+  return ext === ".md" || ext === ".markdown";
+}
+
+function toPosixPath(value) {
+  return value.split(path.sep).join("/");
+}
+
+function collectMarkdownFiles(rootDir) {
+  const files = [];
+
+  function walk(currentDir, depth) {
+    const entries = fs.readdirSync(currentDir, { withFileTypes: true }).sort((a, b) => {
+      if (a.isDirectory() !== b.isDirectory()) return a.isDirectory() ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
+
+    for (const entry of entries) {
+      if (entry.isDirectory()) {
+        if (depth >= DIRECTORY_SCAN_DEPTH || entry.name.startsWith(".") || IGNORED_DIRECTORY_NAMES.has(entry.name)) {
+          continue;
+        }
+        walk(path.join(currentDir, entry.name), depth + 1);
+        continue;
+      }
+
+      if (entry.isFile() && isMarkdownFile(entry.name)) {
+        files.push(path.join(currentDir, entry.name));
+      }
+    }
+  }
+
+  walk(rootDir, 0);
+  return files;
 }
 
 function pathStartsWith(child, parent) {
@@ -240,6 +302,8 @@ function rendererRequire(specifier) {
 }
 
 function runEmbeddedRenderer(input, templatePath, output, pageTitle, cssHref, defaultStyle) {
+  fs.mkdirSync(path.dirname(output), { recursive: true });
+
   const previousArgv = process.argv;
   const module = { exports: {} };
   const renderer = new Function(
@@ -270,6 +334,82 @@ function runEmbeddedRenderer(input, templatePath, output, pageTitle, cssHref, de
   }
 }
 
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function escapeScriptJson(value) {
+  return JSON.stringify(value)
+    .replace(/</g, "\\\\u003c")
+    .replace(/\\u2028/g, "\\\\u2028")
+    .replace(/\\u2029/g, "\\\\u2029");
+}
+
+function renderDirectoryViewer(templatePath, output, pageTitle, cssHref, defaultStyle, inputDir, markdownFiles) {
+  const documents = markdownFiles.map((file) => {
+    const relative = path.relative(inputDir, file);
+    return {
+      path: toPosixPath(relative),
+      title: path.basename(file, path.extname(file)),
+      content: fs.readFileSync(file, "utf8"),
+      dirUrl: pathToFileURL(\`\${path.dirname(file)}\${path.sep}\`).href,
+      fileUrl: pathToFileURL(file).href,
+    };
+  });
+
+  const html = TEMPLATE
+    .replaceAll("{{pageTitle}}", escapeHtml(pageTitle))
+    .replaceAll("{{cssHref}}", escapeHtml(cssHref))
+    .replaceAll("{{mdopenScript}}", MDOPEN_SCRIPT)
+    .replaceAll("{{defaultStyle}}", escapeHtml(defaultStyle))
+    .replaceAll("{{mermaidScript}}", "")
+    .replaceAll("{{editorScript}}", renderDirectoryViewerScript({
+      rootName: path.basename(inputDir) || inputDir,
+      files: documents,
+    }))
+    .replaceAll("{{frontmatter}}", "")
+    .replaceAll("{{body}}", "<p>Loading directory...</p>");
+
+  fs.writeFileSync(output, html);
+}
+
+function renderDirectoryViewerScript(data) {
+  const json = escapeScriptJson(data);
+  return [
+    "<style>",
+    "@media screen{.mdopen-directory-nav{position:fixed;inset:12px auto 12px 12px;z-index:20;width:min(280px,calc(100vw - 24px));overflow:auto;padding:12px;border:1px solid rgba(127,127,127,.28);border-radius:8px;background:color-mix(in srgb,Canvas 94%,transparent);color:CanvasText;box-shadow:0 10px 30px rgba(0,0,0,.12)}.mdopen-directory-nav h2{margin:0 0 8px;font-size:14px}.mdopen-directory-nav button{display:block;width:100%;padding:7px 8px;border:0;border-radius:6px;background:transparent;color:inherit;font:inherit;font-size:13px;text-align:left;overflow-wrap:anywhere;cursor:pointer}.mdopen-directory-nav button:hover,.mdopen-directory-nav button[aria-current=page]{background:rgba(127,127,127,.16)}body>.markdown-body{margin-left:320px}}",
+    "@media screen and (max-width:760px){.mdopen-directory-nav{position:static;width:auto;max-height:36vh;margin:72px 12px 12px}body>.markdown-body{margin-left:auto}}",
+    "@media print{.mdopen-directory-nav{display:none}body>.markdown-body{margin-left:auto}}",
+    "</style>",
+    "<script>",
+    "(function(){",
+    "var directoryData=" + json + ";",
+    "var article=document.querySelector('.markdown-body');if(!article)return;",
+    "var md=null,scriptsLoaded=false,activeFile=null,filesByPath={},filesByUrl={};",
+    "directoryData.files.forEach(function(file){filesByPath[file.path]=file;filesByUrl[file.fileUrl]=file;});",
+    "function esc(v){return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\\\"/g,'&quot;');}",
+    "function front(v){if(v.indexOf('---\\\\n')!==0&&v.indexOf('---\\\\r\\\\n')!==0)return{frontmatter:'',body:v};var m=v.indexOf('---\\\\r\\\\n')===0?'---\\\\r\\\\n':'---\\\\n',i=m.length;while(i<v.length){var n=v.indexOf('\\\\n',i),e=n===-1?v.length:n+1,l=v.slice(i,e).replace(/\\\\r?\\\\n$/,'');if(l==='---')return{frontmatter:v.slice(m.length,i).replace(/\\\\r?\\\\n$/,''),body:v.slice(e)};if(n===-1)break;i=e;}return{frontmatter:'',body:v};}",
+    "function renderFront(v){return v.trim()?'<details class=\\\"mdopen-frontmatter\\\"><summary>Frontmatter</summary><pre><code>'+esc(v)+'</code></pre></details>':'';}",
+    "function enhance(h){return h.replace(/<blockquote>\\\\s*<p>\\\\[!(NOTE|TIP|WARNING|IMPORTANT)\\\\]\\\\s*(?:<br>\\\\s*)?([\\\\s\\\\S]*?)<\\\\/blockquote>/gi,function(_m,t,b){return '<section class=\\\"callout '+t.toLowerCase()+'\\\"><p class=\\\"callout-title\\\">'+t+'</p><p>'+b+'</section>';});}",
+    "function load(src,cb){var s=document.createElement('script');s.src=src;s.onload=cb;s.onerror=cb;document.head.appendChild(s);}",
+    "function loadScripts(cb){if(scriptsLoaded){cb();return;}var list=['https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js','https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js','https://cdn.jsdelivr.net/npm/markdown-it-deflist@3.0.0/dist/markdown-it-deflist.min.js','https://cdn.jsdelivr.net/npm/markdown-it-footnote@4.0.0/dist/markdown-it-footnote.min.js','https://cdn.jsdelivr.net/npm/markdown-it-mark@4.0.0/dist/markdown-it-mark.min.js','https://cdn.jsdelivr.net/npm/markdown-it-sub@2.0.0/dist/markdown-it-sub.min.js','https://cdn.jsdelivr.net/npm/markdown-it-sup@2.0.0/dist/markdown-it-sup.min.js','https://cdn.jsdelivr.net/npm/markdown-it-task-lists@2.1.1/dist/markdown-it-task-lists.min.js'],done=0;list.forEach(function(src){load(src,function(){done++;if(done===list.length){scriptsLoaded=true;cb();}});});}",
+    "function init(){if(md||!window.markdownit)return;var hljs=window.hljs;md=window.markdownit({html:true,breaks:true,linkify:true,typographer:true,highlight:function(code,lang){var l=lang&&lang.trim();if(l&&hljs&&hljs.getLanguage(l)){try{return '<pre><code class=\\\"hljs language-'+esc(l)+'\\\">'+hljs.highlight(code,{language:l,ignoreIllegals:true}).value+'</code></pre>';}catch(e){}}return '<pre><code class=\\\"hljs\\\">'+esc(code)+'</code></pre>';}});var di=md.renderer.rules.image||function(t,i,o,e,s){return s.renderToken(t,i,o);};md.renderer.rules.image=function(t,i,o,e,s){var token=t[i],si=token.attrIndex('src');if(activeFile&&si>=0){var src=token.attrs[si][1];if(src&&!/^(?:[a-z]+:|#|\\\\/)/i.test(src)){try{token.attrs[si][1]=new URL(src,activeFile.dirUrl).href;}catch(_e){}}}return di(t,i,o,e,s);};if(window.markdownitDeflist)md.use(window.markdownitDeflist);if(window.markdownitFootnote)md.use(window.markdownitFootnote);if(window.markdownitMark)md.use(window.markdownitMark);if(window.markdownitSub)md.use(window.markdownitSub);if(window.markdownitSup)md.use(window.markdownitSup);if(window.markdownitTaskLists)md.use(window.markdownitTaskLists,{enabled:true,label:true});}",
+    "function setActive(p){document.querySelectorAll('.mdopen-directory-nav button').forEach(function(b){if(b.dataset.mdopenPath===p)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});}",
+    "function renderIndex(){activeFile=null;article.innerHTML='<h1>'+esc(directoryData.rootName)+'</h1><p>'+directoryData.files.length+' Markdown file'+(directoryData.files.length===1?'':'s')+' found.</p><ul>'+directoryData.files.map(function(f){return '<li><a href=\\\"#\\\" data-mdopen-path=\\\"'+esc(f.path)+'\\\">'+esc(f.path)+'</a></li>';}).join('')+'</ul>';setActive('');}",
+    "function renderFile(f){activeFile=f;var p=front(f.content);article.innerHTML=renderFront(p.frontmatter)+enhance(md.render(p.body));document.title=f.path+' - mdopen';setActive(f.path);}",
+    "function openPath(p){if(!p){renderIndex();return;}var f=filesByPath[p];if(!f)return;loadScripts(function(){init();if(!md){article.innerHTML='<p>Could not load the browser Markdown renderer.</p>';return;}renderFile(f);});}",
+    "function nav(){var n=document.createElement('aside');n.className='mdopen-directory-nav';n.setAttribute('aria-label','Markdown files');n.innerHTML='<h2>'+esc(directoryData.rootName)+'</h2>';[''].concat(directoryData.files.map(function(f){return f.path;})).forEach(function(p){var b=document.createElement('button');b.type='button';b.dataset.mdopenPath=p;b.textContent=p||'Index';n.appendChild(b);});n.addEventListener('click',function(e){var b=e.target.closest('button[data-mdopen-path]');if(b)openPath(b.dataset.mdopenPath);});document.body.insertBefore(n,document.body.firstChild);}",
+    "article.addEventListener('click',function(e){var a=e.target.closest('a[data-mdopen-path]');if(!a)return;e.preventDefault();openPath(a.getAttribute('data-mdopen-path'));});",
+    "nav();renderIndex();",
+    "}());",
+    "<\\/script>"
+  ].join("\\n");
+}
+
 const args = process.argv.slice(2);
 if (args.length !== 1) {
   usage();
@@ -286,19 +426,36 @@ try {
   fail(\`file not found: \${args[0]}\`);
 }
 
-if (!inputStat.isFile()) {
+if (!inputStat.isFile() && !inputStat.isDirectory()) {
   fail(\`file not found: \${args[0]}\`);
 }
 
 const outdir = path.join(os.tmpdir(), "mdopen");
 const title = path.basename(input, path.extname(input));
-const output = path.join(outdir, \`\${title}.html\`);
+const isDirectoryInput = inputStat.isDirectory();
+const outputRoot = isDirectoryInput ? path.join(outdir, \`\${path.basename(input) || "directory"}-index\`) : outdir;
+const output = isDirectoryInput ? path.join(outputRoot, "index.html") : path.join(outputRoot, \`\${title}.html\`);
+
+if (isDirectoryInput) {
+  fs.rmSync(outputRoot, { recursive: true, force: true });
+}
+
 const examplesDir = path.join(BUILD_PROJECT_DIR, "examples");
 const defaultStyle = pathStartsWith(input, examplesDir) ? "demo" : "default";
-const templatePath = path.join(outdir, "templates", "mdopen.html");
+const templatePath = path.join(outputRoot, "templates", "mdopen.html");
 
-writeEmbeddedRuntime(outdir);
-runEmbeddedRenderer(input, templatePath, output, title, "mdopen.css", defaultStyle);
+writeEmbeddedRuntime(outputRoot);
+
+if (isDirectoryInput) {
+  const markdownFiles = collectMarkdownFiles(input);
+  if (markdownFiles.length === 0) {
+    fail(\`no Markdown files found within \${DIRECTORY_SCAN_DEPTH} levels: \${args[0]}\`);
+  }
+
+  renderDirectoryViewer(templatePath, output, path.basename(input) || "Directory", "mdopen.css", defaultStyle, input, markdownFiles);
+} else {
+  runEmbeddedRenderer(input, templatePath, output, title, "mdopen.css", defaultStyle);
+}
 openHtml(output);
 console.log(output);
 `;
