@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - `ARCHITECTURE.md` documents the library entry point and `resolveImage` option.
+- Directory viewer nav renders as a collapsible folder tree (`details`/`summary`), with persisted expanded/collapsed state, auto-reveal of the selected file's ancestors, and a viewer-only toolbar toggle to hide the nav; ships in both the CLI and the standalone binary.
 
 ## [0.2.0] - 2026-05-17
 

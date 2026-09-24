@@ -48,7 +48,7 @@ The rendering pipeline is importable via `require('./renderer.js').renderMarkdow
 1. Scans `.md` and `.markdown` files up to 5 levels deep.
 2. Skips hidden directories and common generated directories such as `.git`, `.n8n`, `node_modules`, `dist`, `build`, and `_site`.
 3. Embeds the discovered Markdown content and source file URLs in one generated HTML page.
-4. Adds a left-side `.mdopen-directory-nav` file list.
+4. Adds a left-side `.mdopen-directory-nav` collapsible folder tree (`details`/`summary`) with a viewer-only toolbar toggle to hide the nav; expanded/collapsed and hidden state persist in `localStorage`.
 5. Renders the selected file in-browser into the existing `.markdown-body` article.
 
 The viewer keeps the existing toolbar, theme controls, copy controls, print behavior, and document CSS cascade. Relative image paths in selected Markdown files resolve against the selected source file's directory.

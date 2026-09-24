@@ -15,12 +15,13 @@ DirectoryViewerPage
 ├── DirectoryNav
 │   ├── RootTitle
 │   ├── IndexButton
+│   ├── FolderGroup[] (collapsible `details`/`summary`)
 │   └── FileButton[]
 └── Preview
     └── <article class="markdown-body">
 ```
 
-The editor toggle remains hidden. Directory browsing is a CLI viewer mode, not the GitHub Pages editor.
+The toolbar in viewer mode gains a `NavToggleButton` (inserted by the viewer script, not the shared template). The editor toggle remains hidden. Directory browsing is a CLI viewer mode, not the GitHub Pages editor.
 
 ## Source files
 
@@ -64,6 +65,21 @@ The editor toggle remains hidden. Directory browsing is a CLI viewer mode, not t
 | Generated directories | skip `.git`, `.n8n`, `node_modules`, `dist`, `build`, `_site`, and similar caches |
 | Empty result | CLI exits with a clear no-Markdown-files message |
 
+## Tree navigation
+
+| Rule | Behavior |
+|------|----------|
+| Structure | The flat manifest is grouped client-side into a folder tree; folders sort first, then files, alphabetically per level |
+| Folders | Native `details`/`summary` (`details.mdopen-directory-group`); no JS toggling logic, keyboard and screen-reader behavior come free |
+| Labels | Folders and files show their basename; the full path is a `title` tooltip |
+| Default state | Folders are expanded; collapsing persists to `localStorage` (`mdopen-directory-tree` as an array of closed folder paths) |
+| Auto-reveal | Selecting a file (button or rendered link) expands its ancestor folders (`setActiveButton` walks up from the active button) |
+| Guides | Nested branches indent with a quiet 1px left guide; caret is a rotating `▸` pseudo-element |
+| Toggle | Toolbar `NavToggleButton` (`.mdopen-directory-toggle`) hides/shows the nav; `aria-pressed` + `aria-controls`; state persists to `localStorage` (`mdopen-directory-nav-hidden`) |
+| Hidden layout | When the nav is hidden, `body:has(.mdopen-directory-nav[hidden])` returns the article to centered layout |
+| Theme | Tree chrome uses system colors (`Canvas`/`CanvasText`/`currentColor`) and neutral rgba grays, so it follows the light/dark theme toggle without extra attributes |
+| Parity | The same tree logic ships minified in `scripts/build-binary.js`'s embedded viewer |
+
 ## Rendering model
 
 - The CLI writes one local HTML viewer page, not one HTML file per Markdown file.
@@ -80,8 +96,10 @@ The editor toggle remains hidden. Directory browsing is a CLI viewer mode, not t
 | Child | Component | Spec | Conditional |
 |-------|-----------|------|-------------|
 | ExistingToolbar | existing toolbar shell | `toolbar-menu.spec.md` | always |
+| NavToggleButton | toolbar button, viewer-generated | this spec | directory input only |
 | DirectoryNav | generated `aside.mdopen-directory-nav` | this spec | directory input only |
 | IndexButton | native button | this spec | always |
+| FolderGroup | native `details`/`summary` per folder | this spec | one per discovered directory |
 | FileButton | native button per Markdown file | this spec | one per discovered file |
 | Preview | `.markdown-body` article | existing renderer contract | always |
 
@@ -91,8 +109,11 @@ The editor toggle remains hidden. Directory browsing is a CLI viewer mode, not t
 |-------|---------|---------------|
 | index | page load or Index click | article shows root title, count, and file list; Index button active |
 | loading-renderer | first file click | article may keep previous content while CDN scripts load |
-| file-selected | file button click | article renders selected Markdown; selected nav button gets `aria-current="page"` |
+| file-selected | file button click | article renders selected Markdown; selected nav button gets `aria-current="page"`; ancestor folders expand |
 | inline-link-selected | click a rendered local Markdown link | linked file renders and matching nav button becomes active |
+| folder-collapsed | summary click | folder children hidden; state persisted across visits |
+| folder-expanded | summary click on collapsed folder | children visible with indent guide |
+| nav-hidden | toolbar toggle click | nav hidden; article recenters; button `aria-pressed="false"`; state persisted |
 | renderer-error | CDN renderer cannot load | article shows a short renderer failure message |
 | long-list | more files than viewport allows | nav scrolls internally; toolbar remains usable |
 | print | browser print | nav hidden; selected article prints full width |
@@ -102,6 +123,9 @@ The editor toggle remains hidden. Directory browsing is a CLI viewer mode, not t
 | Element | Token / class | Usage |
 |---------|---------------|-------|
 | Nav shell | `.mdopen-directory-nav` | fixed/stacked directory navigation |
+| Folder group | `details.mdopen-directory-group` / `summary` | collapsible folder |
+| Branch | `.mdopen-directory-branch` | indented children with left guide |
+| Nav toggle | `.mdopen-directory-toggle` | toolbar show/hide for the nav |
 | Preview | `.markdown-body` | existing rendered document surface |
 | Toolbar | `.mdopen-toolbar` | existing view controls |
 | Active file | `aria-current="page"` | selected nav state |

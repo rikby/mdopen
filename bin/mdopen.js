@@ -306,6 +306,56 @@ function renderDirectoryViewerScript(data) {
       .mdopen-directory-nav button[aria-current="page"] {
         background: rgba(127, 127, 127, 0.16);
       }
+      .mdopen-directory-nav[hidden] {
+        display: none;
+      }
+      body:has(.mdopen-directory-nav[hidden]) > .markdown-body {
+        margin-left: auto;
+      }
+      .mdopen-directory-nav summary {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin: 0;
+        padding: 7px 8px;
+        border-radius: 6px;
+        color: inherit;
+        font: inherit;
+        font-size: 13px;
+        text-align: left;
+        overflow-wrap: anywhere;
+        cursor: pointer;
+        list-style: none;
+      }
+      .mdopen-directory-nav summary::-webkit-details-marker {
+        display: none;
+      }
+      .mdopen-directory-nav summary::before {
+        content: '▸';
+        flex: 0 0 auto;
+        width: 10px;
+        font-size: 11px;
+        color: rgba(127, 127, 127, 0.75);
+        transition: transform 0.12s ease;
+      }
+      .mdopen-directory-nav details[open] > summary::before {
+        transform: rotate(90deg);
+      }
+      .mdopen-directory-nav summary:hover {
+        background: rgba(127, 127, 127, 0.16);
+      }
+      .mdopen-directory-nav .mdopen-directory-branch {
+        margin-left: 12px;
+        padding-left: 6px;
+        border-left: 1px solid rgba(127, 127, 127, 0.22);
+      }
+      .mdopen-toolbar .mdopen-directory-toggle {
+        width: 34px;
+        min-width: 34px;
+        padding: 0;
+        line-height: 30px;
+        font-size: 15px;
+      }
       body > .markdown-body {
         margin-left: 320px;
       }
@@ -765,6 +815,12 @@ function renderDirectoryViewerScript(data) {
             button.removeAttribute('aria-current');
           }
         });
+        if (!filePath) return;
+        var active = document.querySelector('.mdopen-directory-nav button[aria-current="page"]');
+        while (active) {
+          if (active.tagName === 'DETAILS') active.open = true;
+          active = active.parentElement;
+        }
       }
 
       function openPath(filePath) {
@@ -784,8 +840,100 @@ function renderDirectoryViewerScript(data) {
         });
       }
 
+      var TREE_KEY = 'mdopen-directory-tree';
+      var NAV_HIDDEN_KEY = 'mdopen-directory-nav-hidden';
+
+      function readClosedFolders() {
+        try {
+          var saved = JSON.parse(localStorage.getItem(TREE_KEY) || '[]');
+          return Array.isArray(saved) ? saved : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function saveClosedFolders(closed) {
+        try {
+          localStorage.setItem(TREE_KEY, JSON.stringify(closed));
+        } catch (error) {}
+      }
+
+      function makeFileButton(file) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.dataset.mdopenPath = file.path;
+        button.textContent = file.path.split('/').pop();
+        button.title = file.path;
+        return button;
+      }
+
+      function renderTreeBranch(container, node, prefix, closed) {
+        Object.keys(node.folders).sort(function (a, b) {
+          return a.localeCompare(b);
+        }).forEach(function (name) {
+          var child = node.folders[name];
+          var segments = prefix.concat([name]);
+          var fullPath = segments.join('/');
+          var details = document.createElement('details');
+          details.className = 'mdopen-directory-group';
+          details.dataset.mdopenFolder = fullPath;
+          if (closed.indexOf(fullPath) === -1) details.open = true;
+
+          var summary = document.createElement('summary');
+          summary.textContent = name;
+          summary.title = fullPath + '/';
+          details.appendChild(summary);
+
+          var branch = document.createElement('div');
+          branch.className = 'mdopen-directory-branch';
+          details.appendChild(branch);
+
+          renderTreeBranch(branch, child, segments, closed);
+          container.appendChild(details);
+        });
+        node.files.forEach(function (file) {
+          container.appendChild(makeFileButton(file));
+        });
+      }
+
+      function buildTreeModel() {
+        var root = { folders: {}, files: [] };
+        directoryData.files.forEach(function (file) {
+          var segments = file.path.split('/');
+          var node = root;
+          for (var i = 0; i < segments.length - 1; i++) {
+            if (!node.folders[segments[i]]) node.folders[segments[i]] = { folders: {}, files: [] };
+            node = node.folders[segments[i]];
+          }
+          node.files.push(file);
+        });
+        return root;
+      }
+
+      function createToggle(nav) {
+        var toolbar = document.querySelector('.mdopen-toolbar');
+        if (!toolbar) return;
+        var toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'mdopen-directory-toggle';
+        toggle.textContent = '\uD83D\uDDC2';
+        toggle.setAttribute('aria-label', 'Toggle file list');
+        toggle.setAttribute('aria-controls', nav.id);
+        toggle.setAttribute('aria-pressed', nav.hidden ? 'false' : 'true');
+        toggle.title = 'Toggle file list';
+        toggle.addEventListener('click', function () {
+          nav.hidden = !nav.hidden;
+          toggle.setAttribute('aria-pressed', nav.hidden ? 'false' : 'true');
+          try {
+            localStorage.setItem(NAV_HIDDEN_KEY, nav.hidden ? 'true' : 'false');
+          } catch (error) {}
+        });
+        toolbar.insertBefore(toggle, toolbar.querySelector('.mdopen-theme-button'));
+      }
+
       function createNav() {
         var nav = document.createElement('aside');
+        nav.id = 'mdopen-directory-nav';
         nav.className = 'mdopen-directory-nav';
         nav.setAttribute('aria-label', 'Markdown files');
         nav.innerHTML = '<h2>' + escapeHtml(directoryData.rootName) + '</h2>';
@@ -796,20 +944,32 @@ function renderDirectoryViewerScript(data) {
         indexButton.textContent = 'Index';
         nav.appendChild(indexButton);
 
-        directoryData.files.forEach(function (file) {
-          var button = document.createElement('button');
-          button.type = 'button';
-          button.dataset.mdopenPath = file.path;
-          button.textContent = file.path;
-          nav.appendChild(button);
-        });
+        renderTreeBranch(nav, buildTreeModel(), [], readClosedFolders());
 
         nav.addEventListener('click', function (event) {
           var button = event.target.closest('button[data-mdopen-path]');
           if (button) openPath(button.dataset.mdopenPath);
         });
+        nav.addEventListener('toggle', function (event) {
+          var details = event.target;
+          if (!details.dataset.mdopenFolder) return;
+          var closed = readClosedFolders();
+          var index = closed.indexOf(details.dataset.mdopenFolder);
+          if (details.open && index !== -1) {
+            closed.splice(index, 1);
+            saveClosedFolders(closed);
+          } else if (!details.open && index === -1) {
+            closed.push(details.dataset.mdopenFolder);
+            saveClosedFolders(closed);
+          }
+        }, true);
+
+        try {
+          if (localStorage.getItem(NAV_HIDDEN_KEY) === 'true') nav.hidden = true;
+        } catch (error) {}
 
         document.body.insertBefore(nav, document.body.firstChild);
+        createToggle(nav);
       }
 
       article.addEventListener('click', function (event) {

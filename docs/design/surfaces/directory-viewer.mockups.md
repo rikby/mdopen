@@ -4,24 +4,24 @@ Related spec: directory-viewer.spec.md
 
 ## Desktop — Index State
 
+Tree nav with collapsible folder groups (`details`/`summary`) and the toolbar's file-list toggle (🗂):
+
 ```wireframe
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                                      [☀] [⧉] [🖨] [☰]                       │
+│                                   [🗂] [☀] [⧉] [🖨] [☰]                      │
 │ ┌──────────────────────────┐                                                 │
 │ │ mdopen                   │   <article class="markdown-body">               │
 │ │ ───────────────────────  │                                                 │
 │ │ ▸ Index                  │   # mdopen                                      │
-│ │   docs/styling.md        │                                                 │
-│ │   docs/binaries.md       │   16 Markdown files found.                      │
-│ │   examples/demo.md       │                                                 │
-│ │   AGENTS.md              │   - docs/styling.md                             │
-│ │   ARCHITECTURE.md        │   - docs/binaries.md                            │
-│ │   README.md              │   - examples/demo.md                            │
-│ │                          │   - AGENTS.md                                   │
-│ │                          │   - ARCHITECTURE.md                             │
+│ │ ▾ docs                   │                                                 │
+│ │   │ ▸ inner              │   16 Markdown files found.                      │
+│ │   │ styling.md           │                                                 │
+│ │   │ binaries.md          │   - docs/styling.md                             │
+│ │ ▸ examples               │   - docs/binaries.md                            │
+│ │   AGENTS.md              │   - examples/demo.md                            │
+│ │   ARCHITECTURE.md        │   - AGENTS.md                                   │
+│ │   README.md              │   - ARCHITECTURE.md                             │
 │ └──────────────────────────┘   - README.md                                   │
-│                                                                              │
-│                                                                              │
 │                                                                   MDopen ◈   │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
