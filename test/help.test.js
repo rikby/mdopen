@@ -17,6 +17,7 @@ for (const flag of ["-h", "--help"]) {
     assert.ok(stdout.includes("Usage:"), "help should contain a Usage section");
     assert.ok(stdout.includes("FILE.md|DIR"), "help should document arguments");
     assert.ok(stdout.includes("--help"), "help should list the --help option");
+    assert.ok(stdout.includes("--output"), "help should list the --output option");
     assert.ok(stdout.includes("MDOPEN_NO_OPEN"), "help should document environment variables");
   });
 }

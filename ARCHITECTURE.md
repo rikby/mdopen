@@ -8,7 +8,7 @@ There is no server, build system, app framework, or frontend bundler.
 
 1. `mdopen FILE.md|DIR` validates the input path through the Bun CLI in `bin/mdopen.js`.
 2. Thin launchers in `bin/mdopen`, `bin/mdopen.cmd`, and `bin/mdopen.ps1` delegate to the Bun CLI.
-3. The CLI creates the platform temp `mdopen` directory, copies CSS and font assets there, and chooses a default style source.
+3. The CLI creates the output root — the platform temp `mdopen` directory, or `DIR` when `-o/--output DIR` is given — copies CSS and font assets there, and chooses a default style source. A user-supplied output directory is never wiped; only the CLI-owned temp `<dir>-index` root is cleaned between runs.
 4. For a file input, it runs `renderer.js` with the input path, template path, output path, page title, CSS filename, and default style.
 5. `renderer.js` renders Markdown into the HTML template and writes the final file.
 6. For a directory input, the CLI scans Markdown files, writes one local HTML viewer page, and embeds a file manifest plus browser-side Markdown rendering script.
@@ -21,7 +21,8 @@ There is no server, build system, app framework, or frontend bundler.
 - `renderer.js`: Bun-executed CommonJS renderer using `markdown-it` and `highlight.js`. Exports `renderMarkdown(markdown, options)` so the rendering pipeline is importable as a library; the CLI path runs only when invoked directly via `require.main === module`.
 - `templates/mdopen.html`: HTML shell and toolbar markup.
 - `templates/mdopen-script.html`: browser-side toolbar controls, persisted view controls, copy behavior, and print theme behavior.
-- `templates/mermaid-script.html`: browser-side Mermaid rendering, fullscreen, pan, zoom, and diagram error handling.
+- `templates/mermaid-script.html`: browser-side Mermaid rendering, overlay, pan, zoom, and diagram error handling (CLI single-file path).
+- `templates/mermaid-overlay.html`: shared Mermaid Full-button overlay engine (plain JS, `window.mdopenMermaidOverlay`), used by the CLI single-file path, directory viewer, and GitHub Pages editor.
 - `assets/mdopen.css`: shared layout, toolbar, Mermaid, base tokens, and print defaults.
 - `assets/mdopen-overrides.css`: final user-control override layer.
 - `assets/styles/`: optional style-source CSS loaded by the template.
@@ -56,18 +57,19 @@ The directory viewer is CLI-only. It is not the GitHub Pages editor and does not
 
 ## Mermaid
 
-Mermaid is loaded only when the Markdown includes a `mermaid` fenced block. The renderer preserves this structure:
+Mermaid is loaded only when the Markdown includes a `mermaid` fenced block. The renderer emits this structure (the Full button is injected by the overlay engine after render, not at render time):
 
 ```html
 <div class="mermaid-container">
-  <button class="mermaid-fullscreen-btn">Full</button>
   <div class="mermaid">...</div>
 </div>
 ```
 
 The browser script renders each diagram independently. Invalid diagrams show an inline error message instead of breaking the rest of the page. Theme changes re-render diagrams so Mermaid matches light or dark reading mode.
 
-Fullscreen behavior uses the browser Fullscreen API when available. Pan and zoom are enabled only while a diagram container is fullscreen.
+The Full button opens an in-app overlay: the `.mermaid-container` itself becomes a fixed, full-viewport layer (`position: fixed; inset: 0; z-index: 9999`), Escape closes it, and body scroll is locked while open. Pan and zoom are enabled only while a container is in the overlay. The overlay engine avoids the native Fullscreen API, which is unreliable under `file://` and causes an input dead-period that breaks pan/zoom.
+
+The shared overlay engine lives in `templates/mermaid-overlay.html` (plain JS, exposed as `window.mdopenMermaidOverlay`). The CLI single-file path inlines it at the top of `templates/mermaid-script.html`; the directory viewer and GitHub Pages editor load it via the `{{mermaidScript}}` template slot. Each path sets `onEnter`/`onExit` hooks to wire its own pan/zoom implementation.
 
 ## Styling Model
 

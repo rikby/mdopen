@@ -25,16 +25,19 @@ Arguments:
                    skipped).
 
 Options:
+  -o, --output DIR Write output into DIR instead of the temp directory.
   -h, --help       Show this help and exit.
 
 Environment:
   MDOPEN_NO_OPEN=1 Write the output but do not open the browser.
 
-Output is written to the platform temp directory under mdopen/ and the
-generated file path is printed to stdout.
+Output is written to DIR when -o/--output is given, otherwise to the
+platform temp directory under mdopen/. The generated file path is
+printed to stdout.
 
 Examples:
   mdopen README.md
+  mdopen README.md -o out/
   mdopen docs/
   MDOPEN_NO_OPEN=1 mdopen README.md`);
 }
@@ -827,6 +830,16 @@ if (args.includes("-h") || args.includes("--help")) {
   help();
   process.exit(0);
 }
+
+let outputDir = null;
+const outputFlagIndex = args.findIndex((arg) => arg === "-o" || arg === "--output");
+if (outputFlagIndex !== -1) {
+  outputDir = args[outputFlagIndex + 1];
+  if (!outputDir || outputDir.startsWith("-")) {
+    fail("option -o/--output requires a directory argument", 2);
+  }
+  args.splice(outputFlagIndex, 2);
+}
 if (args.length !== 1) {
   usage();
   process.exit(2);
@@ -855,10 +868,15 @@ const stylesDir = path.join(assetsDir, "styles");
 const outdir = path.join(os.tmpdir(), "mdopen");
 const title = path.basename(input, path.extname(input));
 const isDirectoryInput = inputStat.isDirectory();
-const outputRoot = isDirectoryInput ? path.join(outdir, `${path.basename(input) || "directory"}-index`) : outdir;
+const outputRoot = outputDir
+  ? path.resolve(outputDir)
+  : isDirectoryInput
+    ? path.join(outdir, `${path.basename(input) || "directory"}-index`)
+    : outdir;
 const output = isDirectoryInput ? path.join(outputRoot, "index.html") : path.join(outputRoot, `${title}.html`);
 
-if (isDirectoryInput) {
+// ponytail: rm is scoped to the CLI-owned temp <dir>-index root; a user-supplied -o dir is never wiped
+if (isDirectoryInput && !outputDir) {
   fs.rmSync(outputRoot, { recursive: true, force: true });
 }
 
