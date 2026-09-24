@@ -371,6 +371,88 @@ function renderDirectoryViewerScript(data) {
         line-height: 30px;
         font-size: 15px;
       }
+      .mdopen-directory-search {
+        margin: 0 0 8px;
+      }
+      .mdopen-directory-search input,
+      .mdopen-index-search input {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 6px 8px;
+        border: 1px solid rgba(127, 127, 127, 0.35);
+        border-radius: 6px;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        font-size: 13px;
+      }
+      .mdopen-directory-empty {
+        margin: 4px 0;
+        font-size: 13px;
+        color: rgba(127, 127, 127, 0.9);
+      }
+      .mdopen-directory-nav button[hidden] {
+        display: none;
+      }
+      .mdopen-directory-nav details[hidden] {
+        display: none;
+      }
+      .mdopen-index-search {
+        max-width: 460px;
+        margin: 0 0 16px;
+      }
+      .mdopen-index-empty {
+        color: rgba(127, 127, 127, 0.9);
+      }
+      .mdopen-index-list {
+        list-style: none;
+        margin-left: 0;
+        padding-left: 0;
+      }
+      .mdopen-index-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 4px 8px;
+        border-radius: 6px;
+      }
+      .mdopen-index-item[hidden] {
+        display: none;
+      }
+      .mdopen-index-item:hover {
+        background: rgba(127, 127, 127, 0.12);
+      }
+      .mdopen-index-copy {
+        flex: 0 0 auto;
+        margin-top: 2px;
+        padding: 0 4px;
+        border: 0;
+        border-radius: 4px;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        font-size: 13px;
+        line-height: 20px;
+        cursor: pointer;
+        opacity: 0.65;
+      }
+      .mdopen-index-copy:hover {
+        opacity: 1;
+        background: rgba(127, 127, 127, 0.16);
+      }
+      .mdopen-index-item a {
+        text-decoration: none;
+      }
+      .mdopen-index-title {
+        display: block;
+        font-weight: 500;
+      }
+      .mdopen-index-path {
+        display: block;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 12px;
+        color: rgba(127, 127, 127, 0.95);
+      }
       body > .markdown-body {
         margin-left: 320px;
       }
@@ -388,6 +470,10 @@ function renderDirectoryViewerScript(data) {
     }
     @media print {
       .mdopen-directory-nav {
+        display: none;
+      }
+      .mdopen-index-search,
+      .mdopen-index-copy {
         display: none;
       }
       body > .markdown-body {
@@ -798,15 +884,89 @@ function renderDirectoryViewerScript(data) {
         overlay.setHooks({ onEnter: enableMermaidPanZoom, onExit: disableMermaidPanZoom });
       }
 
+      function applyIndexFilter(query) {
+        var q = query.trim().toLowerCase();
+        var visible = 0;
+        article.querySelectorAll('.mdopen-index-item').forEach(function (item) {
+          var show = !q || item.dataset.mdopenKey.indexOf(q) !== -1;
+          item.hidden = !show;
+          if (show) visible++;
+        });
+        var empty = article.querySelector('.mdopen-index-empty');
+        if (empty) empty.hidden = visible !== 0;
+      }
+
+      function applyNavFilter(query) {
+        var q = query.trim().toLowerCase();
+        var visible = 0;
+        navRoot.querySelectorAll('button[data-mdopen-path]').forEach(function (button) {
+          var file = filesByPath[button.dataset.mdopenPath];
+          var haystack = ((file ? file.title + ' ' : '') + button.dataset.mdopenPath).toLowerCase();
+          var show = !q || haystack.indexOf(q) !== -1;
+          button.hidden = !show;
+          if (show && button.dataset.mdopenPath) visible++;
+        });
+        navRoot.querySelectorAll('details').forEach(function (details) {
+          if (q) {
+            var any = details.querySelector('button[data-mdopen-path]:not([hidden])');
+            details.hidden = !any;
+            details.open = !!any;
+          } else {
+            details.hidden = false;
+            details.open = readClosedFolders().indexOf(details.dataset.mdopenFolder) === -1;
+          }
+        });
+        var emptyMessage = navRoot.querySelector('.mdopen-directory-empty');
+        if (emptyMessage) emptyMessage.hidden = !q || visible > 0;
+      }
+
+      function copyText(text, button) {
+        var original = button.textContent;
+        function done() {
+          button.textContent = '✓';
+          setTimeout(function () { button.textContent = original; }, 1200);
+        }
+        function fallback() {
+          var textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          try { document.execCommand('copy'); done(); } catch (error) {}
+          document.body.removeChild(textarea);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, fallback);
+        } else {
+          fallback();
+        }
+      }
+
       function renderIndex() {
         activeFile = null;
+        var rows = directoryData.files.map(function (file) {
+          return [
+            '<li class="mdopen-index-item" data-mdopen-key="' + escapeHtml((file.title + ' ' + file.path).toLowerCase()) + '">',
+            '<button type="button" class="mdopen-index-copy" data-mdopen-copy-path="' + escapeHtml(file.path) + '" aria-label="Copy path" title="Copy path">⧉</button>',
+            '<a href="#" data-mdopen-path="' + escapeHtml(file.path) + '">',
+            '<span class="mdopen-index-title">' + escapeHtml(file.title || file.path) + '</span>',
+            '<code class="mdopen-index-path">' + escapeHtml(file.path) + '</code>',
+            '</a>',
+            '</li>',
+          ].join('');
+        }).join('');
         article.innerHTML = [
           '<h1>' + escapeHtml(directoryData.rootName) + '</h1>',
           '<p>' + directoryData.files.length + ' Markdown file' + (directoryData.files.length === 1 ? '' : 's') + ' found.</p>',
-          '<ul>' + directoryData.files.map(function (file) {
-            return '<li><a href="#" data-mdopen-path="' + escapeHtml(file.path) + '">' + escapeHtml(file.path) + '</a></li>';
-          }).join('') + '</ul>'
+          '<div class="mdopen-index-search"><input type="search" placeholder="Search titles and paths" aria-label="Search files by title or path"></div>',
+          '<p class="mdopen-index-empty" hidden>No matching files.</p>',
+          '<ul class="mdopen-index-list">' + rows + '</ul>',
         ].join('');
+        var input = article.querySelector('.mdopen-index-search input');
+        input.addEventListener('input', function () {
+          applyIndexFilter(input.value);
+        });
         setActiveButton('');
       }
 
@@ -951,7 +1111,26 @@ function renderDirectoryViewerScript(data) {
         nav.id = 'mdopen-directory-nav';
         nav.className = 'mdopen-directory-nav';
         nav.setAttribute('aria-label', 'Markdown files');
+        navRoot = nav;
         nav.innerHTML = '<h2>' + escapeHtml(directoryData.rootName) + '</h2>';
+
+        var searchWrap = document.createElement('div');
+        searchWrap.className = 'mdopen-directory-search';
+        var searchInput = document.createElement('input');
+        searchInput.type = 'search';
+        searchInput.placeholder = 'Search titles and paths';
+        searchInput.setAttribute('aria-label', 'Filter files by title or path');
+        searchInput.addEventListener('input', function () {
+          applyNavFilter(searchInput.value);
+        });
+        searchWrap.appendChild(searchInput);
+        nav.appendChild(searchWrap);
+
+        var emptyMessage = document.createElement('p');
+        emptyMessage.className = 'mdopen-directory-empty';
+        emptyMessage.hidden = true;
+        emptyMessage.textContent = 'No matches';
+        nav.appendChild(emptyMessage);
 
         var indexButton = document.createElement('button');
         indexButton.type = 'button';
@@ -968,6 +1147,8 @@ function renderDirectoryViewerScript(data) {
         nav.addEventListener('toggle', function (event) {
           var details = event.target;
           if (!details.dataset.mdopenFolder) return;
+          var filterInput = navRoot.querySelector('.mdopen-directory-search input');
+          if (filterInput && filterInput.value) return;
           var closed = readClosedFolders();
           var index = closed.indexOf(details.dataset.mdopenFolder);
           if (details.open && index !== -1) {
@@ -987,11 +1168,17 @@ function renderDirectoryViewerScript(data) {
         createToggle(nav);
       }
 
+      var navRoot = null;
+
       article.addEventListener('click', function (event) {
         var link = event.target.closest('a[data-mdopen-path]');
-        if (!link) return;
-        event.preventDefault();
-        openPath(link.getAttribute('data-mdopen-path'));
+        if (link) {
+          event.preventDefault();
+          openPath(link.getAttribute('data-mdopen-path'));
+          return;
+        }
+        var copyButton = event.target.closest('button[data-mdopen-copy-path]');
+        if (copyButton) copyText(copyButton.dataset.mdopenCopyPath, copyButton);
       });
 
       createNav();

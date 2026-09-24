@@ -76,9 +76,17 @@ The toolbar in viewer mode gains a `NavToggleButton` (inserted by the viewer scr
 | Auto-reveal | Selecting a file (button or rendered link) expands its ancestor folders (`setActiveButton` walks up from the active button) |
 | Guides | Nested branches indent with a quiet 1px left guide; caret is a rotating `▸` pseudo-element |
 | Toggle | Toolbar `NavToggleButton` (`.mdopen-directory-toggle`) hides/shows the nav; `aria-pressed` + `aria-controls`; state persists to `localStorage` (`mdopen-directory-nav-hidden`) |
+| Nav search | Search input above the tree filters file buttons by title or path (case-insensitive substring); matching folders auto-expand while searching; folder open/closed state is not persisted while a filter is active; clearing restores persisted state; shows "No matches" when nothing fits |
 | Hidden layout | When the nav is hidden, `body:has(.mdopen-directory-nav[hidden])` returns the article to centered layout |
 | Theme | Tree chrome uses system colors (`Canvas`/`CanvasText`/`currentColor`) and neutral rgba grays, so it follows the light/dark theme toggle without extra attributes |
 | Parity | The same tree logic ships minified in `scripts/build-binary.js`'s embedded viewer |
+
+## Index page
+
+- Lists each file as: title (from the manifest `title`, i.e. first H1), with the file path below it in monospace (`code.mdopen-index-path`).
+- A copy icon button (`.mdopen-index-copy`, `⧉` with `✓` feedback) sits left of each item and copies the file path.
+- A search input (`.mdopen-index-search`) above the list filters items on title + path and shows a "No matching files." message when nothing matches.
+- Search box and copy buttons are hidden in print output.
 
 ## Rendering model
 

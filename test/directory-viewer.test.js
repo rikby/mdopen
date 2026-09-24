@@ -44,6 +44,13 @@ test("directory viewer generator embeds the collapsible tree UI", () => {
   assert.ok(html.includes("mdopen-directory-tree"), "folder state persists to localStorage");
   assert.ok(html.includes('"title":"Root Doc"'), "H1 becomes the manifest title");
   assert.ok(html.includes('"title":"Styling Guide"'), "fenced # ignored, real H1 found after fence");
+  assert.ok(html.includes("mdopen-index-search"), "index page has a search input");
+  assert.ok(html.includes("mdopen-index-copy"), "index items have copy buttons");
+  assert.ok(html.includes("mdopen-index-title"), "index items show titles");
+  assert.ok(html.includes("mdopen-index-path"), "index items show monospace paths");
+  assert.ok(html.includes("mdopen-directory-search"), "nav tree has a search input");
+  assert.ok(html.includes("applyIndexFilter"), "index filter is wired");
+  assert.ok(html.includes("applyNavFilter"), "nav filter is wired");
 });
 
 test("single-file mode does not include directory viewer UI", () => {
