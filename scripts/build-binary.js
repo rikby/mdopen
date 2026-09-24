@@ -137,7 +137,42 @@ const TEXT_ASSETS = ${JSON.stringify(data.textAssets, null, 2)};
 const FONT_ASSETS = ${JSON.stringify(data.fontAssets, null, 2)};
 
 function usage() {
-  console.error("Usage: mdopen FILE.md|DIR");
+  console.error("Usage: mdopen FILE.md|DIR (see mdopen --help)");
+}
+
+function help() {
+  console.log(\`mdopen - render a Markdown file or directory as styled HTML and open it in the browser
+
+Usage:
+  mdopen FILE.md|DIR
+  mdopen -h | --help
+
+Arguments:
+  FILE.md          Markdown file to render. Relative image paths resolve
+                   against the file's directory.
+  DIR              Open a local viewer page for the Markdown files in the
+                   directory (up to 5 levels deep; hidden and generated
+                   directories such as .git, node_modules, and dist are
+                   skipped).
+
+Options:
+  -o, --output DIR Write output into DIR instead of the temp directory.
+  --open           Open the generated file even if MDOPEN_NO_OPEN is set.
+  --no-open        Write the output but do not open the browser.
+  -h, --help       Show this help and exit.
+
+Environment:
+  MDOPEN_NO_OPEN=1 Do not open the browser unless --open is given.
+
+Output is written to DIR when -o/--output is given, otherwise to the
+platform temp directory under mdopen/. The generated file path is
+printed to stdout.
+
+Examples:
+  mdopen README.md
+  mdopen README.md -o out/
+  mdopen docs/
+  MDOPEN_NO_OPEN=1 mdopen README.md\`);
 }
 
 function fail(message, code = 1) {
@@ -249,7 +284,7 @@ function pathStartsWith(child, parent) {
 }
 
 function openHtml(outputPath) {
-  if (process.env.MDOPEN_NO_OPEN === "1") {
+  if (openMode === false || (openMode === null && process.env.MDOPEN_NO_OPEN === "1")) {
     return;
   }
 
@@ -306,6 +341,7 @@ function runEmbeddedRenderer(input, templatePath, output, pageTitle, cssHref, de
 
   const previousArgv = process.argv;
   const module = { exports: {} };
+  rendererRequire.main = module; // satisfy renderer.js's require.main === module CLI guard
   const renderer = new Function(
     "require",
     "module",
@@ -436,6 +472,27 @@ function renderDirectoryViewerScript(data) {
 }
 
 const args = process.argv.slice(2);
+if (args.includes("-h") || args.includes("--help")) {
+  help();
+  process.exit(0);
+}
+
+let outputDir = null;
+const outputFlagIndex = args.findIndex((arg) => arg === "-o" || arg === "--output");
+if (outputFlagIndex !== -1) {
+  outputDir = args[outputFlagIndex + 1];
+  if (!outputDir || outputDir.startsWith("-")) {
+    fail("option -o/--output requires a directory argument", 2);
+  }
+  args.splice(outputFlagIndex, 2);
+}
+let openMode = null;
+for (let i = args.length - 1; i >= 0; i--) {
+  if (args[i] === "--open" || args[i] === "--no-open") {
+    openMode = args[i] === "--open";
+    args.splice(i, 1);
+  }
+}
 if (args.length !== 1) {
   usage();
   process.exit(2);
@@ -458,10 +515,14 @@ if (!inputStat.isFile() && !inputStat.isDirectory()) {
 const outdir = path.join(os.tmpdir(), "mdopen");
 const title = path.basename(input, path.extname(input));
 const isDirectoryInput = inputStat.isDirectory();
-const outputRoot = isDirectoryInput ? path.join(outdir, \`\${path.basename(input) || "directory"}-index\`) : outdir;
+const outputRoot = outputDir
+  ? path.resolve(outputDir)
+  : isDirectoryInput
+    ? path.join(outdir, \`\${path.basename(input) || "directory"}-index\`)
+    : outdir;
 const output = isDirectoryInput ? path.join(outputRoot, "index.html") : path.join(outputRoot, \`\${title}.html\`);
 
-if (isDirectoryInput) {
+if (isDirectoryInput && !outputDir) {
   fs.rmSync(outputRoot, { recursive: true, force: true });
 }
 

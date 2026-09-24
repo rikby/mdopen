@@ -26,10 +26,12 @@ Arguments:
 
 Options:
   -o, --output DIR Write output into DIR instead of the temp directory.
+  --open           Open the generated file even if MDOPEN_NO_OPEN is set.
+  --no-open        Write the output but do not open the browser.
   -h, --help       Show this help and exit.
 
 Environment:
-  MDOPEN_NO_OPEN=1 Write the output but do not open the browser.
+  MDOPEN_NO_OPEN=1 Do not open the browser unless --open is given.
 
 Output is written to DIR when -o/--output is given, otherwise to the
 platform temp directory under mdopen/. The generated file path is
@@ -164,8 +166,10 @@ function pathStartsWith(child, parent) {
   return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
 }
 
+let openMode = null; // null = follow MDOPEN_NO_OPEN/env; true/false = explicit --open/--no-open
+
 function openHtml(outputPath) {
-  if (process.env.MDOPEN_NO_OPEN === "1") {
+  if (openMode === false || (openMode === null && process.env.MDOPEN_NO_OPEN === "1")) {
     return;
   }
 
@@ -1201,6 +1205,12 @@ if (outputFlagIndex !== -1) {
     fail("option -o/--output requires a directory argument", 2);
   }
   args.splice(outputFlagIndex, 2);
+}
+for (let i = args.length - 1; i >= 0; i--) {
+  if (args[i] === "--open" || args[i] === "--no-open") {
+    openMode = args[i] === "--open";
+    args.splice(i, 1);
+  }
 }
 if (args.length !== 1) {
   usage();

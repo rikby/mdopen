@@ -41,7 +41,7 @@ The binary uses platform opener commands directly:
 - Windows: `cmd.exe /c start`
 - MinGW/Git Bash: Windows opener with path conversion when needed
 
-Set `MDOPEN_NO_OPEN=1` to render without opening a browser.
+Set `MDOPEN_NO_OPEN=1` to render without opening a browser, or pass `--no-open` / `--open` to override the environment per run.
 
 ## GitHub Actions
 

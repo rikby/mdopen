@@ -54,3 +54,35 @@ test("-o without a value exits 2 with usage on stderr", () => {
   assert.strictEqual(result.status, 2, `should exit 2, got ${result.status}`);
   assert.ok(result.stderr.toString().includes("output requires a directory"), "stderr should explain the error");
 });
+
+test("--no-open skips the browser without MDOPEN_NO_OPEN set", () => {
+  const srcDir = makeTempDir("mdop003-src-");
+  const mdPath = path.join(srcDir, "doc.md");
+  fs.writeFileSync(mdPath, "# No Open\n");
+  const outDir = makeTempDir("mdop003-out-");
+
+  const env = { ...process.env };
+  delete env.MDOPEN_NO_OPEN;
+  const result = spawnSync(process.execPath, [cliPath, mdPath, "-o", outDir, "--no-open"], {
+    stdio: "pipe",
+    env,
+  });
+  assert.strictEqual(result.status, 0, `CLI should exit 0, got ${result.status}: ${result.stderr}`);
+  assert.ok(fs.existsSync(path.join(outDir, "doc.html")), "output should still be written");
+});
+
+test("last --open/--no-open flag wins", () => {
+  const srcDir = makeTempDir("mdop003-src-");
+  const mdPath = path.join(srcDir, "doc.md");
+  fs.writeFileSync(mdPath, "# Last Wins\n");
+  const outDir = makeTempDir("mdop003-out-");
+
+  const env = { ...process.env };
+  delete env.MDOPEN_NO_OPEN;
+  const result = spawnSync(process.execPath, [cliPath, mdPath, "-o", outDir, "--open", "--no-open"], {
+    stdio: "pipe",
+    env,
+  });
+  assert.strictEqual(result.status, 0, `CLI should exit 0, got ${result.status}: ${result.stderr}`);
+  assert.ok(fs.existsSync(path.join(outDir, "doc.html")), "output should still be written");
+});
