@@ -116,3 +116,36 @@ test("renderMarkdown preserves mermaid container structure for mermaid fences", 
   assert.ok(html.includes('class="mermaid-container"'), "html should contain mermaid-container");
   assert.ok(html.includes('class="mermaid"'), "html should contain mermaid div");
 });
+
+test("rendered headings carry GitHub-style anchor ids and clickable links", () => {
+  const { renderMarkdown } = require(rendererPath);
+  const template = fs.readFileSync(templatePath, "utf8");
+
+  const md = "# One\n\n## Two: first\n\n## Two: second\n\n### Ünïcode Héading\n\n#### Skip & me";
+  const { html } = renderMarkdown(md, {
+    template,
+    templateDir,
+    pageTitle: "Test",
+    cssHref: "mdopen.css",
+  });
+
+  const ids = [...html.matchAll(/<h[1-6][^>]* id="([^"]+)"/g)].map((m) => m[1]);
+  assert.deepStrictEqual(ids, ["one", "two-first", "two-second", "ünïcode-héading", "skip--me"]);
+  assert.strictEqual((html.match(/mdopen-heading-link/g) || []).length, 5, "each heading wraps its content in an anchor link");
+  assert.ok(html.includes('href="#two-second"'), "anchor links point at their own slug");
+});
+
+test("heading anchors are deduped with numeric suffixes", () => {
+  const { renderMarkdown } = require(rendererPath);
+  const template = fs.readFileSync(templatePath, "utf8");
+
+  const { html } = renderMarkdown("## Same\n\n## Same\n\n## Same", {
+    template,
+    templateDir,
+    pageTitle: "Test",
+    cssHref: "mdopen.css",
+  });
+
+  const ids = [...html.matchAll(/<h2[^>]* id="([^"]+)"/g)].map((m) => m[1]);
+  assert.deepStrictEqual(ids, ["same", "same-1", "same-2"]);
+});

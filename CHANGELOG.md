@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- GitHub-style heading anchors: every rendered heading h1-h6 gets an id and a clickable full-title link (hover shows a `#`); slugs are unicode-aware and deduped (`-1`, `-2`).
+- Shareable hash links: single files support `#{heading-slug}` natively; the directory viewer routes `#{path}--{heading-slug}` (and `#{path}`) through `hashchange`, so shared URLs open the right document and scroll to the section, and browser back/forward walks selection history.
 - `-o` / `--output DIR` writes the generated HTML (and assets) into `DIR` instead of the temp directory, for both single-file and directory-viewer modes; existing files in `DIR` are preserved.
 - `-h` / `--help` prints CLI help (usage, arguments, options, environment, examples) to stdout and exits 0; wrong arguments still print a short usage to stderr and exit 2.
 - `renderer.js` exports `renderMarkdown(markdown, options)` so the rendering pipeline is importable as a library, not just callable via CLI. The CLI path runs only when invoked directly (`require.main === module`).

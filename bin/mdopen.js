@@ -888,6 +888,32 @@ function renderDirectoryViewerScript(data) {
         overlay.setHooks({ onEnter: enableMermaidPanZoom, onExit: disableMermaidPanZoom });
       }
 
+      var headingSlug = function (text) {
+        return text
+          .toLowerCase()
+          .split(/\\s+/)
+          .map(function (segment) {
+            return segment.replace(/[^\\p{L}\\p{N}-]/gu, '');
+          })
+          .join('-');
+      };
+
+      function applyHeadingAnchors() {
+        var used = Object.create(null);
+        article.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(function (heading) {
+          var base = headingSlug(heading.textContent).replace(/^-+|-+$/g, '') || 'section';
+          var slug = base;
+          if (used[base]) slug = base + '-' + used[base];
+          used[base] = (used[base] || 0) + 1;
+          heading.id = slug;
+          var link = document.createElement('a');
+          link.className = 'mdopen-heading-link';
+          link.href = '#' + slug;
+          while (heading.firstChild) link.appendChild(heading.firstChild);
+          heading.appendChild(link);
+        });
+      }
+
       function applyIndexFilter(query) {
         var q = query.trim().toLowerCase();
         var visible = 0;
@@ -979,6 +1005,7 @@ function renderDirectoryViewerScript(data) {
         if (window.mdopenMermaidOverlay) window.mdopenMermaidOverlay.exit();
         var parsed = extractFrontmatter(file.content);
         article.innerHTML = renderFrontmatter(parsed.frontmatter) + enhanceHtml(md.render(parsed.body));
+        applyHeadingAnchors();
         document.title = file.path + ' - mdopen';
         setActiveButton(file.path);
         if (hasMermaidFence(parsed.body)) {
@@ -1002,6 +1029,44 @@ function renderDirectoryViewerScript(data) {
         }
       }
 
+      var pendingSlug = '';
+
+      function scrollToSlug(slug) {
+        if (!slug) {
+          window.scrollTo(0, 0);
+          return;
+        }
+        var target = document.getElementById(slug);
+        if (target) target.scrollIntoView();
+      }
+
+      function parseHash() {
+        var raw;
+        try {
+          raw = decodeURIComponent(location.hash.slice(1));
+        } catch (error) {
+          raw = location.hash.slice(1);
+        }
+        if (!raw) return { path: '', slug: '' };
+        var sep = raw.indexOf('--');
+        if (sep === -1) return { path: raw, slug: '' };
+        return { path: raw.slice(0, sep), slug: raw.slice(sep + 2) };
+      }
+
+      function applyHash() {
+        var target = parseHash();
+        if (!target.path) {
+          renderIndex();
+          return;
+        }
+        if (activeFile && activeFile.path === target.path) {
+          scrollToSlug(target.slug);
+          return;
+        }
+        pendingSlug = target.slug;
+        openPath(target.path);
+      }
+
       function openPath(filePath) {
         if (!filePath) {
           renderIndex();
@@ -1016,6 +1081,8 @@ function renderDirectoryViewerScript(data) {
             return;
           }
           renderFile(file);
+          scrollToSlug(pendingSlug);
+          pendingSlug = '';
         });
       }
 
@@ -1146,7 +1213,7 @@ function renderDirectoryViewerScript(data) {
 
         nav.addEventListener('click', function (event) {
           var button = event.target.closest('button[data-mdopen-path]');
-          if (button) openPath(button.dataset.mdopenPath);
+          if (button) location.hash = '#' + button.dataset.mdopenPath;
         });
         nav.addEventListener('toggle', function (event) {
           var details = event.target;
@@ -1175,18 +1242,26 @@ function renderDirectoryViewerScript(data) {
       var navRoot = null;
 
       article.addEventListener('click', function (event) {
+        var headingLink = event.target.closest('a.mdopen-heading-link');
+        if (headingLink && activeFile) {
+          event.preventDefault();
+          location.hash = '#' + activeFile.path + '--' + headingLink.getAttribute('href').slice(1);
+          return;
+        }
         var link = event.target.closest('a[data-mdopen-path]');
         if (link) {
           event.preventDefault();
-          openPath(link.getAttribute('data-mdopen-path'));
+          location.hash = '#' + link.getAttribute('data-mdopen-path');
           return;
         }
         var copyButton = event.target.closest('button[data-mdopen-copy-path]');
         if (copyButton) copyText(copyButton.dataset.mdopenCopyPath, copyButton);
       });
 
+      window.addEventListener('hashchange', applyHash);
+
       createNav();
-      renderIndex();
+      applyHash();
     }());
   </script>`;
 }

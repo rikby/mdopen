@@ -39,6 +39,8 @@ Leading `---` frontmatter is extracted before Markdown rendering. Valid frontmat
 
 GitHub-style callout blockquotes are post-processed into `.callout` sections after Markdown rendering.
 
+Headings are post-processed into anchor targets after Markdown rendering: h1-h6 receive a GitHub-compatible unicode-aware slug `id` (duplicates get `-1`/`-2` suffixes) and their content is wrapped in `.mdopen-heading-link` so the whole title is clickable. The directory viewer applies the same transformation client-side after each render and routes navigation through the URL hash: `#{path}--{slug}` opens a file at a heading, `#{path}` opens a file, and `hashchange` drives history.
+
 The rendering pipeline is importable via `require('./renderer.js').renderMarkdown(markdown, options)`. The `resolveImage` option controls relative image path resolution: the CLI passes a filesystem resolver (`path.resolve`), while HTTP consumers pass a URL resolver. When omitted, relative paths are left unchanged.
 
 ## Directory Viewer

@@ -6,7 +6,7 @@ For runtime flow and component ownership, use `ARCHITECTURE.md` as the source of
 
 ## Files
 
-- `assets/mdopen.css`: shared base tokens, page layout, toolbar, Mermaid, and print defaults.
+- `assets/mdopen.css`: shared base tokens, page layout, toolbar, Mermaid, heading anchor links, and print defaults.
 - `assets/mdopen-overrides.css`: final user-control override layer loaded after theme-source CSS.
 - `assets/styles/demo.css`: optional theme-source CSS adapted from the Markdown example demo.
 - `assets/styles/readthedocs.css`: optional theme-source CSS adapted from the Read the Docs Sphinx theme document styles.

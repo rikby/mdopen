@@ -88,6 +88,17 @@ The toolbar in viewer mode gains a `NavToggleButton` (inserted by the viewer scr
 - A search input (`.mdopen-index-search`) above the list filters items on title + path and shows a "No matching files." message when nothing matches.
 - Search box and copy buttons are hidden in print output.
 
+## Deep links
+
+| Rule | Behavior |
+|------|----------|
+| Format | `#{path}--{heading-slug}` opens that file scrolled to the heading; `#{path}` opens the file; empty hash opens the index |
+| Slug | GitHub-compatible (markdown-ticket slugify): lowercase, whitespace to `-`, unicode letters/numbers kept; duplicates get `-1`/`-2` |
+| Separator | the first `--` splits path from slug; the slug itself may contain `--` |
+| Routing | all viewer navigation goes through `location.hash` + a `hashchange` handler, so browser back/forward walks selection history |
+| Heading anchors | rendered headings h1-h6 get `id` + a full-title clickable link (`.mdopen-heading-link`); in the CLI single-file output this happens in `renderer.js`, in the viewer client-side after each render |
+| Scroll | anchored headings carry `scroll-margin-top` so the fixed toolbar never covers the target |
+
 ## Rendering model
 
 - The CLI writes one local HTML viewer page, not one HTML file per Markdown file.

@@ -68,6 +68,39 @@ function enhanceHtml(value) {
   );
 }
 
+// GitHub-compatible heading slug (markdown-ticket slugify.ts): lowercase, split on
+// whitespace, strip non letters/numbers/hyphens (unicode-aware), join with hyphens.
+function slugifyHeading(text) {
+  return text
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .toLowerCase()
+    .split(/\s+/)
+    .map((segment) => segment.replace(/[^\p{L}\p{N}-]/gu, ""))
+    .join("-");
+}
+
+function addHeadingAnchors(html) {
+  const used = Object.create(null);
+  return html.replace(
+    /<h([1-6])((?:\s[^>]*)?)>([\s\S]*?)<\/h\1>/g,
+    (match, level, attrs, inner) => {
+      const text = inner.replace(/<[^>]+>/g, "");
+      const base = slugifyHeading(text).replace(/^-+|-+$/g, "") || "section";
+      let slug = base;
+      if (used[base]) {
+        slug = `${base}-${used[base]}`;
+      }
+      used[base] = (used[base] || 0) + 1;
+      // markdown-it-anchor permalink pattern: wrap the whole title so it is clickable
+      return `<h${level}${attrs} id="${slug}"><a class="mdopen-heading-link" href="#${slug}">${inner}</a></h${level}>`;
+    },
+  );
+}
+
 /**
  * @param {string} value
  * @param {string} name
@@ -176,7 +209,7 @@ function renderMarkdown(markdown, options) {
 
   const parsedMarkdown = extractFrontmatter(markdown);
   const frontmatter = renderFrontmatter(parsedMarkdown.frontmatter);
-  const body = enhanceHtml(md.render(parsedMarkdown.body));
+  const body = addHeadingAnchors(enhanceHtml(md.render(parsedMarkdown.body)));
 
   const html = template
     .replaceAll("{{pageTitle}}", escapeHtml(pageTitle))
