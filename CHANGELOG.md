@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Changed
+
+- Printed tables now split across pages Excel-style instead of jumping wholesale to the next page: a long table starts right after the preceding text, fills the remaining page, and continues on the next page with its header row repeated (Chrome/Firefox; Safari splits but may not repeat the header). Rows are never cut mid-row, and code blocks and blockquotes still refuse to split. (MDOP-007)
+
 ## [0.3.0] - 2026-09-25
 
 ### Added
