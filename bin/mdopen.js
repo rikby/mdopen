@@ -307,18 +307,23 @@ function renderDirectoryViewerScript(data) {
         position: fixed;
         top: 12px;
         bottom: 12px;
-        left: calc(12px + min(var(--mdopen-nav-width, 280px), 100vw - 24px));
-        width: 9px;
-        transform: translateX(-50%);
+        width: 1px;
         z-index: 21;
         cursor: col-resize;
-        border-radius: 4px;
+        background: rgba(127, 127, 127, 0.28);
       }
-      .mdopen-directory-resizer:hover {
-        background: rgba(127, 127, 127, 0.2);
+      .mdopen-directory-resizer::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -4px;
+        width: 9px;
       }
+      .mdopen-directory-resizer:hover,
       .mdopen-directory-resizer:focus-visible {
-        outline: 2px solid var(--mdopen-preview-accent-link, #0969da);
+        background: var(--mdopen-preview-accent-link, #0969da);
+        outline: 1px solid var(--mdopen-preview-accent-link, #0969da);
         outline-offset: 0;
       }
       body:has(.mdopen-directory-nav[hidden]) .mdopen-directory-resizer {
@@ -1279,7 +1284,12 @@ function renderDirectoryViewerScript(data) {
         resizer.setAttribute('aria-label', 'Resize file list');
         resizer.tabIndex = 0;
         document.body.appendChild(resizer);
+        positionResizer(resizer, nav);
         wireResizer(resizer, nav);
+      }
+
+      function positionResizer(handle, nav) {
+        handle.style.left = nav.getBoundingClientRect().right + 'px';
       }
 
       function wireResizer(handle, nav) {
@@ -1291,6 +1301,7 @@ function renderDirectoryViewerScript(data) {
         }
         function applyWidth(width) {
           document.documentElement.style.setProperty('--mdopen-nav-width', clampWidth(width) + 'px');
+          positionResizer(handle, nav);
         }
         function saveWidth() {
           try {
@@ -1311,6 +1322,9 @@ function renderDirectoryViewerScript(data) {
           }
           window.addEventListener('pointermove', onMove);
           window.addEventListener('pointerup', onUp);
+        });
+        window.addEventListener('resize', function () {
+          positionResizer(handle, nav);
         });
         handle.addEventListener('keydown', function (event) {
           var step = event.key === 'ArrowLeft' ? -24 : event.key === 'ArrowRight' ? 24 : 0;
