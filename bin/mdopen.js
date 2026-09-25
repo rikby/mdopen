@@ -293,7 +293,7 @@ function renderDirectoryViewerScript(data) {
         position: fixed;
         inset: 12px auto 12px 12px;
         z-index: 20;
-        width: min(280px, calc(100vw - 24px));
+        width: min(var(--mdopen-nav-width, 280px), calc(100vw - 24px));
         overflow: auto;
         padding: 12px;
         border: 1px solid rgba(127, 127, 127, 0.28);
@@ -301,6 +301,28 @@ function renderDirectoryViewerScript(data) {
         background: color-mix(in srgb, Canvas 94%, transparent);
         color: CanvasText;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+      }
+      .mdopen-directory-resizer {
+        position: fixed;
+        top: 12px;
+        bottom: 12px;
+        left: calc(12px + min(var(--mdopen-nav-width, 280px), 100vw - 24px));
+        width: 9px;
+        transform: translateX(-50%);
+        z-index: 21;
+        cursor: col-resize;
+        border-radius: 4px;
+      }
+      .mdopen-directory-resizer:hover {
+        background: rgba(127, 127, 127, 0.2);
+      }
+      .mdopen-directory-resizer:focus-visible {
+        outline: 2px solid var(--mdopen-preview-accent-link, #0969da);
+        outline-offset: 0;
+      }
+      body:has(.mdopen-directory-nav[hidden]) .mdopen-directory-resizer {
+        display: none;
       }
       .mdopen-directory-nav h2 {
         margin: 0 0 8px;
@@ -462,7 +484,7 @@ function renderDirectoryViewerScript(data) {
         color: rgba(127, 127, 127, 0.95);
       }
       body > .markdown-body {
-        margin-left: 320px;
+        margin-left: calc(var(--mdopen-nav-width, 280px) + 40px);
       }
     }
     @media screen and (max-width: 760px) {
@@ -471,6 +493,9 @@ function renderDirectoryViewerScript(data) {
         width: auto;
         max-height: 36vh;
         margin: 72px 12px 12px;
+      }
+      .mdopen-directory-resizer {
+        display: none;
       }
       body > .markdown-body {
         margin-left: auto;
@@ -1092,6 +1117,7 @@ function renderDirectoryViewerScript(data) {
 
       var TREE_KEY = 'mdopen-directory-tree';
       var NAV_HIDDEN_KEY = 'mdopen-directory-nav-hidden';
+      var NAV_WIDTH_KEY = 'mdopen-directory-width';
 
       function readClosedFolders() {
         try {
@@ -1237,10 +1263,62 @@ function renderDirectoryViewerScript(data) {
 
         try {
           if (localStorage.getItem(NAV_HIDDEN_KEY) === 'true') nav.hidden = true;
+          var savedWidth = parseInt(localStorage.getItem(NAV_WIDTH_KEY), 10);
+          if (savedWidth >= 180) {
+            document.documentElement.style.setProperty('--mdopen-nav-width', savedWidth + 'px');
+          }
         } catch (error) {}
 
         document.body.insertBefore(nav, document.body.firstChild);
         createToggle(nav);
+
+        var resizer = document.createElement('div');
+        resizer.className = 'mdopen-directory-resizer';
+        resizer.setAttribute('role', 'separator');
+        resizer.setAttribute('aria-orientation', 'vertical');
+        resizer.setAttribute('aria-label', 'Resize file list');
+        resizer.tabIndex = 0;
+        document.body.appendChild(resizer);
+        wireResizer(resizer, nav);
+      }
+
+      function wireResizer(handle, nav) {
+        function currentWidth() {
+          return parseFloat(getComputedStyle(nav).width);
+        }
+        function clampWidth(width) {
+          return Math.max(180, Math.min(width, window.innerWidth - 96));
+        }
+        function applyWidth(width) {
+          document.documentElement.style.setProperty('--mdopen-nav-width', clampWidth(width) + 'px');
+        }
+        function saveWidth() {
+          try {
+            localStorage.setItem(NAV_WIDTH_KEY, String(Math.round(currentWidth())));
+          } catch (error) {}
+        }
+        handle.addEventListener('pointerdown', function (event) {
+          event.preventDefault();
+          var startX = event.clientX;
+          var startWidth = currentWidth();
+          function onMove(moveEvent) {
+            applyWidth(startWidth + (moveEvent.clientX - startX));
+          }
+          function onUp() {
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', onUp);
+            saveWidth();
+          }
+          window.addEventListener('pointermove', onMove);
+          window.addEventListener('pointerup', onUp);
+        });
+        handle.addEventListener('keydown', function (event) {
+          var step = event.key === 'ArrowLeft' ? -24 : event.key === 'ArrowRight' ? 24 : 0;
+          if (!step) return;
+          event.preventDefault();
+          applyWidth(currentWidth() + step);
+          saveWidth();
+        });
       }
 
       var navRoot = null;

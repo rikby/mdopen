@@ -38,7 +38,8 @@ The toolbar in viewer mode gains a `NavToggleButton` (inserted by the viewer scr
 ### Desktop
 
 - `DirectoryNav` is fixed to the left: `12px` from top, left, and bottom.
-- Width is capped at `280px` and never wider than the viewport minus `24px`.
+- Width is user-resizable via a right-edge drag handle (`.mdopen-directory-resizer`); range is `180px` to `100vw - 96px`, the chosen width persists in `localStorage` (`mdopen-directory-width`), and arrow keys resize when the handle is focused. The article margin tracks the width through `--mdopen-nav-width`.
+- Tree chrome uses the UI sans stack (system font), independent of the document's reading font.
 - `Preview` keeps the existing `.markdown-body` styling and receives enough left margin to clear the nav.
 - Toolbar remains fixed in the existing top-right position.
 - Repo link remains fixed in the existing bottom-right position.

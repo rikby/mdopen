@@ -89,6 +89,7 @@ Post-process rendered headings to inject `id` + wrap content in a self-referenci
 ### Amendment (post-implementation)
 
 - Current-document highlight in the nav tree strengthened: hover stays neutral gray; `aria-current="page"` now gets an accent-tinted background (`color-mix` on `--mdopen-preview-accent-link`, theme-aware), an inset 2px accent bar, and a semibold label. Mirrored in the binary.
+- Tree block gets a practical UI sans font stack (independent of the document font theme) and a user-resizable width: right-edge drag handle (pointer) plus ArrowLeft/ArrowRight on the focused handle, range 180px-100vw-96px, persisted in `localStorage` (`mdopen-directory-width`); the article margin tracks `--mdopen-nav-width`. Hidden on mobile and in print. Mirrored in the binary.
 
 ### Non-Functional
 - [x] No new runtime dependencies

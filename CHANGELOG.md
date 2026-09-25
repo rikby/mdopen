@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `ARCHITECTURE.md` documents the library entry point and `resolveImage` option.
 - Directory viewer nav renders as a collapsible folder tree (`details`/`summary`), with persisted expanded/collapsed state, auto-reveal of the selected file's ancestors, and a viewer-only toolbar toggle to hide the nav; ships in both the CLI and the standalone binary.
+- Directory viewer tree uses the UI sans font stack regardless of the document font theme, and its width is user-resizable via a right-edge drag handle (arrow keys work too); the chosen width persists.
 - Directory viewer file buttons show document titles (first H1 outside code fences, filename fallback), matching markdown-ticket's title rule.
 - Directory viewer index page shows each file as title over a monospace path with a copy-path button, and a search input filtering by title or path; the nav tree gets the same search on top.
 - `--open` / `--no-open` flags override the `MDOPEN_NO_OPEN` environment variable (last flag wins); standalone binary also gains `-h/--help` and `-o/--output DIR` parity.
