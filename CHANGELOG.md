@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [0.3.0] - 2026-09-25
 
 ### Added
 
@@ -23,11 +23,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Directory viewer nav renders as a collapsible folder tree (`details`/`summary`), with persisted expanded/collapsed state, auto-reveal of the selected file's ancestors, and a viewer-only toolbar toggle to hide the nav; ships in both the CLI and the standalone binary.
 - Directory viewer tree uses the UI sans font stack regardless of the document font theme, and its width is user-resizable via a right-edge drag handle (arrow keys work too); the chosen width persists.
 - Directory viewer file buttons show document titles (first H1 outside code fences, filename fallback), matching markdown-ticket's title rule.
-- Directory viewer index page shows each file as title over a monospace path with a copy-path button, and a search input filtering by title or path; the nav tree gets the same search on top.
+- Directory viewer index page shows each file as title over a monospace path with a copy-path button on the path line; the whole row is clickable and hover matches the nav tree (hand cursor, no underlining). A search input filters by title or path; the nav tree gets the same search on top.
 - `--open` / `--no-open` flags override the `MDOPEN_NO_OPEN` environment variable (last flag wins); standalone binary also gains `-h/--help` and `-o/--output DIR` parity.
 
 ### Fixed
 
+- Directory viewer script was injected into two template slots and executed twice, producing two nav trees (one detached) — the visible tree ignored the hide toggle and mobile auto-collapse until fixed.
 - Standalone binary single-file rendering silently wrote no HTML: the embedded renderer's `require.main === module` CLI guard never matched under the binary's require shim.
 
 ## [0.2.0] - 2026-05-17

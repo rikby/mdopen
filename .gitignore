@@ -5,3 +5,4 @@ dist/
 _site/
 .*.bun-build
 docs/CRs/.trace/
+.playwright-cli/

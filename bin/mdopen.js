@@ -456,6 +456,7 @@ function renderDirectoryViewerScript(data) {
         padding-left: 0;
       }
       .mdopen-index-item {
+        cursor: pointer;
         display: block;
         padding: 4px 8px;
         border-radius: 6px;
@@ -465,6 +466,10 @@ function renderDirectoryViewerScript(data) {
       }
       .mdopen-index-item:hover {
         background: rgba(127, 127, 127, 0.12);
+      }
+      .mdopen-index-item a,
+      .mdopen-index-item a * {
+        text-decoration: none !important;
       }
       .mdopen-index-item a {
         color: inherit;
@@ -522,7 +527,7 @@ function renderDirectoryViewerScript(data) {
       .mdopen-directory-nav {
         position: static;
         width: auto;
-        max-height: 36vh;
+        max-height: 60vh;
         height: auto;
         margin: 72px 12px 12px;
       }
@@ -1040,7 +1045,7 @@ function renderDirectoryViewerScript(data) {
         activeFile = null;
         var rows = directoryData.files.map(function (file) {
           return [
-            '<li class="mdopen-index-item" data-mdopen-key="' + escapeHtml((file.title + ' ' + file.path).toLowerCase()) + '">',
+            '<li class="mdopen-index-item" data-mdopen-key="' + escapeHtml((file.title + ' ' + file.path).toLowerCase()) + '" data-mdopen-path="' + escapeHtml(file.path) + '">',
             '<a href="#" data-mdopen-path="' + escapeHtml(file.path) + '"><span class="mdopen-index-title">' + escapeHtml(file.title || file.path) + '</span></a>',
             '<span class="mdopen-index-pathline">',
             '<button type="button" class="mdopen-index-copy" data-mdopen-copy-path="' + escapeHtml(file.path) + '" aria-label="Copy path" title="Copy path">⧉</button>',
@@ -1146,12 +1151,26 @@ function renderDirectoryViewerScript(data) {
           renderFile(file);
           scrollToSlug(pendingSlug);
           pendingSlug = '';
+          if (isMobileView() && !navRoot.hidden) {
+            setNavHidden(true);
+            window.scrollTo(0, 0);
+          }
         });
       }
 
       var TREE_KEY = 'mdopen-directory-tree';
       var NAV_HIDDEN_KEY = 'mdopen-directory-nav-hidden';
       var NAV_WIDTH_KEY = 'mdopen-directory-width';
+
+      function isMobileView() {
+        return window.matchMedia('(max-width: 760px)').matches;
+      }
+
+      function setNavHidden(hidden) {
+        navRoot.hidden = hidden;
+        var toggle = document.querySelector('.mdopen-toolbar .mdopen-directory-toggle');
+        if (toggle) toggle.setAttribute('aria-pressed', hidden ? 'false' : 'true');
+      }
 
       function readClosedFolders() {
         try {
@@ -1232,8 +1251,7 @@ function renderDirectoryViewerScript(data) {
         toggle.setAttribute('aria-pressed', nav.hidden ? 'false' : 'true');
         toggle.title = 'Toggle file list';
         toggle.addEventListener('click', function () {
-          nav.hidden = !nav.hidden;
-          toggle.setAttribute('aria-pressed', nav.hidden ? 'false' : 'true');
+          setNavHidden(!nav.hidden);
           try {
             localStorage.setItem(NAV_HIDDEN_KEY, nav.hidden ? 'true' : 'false');
           } catch (error) {}
@@ -1301,7 +1319,9 @@ function renderDirectoryViewerScript(data) {
         }, true);
 
         try {
-          if (localStorage.getItem(NAV_HIDDEN_KEY) === 'true') nav.hidden = true;
+          var storedHidden = localStorage.getItem(NAV_HIDDEN_KEY);
+          var mobileView = window.matchMedia('(max-width: 760px)').matches;
+          nav.hidden = storedHidden === 'true' || (mobileView && storedHidden === null);
           var savedWidth = parseInt(localStorage.getItem(NAV_WIDTH_KEY), 10);
           if (savedWidth >= 180) {
             document.documentElement.style.setProperty('--mdopen-nav-width', savedWidth + 'px');
@@ -1367,6 +1387,7 @@ function renderDirectoryViewerScript(data) {
       shell.appendChild(navRoot);
       shell.appendChild(article);
       createToggle(navRoot);
+      applyHash();
 
       article.addEventListener('click', function (event) {
         var headingLink = event.target.closest('a.mdopen-heading-link');
@@ -1382,13 +1403,19 @@ function renderDirectoryViewerScript(data) {
           return;
         }
         var copyButton = event.target.closest('button[data-mdopen-copy-path]');
-        if (copyButton) copyText(copyButton.dataset.mdopenCopyPath, copyButton);
+        if (copyButton) {
+          event.preventDefault();
+          copyText(copyButton.dataset.mdopenCopyPath, copyButton);
+          return;
+        }
+        var indexItem = event.target.closest('.mdopen-index-item');
+        if (indexItem && indexItem.dataset.mdopenPath) {
+          event.preventDefault();
+          location.hash = '#' + indexItem.dataset.mdopenPath;
+        }
       });
 
       window.addEventListener('hashchange', applyHash);
-
-      createNav();
-      applyHash();
     }());
   </script>`;
 }

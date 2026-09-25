@@ -1142,8 +1142,26 @@ html[data-mdopen-theme="dark"] .markdown-body .callout.important {
     color: var(--mdopen-print-accent-link);
   }
 
-  pre, blockquote, table {
+  pre, blockquote {
     break-inside: avoid;
+  }
+
+  .markdown-body table {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  .markdown-body thead {
+    display: table-header-group;
+  }
+
+  .markdown-body tfoot {
+    display: table-footer-group;
+  }
+
+  .markdown-body tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
   .mermaid-container {
