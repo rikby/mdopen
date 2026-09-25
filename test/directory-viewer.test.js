@@ -39,6 +39,8 @@ test("directory viewer generator embeds the collapsible tree UI", () => {
   assert.ok(html.includes("mdopen-directory-branch"), "branches are marked");
   assert.ok(html.includes("mdopenFolder"), "folders carry their path for persistence");
   assert.ok(html.includes("mdopen-directory-toggle"), "toolbar toggle button is generated");
+  assert.ok(html.includes("mdopen-shell"), "nav, handle, and preview live in a flex shell");
+  assert.ok(html.includes("mdopen-directory-resizer"), "resize handle is generated");
   assert.ok(html.includes("'aria-controls'"), "toggle controls the nav");
   assert.ok(html.includes("mdopen-directory-nav[hidden]"), "hidden-state CSS is present");
   assert.ok(html.includes("mdopen-directory-tree"), "folder state persists to localStorage");

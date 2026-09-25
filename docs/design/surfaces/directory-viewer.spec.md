@@ -6,22 +6,26 @@ A CLI-generated local HTML page for `mdopen path/to/dir/` that lists Markdown fi
 
 ```text
 DirectoryViewerPage
-├── ExistingToolbar
+├── ExistingToolbar (fixed, above the shell)
+│   ├── NavToggleButton (viewer-generated)
 │   ├── ThemeToggle
 │   ├── CopyRichButton
 │   ├── PrintButton
 │   ├── MenuButton
 │   └── MenuPanel
-├── DirectoryNav
-│   ├── RootTitle
-│   ├── IndexButton
-│   ├── FolderGroup[] (collapsible `details`/`summary`)
-│   └── FileButton[]
-└── Preview
-    └── <article class="markdown-body">
+└── DirectoryShell (flex row; block below 760px)
+    ├── DirectoryNav
+    │   ├── RootTitle
+    │   ├── NavSearch
+    │   ├── IndexButton
+    │   ├── FolderGroup[] (collapsible `details`/`summary`)
+    │   └── FileButton[]
+    ├── ResizeHandle (1px line, in-layout)
+    └── Preview
+        └── <article class="markdown-body">
 ```
 
-The toolbar in viewer mode gains a `NavToggleButton` (inserted by the viewer script, not the shared template). The editor toggle remains hidden. Directory browsing is a CLI viewer mode, not the GitHub Pages editor.
+The shell (`.mdopen-shell`) is a flex row wrapping nav, handle, and preview — the handle is a layout sibling, so it cannot drift off the panel edge or overlap content. The toolbar in viewer mode gains a `NavToggleButton` (inserted by the viewer script, not the shared template). The editor toggle remains hidden. Directory browsing is a CLI viewer mode, not the GitHub Pages editor.
 
 ## Source files
 
@@ -38,14 +42,15 @@ The toolbar in viewer mode gains a `NavToggleButton` (inserted by the viewer scr
 ### Desktop
 
 - `DirectoryNav` is fixed to the left: `12px` from top, left, and bottom.
-- Width is user-resizable via a right-edge handle (`.mdopen-directory-resizer`): a 1px border-colored line exactly on the panel edge (shadcn resizable-handle pattern) with a 9px invisible hit area; it turns accent-colored on hover/focus. Range is `180px` to `100vw - 96px`, the chosen width persists in `localStorage` (`mdopen-directory-width`), and arrow keys resize when the handle is focused. The article margin tracks the width through `--mdopen-nav-width`.
+- Width is user-resizable through the in-layout handle: a 1px border-colored line with a 9px invisible hit area; it turns accent-colored on hover/focus. Range is `180px` to `min(45vw, 100vw - 160px)` — the cap keeps the toolbar (with the hide toggle) reachable at any width. The chosen width persists in `localStorage` (`mdopen-directory-width`) and drives `--mdopen-nav-width`; arrow keys resize when the handle is focused.
 - Tree chrome uses the UI sans stack (system font), independent of the document's reading font.
-- `Preview` keeps the existing `.markdown-body` styling and receives enough left margin to clear the nav.
+- `Preview` fills the remaining shell space, centered by its own `max-width`; overlap with the nav is structurally impossible.
 - Toolbar remains fixed in the existing top-right position.
 - Repo link remains fixed in the existing bottom-right position.
 
 ### Mobile (`< 760px`)
 
+- `DirectoryShell` becomes a block and the resize handle is hidden.
 - `DirectoryNav` becomes a normal block above the article.
 - It has a max height of `36vh` and scrolls internally when the file list is long.
 - `Preview` returns to the normal centered article layout.

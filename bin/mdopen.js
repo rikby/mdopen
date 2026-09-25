@@ -289,11 +289,17 @@ function renderDirectoryViewerScript(data) {
   return `
   <style>
     @media screen {
+      .mdopen-shell {
+        display: flex;
+        align-items: flex-start;
+        min-height: 100vh;
+      }
       .mdopen-directory-nav {
-        position: fixed;
-        inset: 12px auto 12px 12px;
-        z-index: 20;
-        width: min(var(--mdopen-nav-width, 280px), calc(100vw - 24px));
+        position: static;
+        flex: 0 0 auto;
+        height: calc(100vh - 24px);
+        width: min(var(--mdopen-nav-width, 280px), 45vw);
+        margin: 12px 0 12px 12px;
         overflow: auto;
         padding: 12px;
         border: 1px solid rgba(127, 127, 127, 0.28);
@@ -304,13 +310,15 @@ function renderDirectoryViewerScript(data) {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
       }
       .mdopen-directory-resizer {
-        position: fixed;
-        top: 12px;
-        bottom: 12px;
+        position: relative;
+        flex: 0 0 auto;
+        align-self: stretch;
         width: 1px;
-        z-index: 21;
+        margin: 12px 0;
         cursor: col-resize;
         background: rgba(127, 127, 127, 0.28);
+        border: 0;
+        padding: 0;
       }
       .mdopen-directory-resizer::after {
         content: "";
@@ -323,8 +331,7 @@ function renderDirectoryViewerScript(data) {
       .mdopen-directory-resizer:hover,
       .mdopen-directory-resizer:focus-visible {
         background: var(--mdopen-preview-accent-link, #0969da);
-        outline: 1px solid var(--mdopen-preview-accent-link, #0969da);
-        outline-offset: 0;
+        outline: none;
       }
       body:has(.mdopen-directory-nav[hidden]) .mdopen-directory-resizer {
         display: none;
@@ -359,8 +366,8 @@ function renderDirectoryViewerScript(data) {
       .mdopen-directory-nav[hidden] {
         display: none;
       }
-      body:has(.mdopen-directory-nav[hidden]) > .markdown-body {
-        margin-left: auto;
+      .mdopen-directory-nav[hidden] + .mdopen-directory-resizer {
+        display: none;
       }
       .mdopen-directory-nav summary {
         display: flex;
@@ -488,34 +495,41 @@ function renderDirectoryViewerScript(data) {
         font-size: 12px;
         color: rgba(127, 127, 127, 0.95);
       }
-      body > .markdown-body {
-        margin-left: calc(var(--mdopen-nav-width, 280px) + 40px);
+      body > .mdopen-shell .markdown-body {
+        flex: 1 1 auto;
+        min-width: 0;
+        margin: 12px auto;
       }
     }
     @media screen and (max-width: 760px) {
+      .mdopen-shell {
+        display: block;
+      }
       .mdopen-directory-nav {
-        position: static;
         width: auto;
         max-height: 36vh;
+        height: auto;
         margin: 72px 12px 12px;
       }
       .mdopen-directory-resizer {
         display: none;
       }
-      body > .markdown-body {
-        margin-left: auto;
+      body > .mdopen-shell .markdown-body {
+        margin: 0 12px 12px;
       }
     }
     @media print {
-      .mdopen-directory-nav {
-        display: none;
+      .mdopen-shell {
+        display: block;
       }
+      .mdopen-directory-nav,
+      .mdopen-directory-resizer,
       .mdopen-index-search,
       .mdopen-index-copy {
         display: none;
       }
-      body > .markdown-body {
-        margin-left: auto;
+      body > .mdopen-shell .markdown-body {
+        margin: 0 auto;
       }
     }
   </style>
@@ -1273,23 +1287,6 @@ function renderDirectoryViewerScript(data) {
             document.documentElement.style.setProperty('--mdopen-nav-width', savedWidth + 'px');
           }
         } catch (error) {}
-
-        document.body.insertBefore(nav, document.body.firstChild);
-        createToggle(nav);
-
-        var resizer = document.createElement('div');
-        resizer.className = 'mdopen-directory-resizer';
-        resizer.setAttribute('role', 'separator');
-        resizer.setAttribute('aria-orientation', 'vertical');
-        resizer.setAttribute('aria-label', 'Resize file list');
-        resizer.tabIndex = 0;
-        document.body.appendChild(resizer);
-        positionResizer(resizer, nav);
-        wireResizer(resizer, nav);
-      }
-
-      function positionResizer(handle, nav) {
-        handle.style.left = nav.getBoundingClientRect().right + 'px';
       }
 
       function wireResizer(handle, nav) {
@@ -1297,11 +1294,10 @@ function renderDirectoryViewerScript(data) {
           return parseFloat(getComputedStyle(nav).width);
         }
         function clampWidth(width) {
-          return Math.max(180, Math.min(width, window.innerWidth - 96));
+          return Math.max(180, Math.min(width, window.innerWidth - 160));
         }
         function applyWidth(width) {
           document.documentElement.style.setProperty('--mdopen-nav-width', clampWidth(width) + 'px');
-          positionResizer(handle, nav);
         }
         function saveWidth() {
           try {
@@ -1323,9 +1319,6 @@ function renderDirectoryViewerScript(data) {
           window.addEventListener('pointermove', onMove);
           window.addEventListener('pointerup', onUp);
         });
-        window.addEventListener('resize', function () {
-          positionResizer(handle, nav);
-        });
         handle.addEventListener('keydown', function (event) {
           var step = event.key === 'ArrowLeft' ? -24 : event.key === 'ArrowRight' ? 24 : 0;
           if (!step) return;
@@ -1336,6 +1329,23 @@ function renderDirectoryViewerScript(data) {
       }
 
       var navRoot = null;
+
+      createNav();
+
+      var shell = document.createElement('div');
+      shell.className = 'mdopen-shell';
+      var resizer = document.createElement('div');
+      resizer.className = 'mdopen-directory-resizer';
+      resizer.setAttribute('role', 'separator');
+      resizer.setAttribute('aria-orientation', 'vertical');
+      resizer.setAttribute('aria-label', 'Resize file list');
+      resizer.tabIndex = 0;
+      document.body.insertBefore(shell, document.body.firstChild);
+      shell.appendChild(navRoot);
+      shell.appendChild(resizer);
+      shell.appendChild(article);
+      createToggle(navRoot);
+      wireResizer(resizer, navRoot);
 
       article.addEventListener('click', function (event) {
         var headingLink = event.target.closest('a.mdopen-heading-link');
