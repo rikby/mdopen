@@ -295,7 +295,8 @@ function renderDirectoryViewerScript(data) {
         min-height: 100vh;
       }
       .mdopen-directory-nav {
-        position: relative;
+        position: sticky;
+        top: 12px;
         flex: 0 0 auto;
         height: calc(100vh - 24px);
         width: min(var(--mdopen-nav-width, 280px), 45vw);
@@ -509,6 +510,7 @@ function renderDirectoryViewerScript(data) {
         display: block;
       }
       .mdopen-directory-nav {
+        position: static;
         width: auto;
         max-height: 36vh;
         height: auto;

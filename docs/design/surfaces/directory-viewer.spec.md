@@ -41,7 +41,7 @@ The shell (`.mdopen-shell`) is a flex row wrapping nav, handle, and preview — 
 
 ### Desktop
 
-- `DirectoryNav` is fixed to the left: `12px` from top, left, and bottom.
+- `DirectoryNav` sits `12px` from top, left, and bottom, and is `position: sticky` (`top: 12px`): it stays pinned while long documents scroll; the resize handle pins with it. On mobile it reverts to a static block.
 - Width is user-resizable through the in-layout handle: a 1px border-colored line that replaces the panel's right border (inside the rounded frame; the panel's `overflow: hidden` clips it under the corners) with a 9px invisible hit area kept clear of the scrollbar by the panel padding; it turns accent-colored on hover/focus. Range is `180px` to `min(45vw, 100vw - 160px)` — the cap keeps the toolbar (with the hide toggle) reachable at any width. The chosen width persists in `localStorage` (`mdopen-directory-width`) and drives `--mdopen-nav-width`; arrow keys resize when the handle is focused.
 - Tree chrome uses the UI sans stack (system font), independent of the document's reading font.
 - `Preview` fills the remaining shell space, centered by its own `max-width`; overlap with the nav is structurally impossible.
