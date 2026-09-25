@@ -89,6 +89,7 @@ Post-process rendered headings to inject `id` + wrap content in a self-referenci
 ### Amendment (post-implementation)
 
 - Current-document highlight in the nav tree strengthened: hover stays neutral gray; `aria-current="page"` now gets an accent-tinted background (`color-mix` on `--mdopen-preview-accent-link`, theme-aware), an inset 2px accent bar, and a semibold label. Mirrored in the binary.
+- Handle moved inside the nav frame: it replaces the panel's right border (nav `overflow: hidden` + inner scroll wrapper keep it pinned under the rounded corners and clear of the scrollbar); panel hit-area concern resolved by the 12px padding gap.
 - Tree nav and preview restructured into a flex shell (`.mdopen-shell`): the resize handle is an in-layout 1px sibling line (shadcn resizable-handle pattern) instead of a fixed floating element, so it always sits on the panel edge and cannot overlap content; width capped at `min(45vw, 100vw - 160px)` so the toolbar stays reachable. Mirrored in the binary.
 - Tree block gets a practical UI sans font stack (independent of the document font theme) and a user-resizable width: right-edge drag handle (pointer) plus ArrowLeft/ArrowRight on the focused handle, range 180px-100vw-96px, persisted in `localStorage` (`mdopen-directory-width`); the article margin tracks `--mdopen-nav-width`. Hidden on mobile and in print. Mirrored in the binary.
 

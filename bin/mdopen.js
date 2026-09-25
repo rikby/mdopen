@@ -295,26 +295,32 @@ function renderDirectoryViewerScript(data) {
         min-height: 100vh;
       }
       .mdopen-directory-nav {
-        position: static;
+        position: relative;
         flex: 0 0 auto;
         height: calc(100vh - 24px);
         width: min(var(--mdopen-nav-width, 280px), 45vw);
         margin: 12px 0 12px 12px;
-        overflow: auto;
-        padding: 12px;
+        overflow: hidden;
+        padding: 0;
         border: 1px solid rgba(127, 127, 127, 0.28);
+        border-right: 0;
         border-radius: 8px;
         background: color-mix(in srgb, Canvas 94%, transparent);
         color: CanvasText;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
       }
+      .mdopen-directory-scroll {
+        height: 100%;
+        overflow: auto;
+        padding: 12px;
+      }
       .mdopen-directory-resizer {
-        position: relative;
-        flex: 0 0 auto;
-        align-self: stretch;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
         width: 1px;
-        margin: 12px 0;
         cursor: col-resize;
         background: rgba(127, 127, 127, 0.28);
         border: 0;
@@ -364,9 +370,6 @@ function renderDirectoryViewerScript(data) {
         font-weight: 600;
       }
       .mdopen-directory-nav[hidden] {
-        display: none;
-      }
-      .mdopen-directory-nav[hidden] + .mdopen-directory-resizer {
         display: none;
       }
       .mdopen-directory-nav summary {
@@ -1232,7 +1235,11 @@ function renderDirectoryViewerScript(data) {
         nav.className = 'mdopen-directory-nav';
         nav.setAttribute('aria-label', 'Markdown files');
         navRoot = nav;
-        nav.innerHTML = '<h2>' + escapeHtml(directoryData.rootName) + '</h2>';
+
+        var scroll = document.createElement('div');
+        scroll.className = 'mdopen-directory-scroll';
+        scroll.innerHTML = '<h2>' + escapeHtml(directoryData.rootName) + '</h2>';
+        nav.appendChild(scroll);
 
         var searchWrap = document.createElement('div');
         searchWrap.className = 'mdopen-directory-search';
@@ -1244,21 +1251,22 @@ function renderDirectoryViewerScript(data) {
           applyNavFilter(searchInput.value);
         });
         searchWrap.appendChild(searchInput);
-        nav.appendChild(searchWrap);
+        scroll.appendChild(searchWrap);
 
         var emptyMessage = document.createElement('p');
         emptyMessage.className = 'mdopen-directory-empty';
         emptyMessage.hidden = true;
         emptyMessage.textContent = 'No matches';
-        nav.appendChild(emptyMessage);
+        scroll.appendChild(emptyMessage);
 
         var indexButton = document.createElement('button');
         indexButton.type = 'button';
         indexButton.dataset.mdopenPath = '';
         indexButton.textContent = 'Index';
-        nav.appendChild(indexButton);
+        var scroll = nav.querySelector('.mdopen-directory-scroll');
+        scroll.appendChild(indexButton);
 
-        renderTreeBranch(nav, buildTreeModel(), [], readClosedFolders());
+        renderTreeBranch(scroll, buildTreeModel(), [], readClosedFolders());
 
         nav.addEventListener('click', function (event) {
           var button = event.target.closest('button[data-mdopen-path]');
@@ -1287,6 +1295,15 @@ function renderDirectoryViewerScript(data) {
             document.documentElement.style.setProperty('--mdopen-nav-width', savedWidth + 'px');
           }
         } catch (error) {}
+
+        var resizer = document.createElement('div');
+        resizer.className = 'mdopen-directory-resizer';
+        resizer.setAttribute('role', 'separator');
+        resizer.setAttribute('aria-orientation', 'vertical');
+        resizer.setAttribute('aria-label', 'Resize file list');
+        resizer.tabIndex = 0;
+        nav.appendChild(resizer);
+        wireResizer(resizer, nav);
       }
 
       function wireResizer(handle, nav) {
@@ -1334,18 +1351,10 @@ function renderDirectoryViewerScript(data) {
 
       var shell = document.createElement('div');
       shell.className = 'mdopen-shell';
-      var resizer = document.createElement('div');
-      resizer.className = 'mdopen-directory-resizer';
-      resizer.setAttribute('role', 'separator');
-      resizer.setAttribute('aria-orientation', 'vertical');
-      resizer.setAttribute('aria-label', 'Resize file list');
-      resizer.tabIndex = 0;
       document.body.insertBefore(shell, document.body.firstChild);
       shell.appendChild(navRoot);
-      shell.appendChild(resizer);
       shell.appendChild(article);
       createToggle(navRoot);
-      wireResizer(resizer, navRoot);
 
       article.addEventListener('click', function (event) {
         var headingLink = event.target.closest('a.mdopen-heading-link');
