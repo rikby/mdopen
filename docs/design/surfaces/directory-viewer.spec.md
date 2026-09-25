@@ -147,7 +147,7 @@ The toolbar in viewer mode gains a `NavToggleButton` (inserted by the viewer scr
 | Nav toggle | `.mdopen-directory-toggle` | toolbar show/hide for the nav |
 | Preview | `.markdown-body` | existing rendered document surface |
 | Toolbar | `.mdopen-toolbar` | existing view controls |
-| Active file | `aria-current="page"` | selected nav state |
+| Active file | `aria-current="page"` | selected nav state: accent-tinted background, inset accent bar, semibold label (distinct from neutral hover) |
 | Theme state | `data-mdopen-*` attributes | existing toolbar-controlled view options |
 
 ## Extension notes

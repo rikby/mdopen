@@ -321,9 +321,13 @@ function renderDirectoryViewerScript(data) {
         overflow-wrap: anywhere;
         cursor: pointer;
       }
-      .mdopen-directory-nav button:hover,
-      .mdopen-directory-nav button[aria-current="page"] {
+      .mdopen-directory-nav button:hover {
         background: rgba(127, 127, 127, 0.16);
+      }
+      .mdopen-directory-nav button[aria-current="page"] {
+        background: color-mix(in srgb, var(--mdopen-preview-accent-link, #0969da) 14%, transparent);
+        box-shadow: inset 2px 0 0 var(--mdopen-preview-accent-link, #0969da);
+        font-weight: 600;
       }
       .mdopen-directory-nav[hidden] {
         display: none;

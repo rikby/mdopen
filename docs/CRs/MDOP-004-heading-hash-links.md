@@ -84,6 +84,11 @@ Post-process rendered headings to inject `id` + wrap content in a self-referenci
 - [x] Viewer: clicking a heading updates the hash to `#path--slug`; selecting a file sets `#path`; Index clears it
 - [x] Browser back/forward navigates viewer history
 - [x] Anchors are invisible until heading hover; print output unaffected
+- [x] The current document's nav button is highlighted (accent tint + inset bar + semibold), visually distinct from hover, following light/dark theme
+
+### Amendment (post-implementation)
+
+- Current-document highlight in the nav tree strengthened: hover stays neutral gray; `aria-current="page"` now gets an accent-tinted background (`color-mix` on `--mdopen-preview-accent-link`, theme-aware), an inset 2px accent bar, and a semibold label. Mirrored in the binary.
 
 ### Non-Functional
 - [x] No new runtime dependencies
