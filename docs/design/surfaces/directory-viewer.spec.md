@@ -90,7 +90,8 @@ The shell (`.mdopen-shell`) is a flex row wrapping nav, handle, and preview — 
 ## Index page
 
 - Lists each file as: title (from the manifest `title`, i.e. first H1), with the file path below it in monospace (`code.mdopen-index-path`).
-- A copy icon button (`.mdopen-index-copy`, `⧉` with `✓` feedback) sits left of each item and copies the file path.
+- A copy icon button (`.mdopen-index-copy`, `⧉` with `✓` feedback) sits on the path line, left of the path, and copies it.
+- Item hover: row highlight, hand cursor, no link underlining — matching the nav tree.
 - A search input (`.mdopen-index-search`) above the list filters items on title + path and shows a "No matching files." message when nothing matches.
 - Search box and copy buttons are hidden in print output.
 

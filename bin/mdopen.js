@@ -456,9 +456,7 @@ function renderDirectoryViewerScript(data) {
         padding-left: 0;
       }
       .mdopen-index-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 8px;
+        display: block;
         padding: 4px 8px;
         border-radius: 6px;
       }
@@ -468,17 +466,27 @@ function renderDirectoryViewerScript(data) {
       .mdopen-index-item:hover {
         background: rgba(127, 127, 127, 0.12);
       }
+      .mdopen-index-item a {
+        color: inherit;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .mdopen-index-item a:hover {
+        text-decoration: none;
+      }
+      .mdopen-index-item a .mdopen-index-title {
+        color: var(--mdopen-preview-accent-link, #0969da);
+      }
       .mdopen-index-copy {
         flex: 0 0 auto;
-        margin-top: 2px;
         padding: 0 4px;
         border: 0;
         border-radius: 4px;
         background: transparent;
         color: inherit;
         font: inherit;
-        font-size: 13px;
-        line-height: 20px;
+        font-size: 12px;
+        line-height: 18px;
         cursor: pointer;
         opacity: 0.65;
       }
@@ -486,8 +494,10 @@ function renderDirectoryViewerScript(data) {
         opacity: 1;
         background: rgba(127, 127, 127, 0.16);
       }
-      .mdopen-index-item a {
-        text-decoration: none;
+      .mdopen-index-pathline {
+        display: flex;
+        align-items: center;
+        gap: 6px;
       }
       .mdopen-index-title {
         display: block;
@@ -1031,11 +1041,11 @@ function renderDirectoryViewerScript(data) {
         var rows = directoryData.files.map(function (file) {
           return [
             '<li class="mdopen-index-item" data-mdopen-key="' + escapeHtml((file.title + ' ' + file.path).toLowerCase()) + '">',
+            '<a href="#" data-mdopen-path="' + escapeHtml(file.path) + '"><span class="mdopen-index-title">' + escapeHtml(file.title || file.path) + '</span></a>',
+            '<span class="mdopen-index-pathline">',
             '<button type="button" class="mdopen-index-copy" data-mdopen-copy-path="' + escapeHtml(file.path) + '" aria-label="Copy path" title="Copy path">⧉</button>',
-            '<a href="#" data-mdopen-path="' + escapeHtml(file.path) + '">',
-            '<span class="mdopen-index-title">' + escapeHtml(file.title || file.path) + '</span>',
-            '<code class="mdopen-index-path">' + escapeHtml(file.path) + '</code>',
-            '</a>',
+            '<a href="#" data-mdopen-path="' + escapeHtml(file.path) + '"><code class="mdopen-index-path">' + escapeHtml(file.path) + '</code></a>',
+            '</span>',
             '</li>',
           ].join('');
         }).join('');
