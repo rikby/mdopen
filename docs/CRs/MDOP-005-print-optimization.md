@@ -1,9 +1,10 @@
 ---
 code: MDOP-005
-status: In Progress
+status: Approved
 dateCreated: 2026-09-25T12:36:44.000Z
 type: Epic
 priority: Medium
+level: epic
 ---
 
 # MDOP-005: Print optimization

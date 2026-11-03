@@ -4,7 +4,7 @@ status: Implemented
 dateCreated: 2026-09-25T12:36:44.000Z
 type: Feature Enhancement
 priority: Medium
-relatedTickets: MDOP-005
+phaseEpic: MDOP-005
 ---
 
 # MDOP-007: Excel-style table splitting in print CSS
