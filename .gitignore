@@ -4,5 +4,5 @@ node_modules/
 dist/
 _site/
 .*.bun-build
-docs/CRs/.trace/
+.tickets/.trace/
 .playwright-cli/

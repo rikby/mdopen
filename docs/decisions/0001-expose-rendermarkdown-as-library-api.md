@@ -103,9 +103,9 @@ if (require.main === module) {
 
 ## References
 
-- CR: `docs/CRs/MDOP-001-render-api.md`
-- Architecture: `docs/CRs/MDOP-001/architecture.md`
-- Assessment: `docs/CRs/MDOP-001/assess.md`
+- CR: `.tickets/MDOP-001-render-api.md`
+- Architecture: `.tickets/MDOP-001/architecture.md`
+- Assessment: `.tickets/MDOP-001/assess.md`
 - `renderer.js` (current monolithic script)
 - `bin/mdopen.js` line 164 (subprocess call preserved)
 - `package.json` line `"main": "renderer.js"` (pre-existing library claim)
