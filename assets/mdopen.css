@@ -626,6 +626,9 @@ html[data-mdopen-theme="dark"] .markdown-body .callout.important {
 .mdopen-media-controls span {
   flex: 1;
   min-inline-size: 0;
+  white-space: nowrap;
+  overflow: clip;
+  text-overflow: ellipsis;
 }
 
 .mdopen-media-controls button:last-child {

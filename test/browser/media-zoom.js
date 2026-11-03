@@ -69,6 +69,14 @@ async page => {
   await buttons.first().click();
   await page.evaluate(() => document.dispatchEvent(new Event('mdopen-theme-change')));
   check(!await dialog.evaluate(d => d.open), 'theme changes must close stale zoom');
+  const originalViewport = page.viewportSize();
+  await page.setViewportSize({width:320, height:640});
+  await buttons.first().click();
+  const controls = await page.locator('.mdopen-media-controls').boundingBox();
+  const smallViewport = await viewport.boundingBox();
+  check(controls.y + controls.height <= smallViewport.y, 'controls must fit above media on narrow screens');
+  await page.keyboard.press('Escape');
+  await page.setViewportSize(originalViewport);
   // Live editor/directory replacement must release the modal and lock too.
   await buttons.first().click();
   await page.evaluate(() => { document.querySelector('.markdown-body').innerHTML = '<p>Replaced</p>'; });
