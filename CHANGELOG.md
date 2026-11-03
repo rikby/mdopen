@@ -6,7 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Fullscreen image zoom alongside Mermaid: scroll/pinch or +/− to zoom, drag to pan, Fit/double-click to reset, and Escape to close. Available in file previews, directory viewers, binaries, and the Pages editor; linked images keep their navigation.
+
 ### Changed
+
+- Images and Mermaid share one modal viewer and gesture implementation; binary directory output now uses the same viewer generator as the source CLI.
 
 - Printed tables now split across pages Excel-style instead of jumping wholesale to the next page: a long table starts right after the preceding text, fills the remaining page, and continues on the next page with its header row repeated (Chrome/Firefox; Safari splits but may not repeat the header). Rows are never cut mid-row, and code blocks and blockquotes still refuse to split. (MDOP-007)
 

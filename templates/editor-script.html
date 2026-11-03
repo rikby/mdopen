@@ -248,14 +248,13 @@
           document.removeEventListener('mdopen-mermaid-loaded', onLoaded);
           mermaidModule = window._mdopenMermaid;
           mermaidLoaded = true;
-          wireMermaidOverlay();
           callback();
         });
       }
 
       function renderMermaidDiagrams() {
         if (!mermaidModule) return;
-        var overlay = window.mdopenMermaidOverlay;
+        var overlay = window.mdopenMediaOverlay;
         if (overlay) overlay.exit();
 
         var theme = document.documentElement.dataset.mdopenTheme === 'dark' ? 'dark' : 'default';
@@ -291,164 +290,6 @@
               if (overlay) overlay.addButtons(container);
             });
         });
-      }
-
-      function getTransform(scale, translate) {
-        return 'translate(' + translate.x + 'px, ' + translate.y + 'px) scale(' + scale + ')';
-      }
-
-      function getFitScale(container, diagram) {
-        var rect = diagram.getBoundingClientRect();
-        if (!rect.width || !rect.height) return 1;
-        var fitX = window.innerWidth * 0.9 / rect.width;
-        var fitY = window.innerHeight * 0.9 / rect.height;
-        return Math.max(0.2, Math.min(8, Math.min(fitX, fitY)));
-      }
-
-      function applyMermaidPanZoom(state) {
-        state.diagram.style.transform = getTransform(state.scale, state.translate);
-      }
-
-      function enableMermaidPanZoom(container) {
-        if (container._mdopenMermaidPanZoom) {
-          var st = container._mdopenMermaidPanZoom;
-          st.scale = getFitScale(container, st.diagram);
-          st.translate = { x: 0, y: 0 };
-          st.diagram.style.transition = 'transform 100ms ease-out';
-          applyMermaidPanZoom(st);
-          return;
-        }
-        var diagram = container.querySelector('.mermaid');
-        if (!diagram) return;
-        var state = {
-          diagram: diagram,
-          scale: getFitScale(container, diagram),
-          translate: { x: 0, y: 0 },
-          dragging: false,
-          dragStart: { x: 0, y: 0 },
-          lastTouchDistance: 0
-        };
-        container.style.cursor = 'grab';
-        container.style.touchAction = 'none';
-        diagram.style.cursor = 'grab';
-        diagram.style.userSelect = 'none';
-        diagram.style.touchAction = 'none';
-        diagram.style.transformOrigin = 'center center';
-        diagram.style.transition = 'transform 100ms ease-out';
-        applyMermaidPanZoom(state);
-        function isButtonEvent(event) {
-          return event.target && event.target.closest && event.target.closest('.mermaid-fullscreen-btn');
-        }
-        function wheel(event) {
-          event.preventDefault();
-          var step = state.scale * (event.ctrlKey ? 0.15 : 0.1);
-          var direction = event.deltaY > 0 ? -1 : 1;
-          state.scale = Math.max(0.1, Math.min(20, state.scale + direction * step));
-          applyMermaidPanZoom(state);
-        }
-        function mouseDown(event) {
-          if (event.button !== 0 || isButtonEvent(event)) return;
-          event.preventDefault();
-          state.dragging = true;
-          state.dragStart = { x: event.clientX - state.translate.x, y: event.clientY - state.translate.y };
-          container.style.cursor = 'grabbing';
-          diagram.style.cursor = 'grabbing';
-          diagram.style.transition = '';
-        }
-        function mouseMove(event) {
-          if (!state.dragging) return;
-          state.translate.x = event.clientX - state.dragStart.x;
-          state.translate.y = event.clientY - state.translate.y;
-          applyMermaidPanZoom(state);
-        }
-        function mouseUp() {
-          if (!state.dragging) return;
-          state.dragging = false;
-          container.style.cursor = 'grab';
-          diagram.style.cursor = 'grab';
-          diagram.style.transition = 'transform 100ms ease-out';
-        }
-        function touchDistance(touches) {
-          return Math.hypot(touches[1].clientX - touches[0].clientX, touches[1].clientY - touches[0].clientY);
-        }
-        function touchStart(event) {
-          if (isButtonEvent(event)) return;
-          if (event.touches.length === 2) {
-            state.lastTouchDistance = touchDistance(event.touches);
-          } else if (event.touches.length === 1) {
-            state.dragging = true;
-            state.dragStart = { x: event.touches[0].clientX - state.translate.x, y: event.touches[0].clientY - state.translate.y };
-          }
-        }
-        function touchMove(event) {
-          event.preventDefault();
-          if (event.touches.length === 2) {
-            var distance = touchDistance(event.touches);
-            if (state.lastTouchDistance > 0) {
-              var delta = distance > state.lastTouchDistance ? 1 : -1;
-              state.scale = Math.max(0.1, Math.min(20, state.scale + delta * state.scale * 0.1));
-              applyMermaidPanZoom(state);
-            }
-            state.lastTouchDistance = distance;
-          } else if (event.touches.length === 1 && state.dragging) {
-            state.translate.x = event.touches[0].clientX - state.dragStart.x;
-            state.translate.y = event.touches[0].clientY - state.dragStart.y;
-            applyMermaidPanZoom(state);
-          }
-        }
-        function touchEnd() {
-          state.dragging = false;
-          state.lastTouchDistance = 0;
-        }
-        function doubleClick(event) {
-          if (isButtonEvent(event)) return;
-          state.scale = getFitScale(container, diagram);
-          state.translate = { x: 0, y: 0 };
-          diagram.style.transition = 'transform 220ms ease-out';
-          applyMermaidPanZoom(state);
-        }
-        container.addEventListener('wheel', wheel, { passive: false });
-        container.addEventListener('mousedown', mouseDown);
-        document.addEventListener('mousemove', mouseMove);
-        document.addEventListener('mouseup', mouseUp);
-        container.addEventListener('touchstart', touchStart, { passive: false });
-        container.addEventListener('touchmove', touchMove, { passive: false });
-        container.addEventListener('touchend', touchEnd);
-        container.addEventListener('dblclick', doubleClick);
-        state.cleanup = function () {
-          container.removeEventListener('wheel', wheel);
-          container.removeEventListener('mousedown', mouseDown);
-          document.removeEventListener('mousemove', mouseMove);
-          document.removeEventListener('mouseup', mouseUp);
-          container.removeEventListener('touchstart', touchStart);
-          container.removeEventListener('touchmove', touchMove);
-          container.removeEventListener('touchend', touchEnd);
-          container.removeEventListener('dblclick', doubleClick);
-        };
-        container._mdopenMermaidPanZoom = state;
-      }
-
-      function disableMermaidPanZoom(container) {
-        var state = container._mdopenMermaidPanZoom;
-        if (state && state.cleanup) state.cleanup();
-        var diagram = container.querySelector('.mermaid');
-        if (diagram) {
-          diagram.style.transform = '';
-          diagram.style.transformOrigin = '';
-          diagram.style.transition = '';
-          diagram.style.cursor = '';
-          diagram.style.userSelect = '';
-          diagram.style.touchAction = '';
-        }
-        container.style.cursor = '';
-        container.style.touchAction = '';
-        delete container._mdopenMermaidPanZoom;
-      }
-
-      function wireMermaidOverlay() {
-        var overlay = window.mdopenMermaidOverlay;
-        if (!overlay) return;
-        overlay.setHooks({ onEnter: enableMermaidPanZoom, onExit: disableMermaidPanZoom });
       }
 
       function render() {

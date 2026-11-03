@@ -544,33 +544,120 @@ html[data-mdopen-theme="dark"] .markdown-body .callout.important {
   background: rgba(140, 148, 158, 0.6);
 }
 
-.mermaid-fullscreen-btn {
+.mdopen-image-container {
+  position: relative;
+  display: inline-block;
+  max-inline-size: 100%;
+}
+
+.mdopen-media-fullscreen-btn {
   position: absolute;
-  top: 8px;
-  left: 8px;
+  inset-block-start: 8px;
+  inset-inline-start: 8px;
   z-index: 1;
+}
+
+.mdopen-media-fullscreen-btn,
+.mdopen-media-controls button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: 0;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  padding: 4px 10px;
+  border: 1px solid var(--mdopen-mermaid-border);
   border-radius: 4px;
-  background: rgba(0, 0, 0, 0.2);
-  color: #ffffff;
+  background: var(--mdopen-mermaid-bg);
+  color: var(--mdopen-preview-text, CanvasText);
+  font: 14px/1.2 ui-sans-serif, system-ui, sans-serif;
   cursor: pointer;
-  transition: background-color 200ms ease;
 }
 
-.mermaid-fullscreen-btn:hover,
-.mermaid-fullscreen-btn:focus-visible {
-  background: rgba(0, 0, 0, 0.3);
+@media (hover: hover) and (pointer: fine) {
+  .mdopen-media-fullscreen-btn:hover,
+  .mdopen-media-controls button:hover {
+    background: color-mix(in oklch, var(--mdopen-mermaid-bg) 85%, oklch(0.6 0 none));
+  }
 }
 
-.mermaid-fullscreen-btn:focus-visible {
+.mdopen-media-fullscreen-btn:focus-visible,
+.mdopen-media-controls button:focus-visible {
   outline: 2px solid var(--mdopen-preview-accent-link, #0969da);
   outline-offset: 2px;
+}
+
+.mdopen-media-fullscreen-btn:active,
+.mdopen-media-controls button:active {
+  background: color-mix(in oklch, var(--mdopen-mermaid-bg) 70%, oklch(0.6 0 none));
+}
+
+.mdopen-media-fullscreen-btn:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.mdopen-media-overlay {
+  position: fixed;
+  inset: 0;
+  box-sizing: border-box;
+  inline-size: 100%;
+  block-size: 100%;
+  max-inline-size: none;
+  max-block-size: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--mdopen-mermaid-bg);
+  color: var(--mdopen-preview-text, CanvasText);
+  overflow: clip;
+  overscroll-behavior: contain;
+}
+
+.mdopen-media-controls {
+  position: absolute;
+  inset-block-start: 8px;
+  inset-inline: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 14px/1.2 ui-sans-serif, system-ui, sans-serif;
+}
+
+.mdopen-media-controls span {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.mdopen-media-controls button:last-child {
+  margin-inline-start: auto;
+}
+
+.mdopen-media-viewport {
+  position: absolute;
+  inset: 64px 0 0;
+  overflow: clip;
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+}
+
+.mdopen-media-viewport.mdopen-media-dragging {
+  cursor: grabbing;
+}
+
+.mdopen-media-content {
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.mdopen-media-content > img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  max-inline-size: none;
 }
 
 .mdopen-toolbar {
@@ -1173,8 +1260,9 @@ html[data-mdopen-theme="dark"] .markdown-body .callout.important {
     page-break-inside: avoid;
   }
 
-  .mermaid-fullscreen-btn {
-    display: none;
+  .mdopen-media-fullscreen-btn,
+  .mdopen-media-overlay {
+    display: none !important;
   }
 
   .mermaid-container .mermaid-error {

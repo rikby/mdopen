@@ -1,0 +1,234 @@
+<script>
+  // One interaction owner for images and rendered Mermaid SVGs in every viewer.
+  // A modal dialog keeps zoom above filtered/scrolled document ancestors without
+  // moving the original media or relying on the native Fullscreen API.
+  (function () {
+    if (window.mdopenMediaOverlay) return;
+
+    var active = null;
+    var dialog = document.createElement('dialog');
+    dialog.className = 'mdopen-media-overlay';
+    dialog.setAttribute('aria-label', 'Image and diagram zoom');
+    dialog.innerHTML = '<div class="mdopen-media-controls">' +
+      '<button type="button" data-media-action="out" aria-label="Zoom out">−</button>' +
+      '<button type="button" data-media-action="in" aria-label="Zoom in">+</button>' +
+      '<button type="button" data-media-action="fit">Fit</button>' +
+      '<span>Scroll or pinch to zoom · Drag to pan</span>' +
+      '<button type="button" data-media-action="close" autofocus aria-label="Exit fullscreen">Close</button>' +
+      '</div><div class="mdopen-media-viewport"><div class="mdopen-media-content"></div></div>';
+    document.body.appendChild(dialog);
+    var viewport = dialog.querySelector('.mdopen-media-viewport');
+    var content = dialog.querySelector('.mdopen-media-content');
+    var pointers = new Map();
+    var gesture = null;
+
+    function apply() {
+      if (!active) return;
+      content.style.transform = 'translate(-50%, -50%) translate(' + active.x + 'px, ' + active.y + 'px) scale(' + active.scale + ')';
+    }
+
+    function fit() {
+      if (!active) return;
+      active.fit = Math.min((viewport.clientWidth - 32) / active.width, (viewport.clientHeight - 32) / active.height, 1);
+      active.fit = Math.max(0.001, active.fit);
+      active.scale = active.fit;
+      active.x = active.y = 0;
+      apply();
+    }
+
+    function zoom(factor, x, y) {
+      if (!active) return;
+      var scale = Math.max(active.fit * 0.1, Math.min(Math.max(4, active.fit * 20), active.scale * factor));
+      var ratio = scale / active.scale;
+      active.x = x - (x - active.x) * ratio;
+      active.y = y - (y - active.y) * ratio;
+      active.scale = scale;
+      apply();
+    }
+
+    function exit() {
+      if (!active) return;
+      var previous = active;
+      active = null;
+      pointers.clear();
+      gesture = null;
+      viewport.classList.remove('mdopen-media-dragging');
+      previous.container.dataset.overlayEnabled = 'false';
+      previous.button.setAttribute('aria-expanded', 'false');
+      if (dialog.open) dialog.close();
+      document.body.style.overflow = previous.bodyOverflow;
+      content.replaceChildren();
+      if (previous.button.isConnected) previous.button.focus({ preventScroll: true });
+    }
+
+    function enter(container, source, button) {
+      exit();
+      source = source || container.querySelector('.mermaid svg, img');
+      button = button || container.querySelector('.mdopen-media-fullscreen-btn');
+      if (!source || !button) return;
+      var image = source.tagName === 'IMG';
+      if (image && (!source.complete || !source.naturalWidth)) return;
+      var bounds = source.getBoundingClientRect();
+      var viewBox = !image && source.viewBox && source.viewBox.baseVal;
+      var width = image ? source.naturalWidth : (viewBox && viewBox.width) || bounds.width;
+      var height = image ? source.naturalHeight : (viewBox && viewBox.height) || bounds.height;
+      if (!width || !height) return;
+      var clone = source.cloneNode(true);
+      // IDs must stay unique; Mermaid's internal SVG references need its IDs,
+      // so use an isolated image document for the rendered SVG instead.
+      if (!image) {
+        var svg = clone;
+        svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        svg.setAttribute('width', width);
+        svg.setAttribute('height', height);
+        clone = document.createElement('img');
+        clone.alt = 'Mermaid diagram';
+        clone.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(svg));
+      } else {
+        clone.removeAttribute('srcset');
+        clone.removeAttribute('sizes');
+        clone.src = source.currentSrc || source.src;
+      }
+      clone.removeAttribute('id');
+      clone.removeAttribute('style');
+      clone.removeAttribute('class');
+      clone.removeAttribute('width');
+      clone.removeAttribute('height');
+      clone.draggable = false;
+      content.replaceChildren(clone);
+      content.style.inlineSize = width + 'px';
+      content.style.blockSize = height + 'px';
+      active = { container: container, source: source, button: button, width: width, height: height, bodyOverflow: document.body.style.overflow };
+      container.dataset.overlayEnabled = 'true';
+      button.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      dialog.showModal();
+      fit();
+    }
+
+    function addButton(container, source, mermaid) {
+      if (source._mdopenZoomButton) return;
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'mdopen-media-fullscreen-btn' + (mermaid ? ' mermaid-fullscreen-btn' : '');
+      button.textContent = 'Full';
+      button.title = 'Open fullscreen to zoom';
+      button.setAttribute('aria-label', 'Zoom ' + (mermaid ? 'diagram' : source.alt || 'image'));
+      button.setAttribute('aria-haspopup', 'dialog');
+      button.setAttribute('aria-expanded', 'false');
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        enter(container, source, button);
+      });
+      if (!mermaid) {
+        function readiness() { button.disabled = !source.complete || !source.naturalWidth; }
+        source.addEventListener('load', readiness);
+        source.addEventListener('error', readiness);
+        readiness();
+      }
+      source._mdopenZoomButton = button;
+      container.appendChild(button);
+    }
+
+    function addButtons(root) {
+      root = root || document;
+      // Include root itself: asynchronous Mermaid loaders pass the container.
+      var containers = Array.from(root.querySelectorAll('.mermaid-container'));
+      if (root.matches && root.matches('.mermaid-container')) containers.push(root);
+      containers.forEach(function (container) {
+        var svg = container.querySelector('.mermaid svg');
+        if (!svg) return;
+        var old = container.querySelector('.mdopen-media-fullscreen-btn');
+        if (old && !svg._mdopenZoomButton) old.remove();
+        addButton(container, svg, true);
+      });
+      root.querySelectorAll('.markdown-body img').forEach(function (image) {
+        if (image.closest('.mermaid-container') || image._mdopenZoomButton) return;
+        // Keep linked images navigable and place the zoom button outside the link.
+        var target = image.closest('a') || image.closest('picture') || image;
+        var container = target.parentElement;
+        if (!container.classList.contains('mdopen-image-container')) {
+          container = document.createElement('span');
+          container.className = 'mdopen-image-container';
+          target.parentNode.insertBefore(container, target);
+          container.appendChild(target);
+        }
+        addButton(container, image, false);
+      });
+    }
+
+    function point(event) {
+      var rect = viewport.getBoundingClientRect();
+      return { x: event.clientX - rect.left - rect.width / 2, y: event.clientY - rect.top - rect.height / 2 };
+    }
+
+    function resetGesture() {
+      var values = Array.from(pointers.values());
+      if (!values.length || !active) { gesture = null; return; }
+      var a = values[0], b = values[1] || a;
+      gesture = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, distance: Math.hypot(b.x - a.x, b.y - a.y) };
+    }
+
+    viewport.addEventListener('wheel', function (event) {
+      event.preventDefault();
+      var p = point(event);
+      zoom(event.deltaY < 0 ? 1.1 : 1 / 1.1, p.x, p.y);
+    }, { passive: false });
+    viewport.addEventListener('pointerdown', function (event) {
+      if (event.button !== 0) return;
+      event.preventDefault();
+      viewport.setPointerCapture(event.pointerId);
+      pointers.set(event.pointerId, point(event));
+      viewport.classList.add('mdopen-media-dragging');
+      resetGesture();
+    });
+    viewport.addEventListener('pointermove', function (event) {
+      if (!active || !pointers.has(event.pointerId)) return;
+      pointers.set(event.pointerId, point(event));
+      var previous = gesture;
+      resetGesture();
+      if (!previous || !gesture) return;
+      active.x += gesture.x - previous.x;
+      active.y += gesture.y - previous.y;
+      if (previous.distance && gesture.distance) zoom(gesture.distance / previous.distance, gesture.x, gesture.y);
+      else apply();
+    });
+    function pointerEnd(event) {
+      pointers.delete(event.pointerId);
+      if (!pointers.size) viewport.classList.remove('mdopen-media-dragging');
+      resetGesture();
+    }
+    viewport.addEventListener('pointerup', pointerEnd);
+    viewport.addEventListener('pointercancel', pointerEnd);
+    viewport.addEventListener('lostpointercapture', pointerEnd);
+    viewport.addEventListener('dblclick', fit);
+    dialog.addEventListener('click', function (event) {
+      var button = event.target.closest('[data-media-action]');
+      if (!button) return;
+      var action = button.dataset.mediaAction;
+      if (action === 'close') exit();
+      else if (action === 'fit') fit();
+      else zoom(action === 'in' ? 1.25 : 0.8, 0, 0);
+    });
+    dialog.addEventListener('cancel', function (event) { event.preventDefault(); exit(); });
+    dialog.addEventListener('close', function () { if (!dialog.open) exit(); });
+    dialog.addEventListener('keydown', function (event) {
+      if (event.key === '+' || event.key === '=') zoom(1.25, 0, 0);
+      else if (event.key === '-') zoom(0.8, 0, 0);
+      else if (event.key === '0') fit();
+      else return;
+      event.preventDefault();
+    });
+    window.addEventListener('resize', fit);
+    window.addEventListener('beforeprint', exit);
+    document.addEventListener('mdopen-theme-change', exit);
+    window.mdopenMediaOverlay = { addButtons: addButtons, enter: enter, exit: exit };
+    addButtons(document);
+    var article = document.querySelector('.markdown-body');
+    if (article) new MutationObserver(function () {
+      if (active && !article.contains(active.source)) exit();
+      addButtons(document);
+    }).observe(article, { childList: true, subtree: true });
+  })();
+</script>

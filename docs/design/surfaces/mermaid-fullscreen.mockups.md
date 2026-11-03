@@ -32,11 +32,11 @@ click [Full]
 ┌──────────────────────────────────────────────┐
 │ Same click task                              │
 │                                              │
-│ 1. install wheel + drag handlers             │
-│ 2. apply initial fit transform               │
-│ 3. call requestFullscreen()                  │
+│ 1. copy image/SVG into shared dialog             │
+│ 2. showModal() and apply centered fit               │
+│ 3. wheel + pointer handlers are ready                  │
 │                                              │
-│ No waiting for fullscreenchange before       │
+│ No Fullscreen API transition before       │
 │ interaction becomes active.                  │
 └──────────────────────────────────────────────┘
 ```
@@ -45,7 +45,7 @@ click [Full]
 
 ```wireframe state:mermaid-fullscreen ready
 ┌────────────────────────────────────────────────────────────┐
-│ MermaidContainer :fullscreen                       [Full]  │
+│ Media dialog                  [−] [+] [Fit] [Close]  │
 │                                                            │
 │                                                            │
 │                  ┌────────────────────┐                    │
@@ -64,7 +64,7 @@ click [Full]
 
 ```wireframe state:mermaid-fullscreen panning
 ┌────────────────────────────────────────────────────────────┐
-│ MermaidContainer :fullscreen                       [Full]  │
+│ Media dialog                  [−] [+] [Fit] [Close]  │
 │                                                            │
 │  cursor: grabbing                                          │
 │                                                            │
@@ -84,7 +84,7 @@ click [Full]
 
 ```wireframe state:mermaid-fullscreen zoom
 ┌────────────────────────────────────────────────────────────┐
-│ MermaidContainer :fullscreen                       [Full]  │
+│ Media dialog                  [−] [+] [Fit] [Close]  │
 │                                                            │
 │       ┌────────────────────────────────────────────┐       │
 │       │ Start                                      │       │
@@ -102,8 +102,8 @@ click [Full]
 
 | Element | Token / color | Class / pattern | Notes |
 |---------|---------------|-----------------|-------|
-| Container | `--mdopen-preview-border` | `.mermaid-container` | inline card, fullscreen root |
-| Diagram | browser transform | `.mermaid` | transform target for pan/zoom |
-| Button | current rgba button styling | `.mermaid-fullscreen-btn` | ignored by drag handlers |
-| Fullscreen viewport | existing background | `.mermaid-container:fullscreen` | overflow hidden |
-| Timing | n/a | click handler before `requestFullscreen()` | avoids visible dead period |
+| Container | `--mdopen-preview-border` | `.mermaid-container` | inline card, remains in document flow |
+| Diagram | browser transform | `.mdopen-media-content` | isolated copy, pan/zoom target |
+| Button | theme surface | `.mdopen-media-fullscreen-btn` | opens modal dialog |
+| Fullscreen viewport | theme surface | `.mdopen-media-viewport` | overflow clipped |
+| Timing | n/a | `showModal()` in click handler | immediate pan/zoom |

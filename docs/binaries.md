@@ -24,11 +24,15 @@ The standalone binary embeds:
 
 - `renderer.js`
 - `templates/mdopen.html`
+- `templates/mdopen-script.html`
+- `templates/media-overlay.html`
 - `templates/mermaid-script.html`
 - `assets/mdopen.css`
 - `assets/mdopen-overrides.css`
 - `assets/styles/*.css`
 - `assets/styles/fonts/*`
+
+The directory viewer script generator is taken from `bin/mdopen.js` at build time; it is not maintained as a separate binary-only copy.
 
 At runtime, the binary writes embedded CSS and font assets into the platform temp `mdopen` directory, renders the Markdown file, and opens the generated HTML.
 

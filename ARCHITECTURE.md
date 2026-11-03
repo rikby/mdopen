@@ -21,8 +21,8 @@ There is no server, build system, app framework, or frontend bundler.
 - `renderer.js`: Bun-executed CommonJS renderer using `markdown-it` and `highlight.js`. Exports `renderMarkdown(markdown, options)` so the rendering pipeline is importable as a library; the CLI path runs only when invoked directly via `require.main === module`.
 - `templates/mdopen.html`: HTML shell and toolbar markup.
 - `templates/mdopen-script.html`: browser-side toolbar controls, persisted view controls, copy behavior, and print theme behavior.
-- `templates/mermaid-script.html`: browser-side Mermaid rendering, overlay, pan, zoom, and diagram error handling (CLI single-file path).
-- `templates/mermaid-overlay.html`: shared Mermaid Full-button overlay engine (plain JS, `window.mdopenMermaidOverlay`), used by the CLI single-file path, directory viewer, and GitHub Pages editor.
+- `templates/mermaid-script.html`: lazy Mermaid rendering and diagram error handling (CLI single-file path).
+- `templates/media-overlay.html`: shared image/Mermaid Full buttons, modal dialog, pan, zoom, focus return, and cleanup (`window.mdopenMediaOverlay`) for every rendering path.
 - `assets/mdopen.css`: shared layout, toolbar, Mermaid, base tokens, and print defaults.
 - `assets/mdopen-overrides.css`: final user-control override layer.
 - `assets/styles/`: optional style-source CSS loaded by the template.
@@ -69,9 +69,32 @@ Mermaid is loaded only when the Markdown includes a `mermaid` fenced block. The 
 
 The browser script renders each diagram independently. Invalid diagrams show an inline error message instead of breaking the rest of the page. Theme changes re-render diagrams so Mermaid matches light or dark reading mode.
 
-The Full button opens an in-app overlay: the `.mermaid-container` itself becomes a fixed, full-viewport layer (`position: fixed; inset: 0; z-index: 9999`), Escape closes it, and body scroll is locked while open. Pan and zoom are enabled only while a container is in the overlay. The overlay engine avoids the native Fullscreen API, which is unreliable under `file://` and causes an input dead-period that breaks pan/zoom.
+## Media Zoom
 
-The shared overlay engine lives in `templates/mermaid-overlay.html` (plain JS, exposed as `window.mdopenMermaidOverlay`). The CLI single-file path inlines it at the top of `templates/mermaid-script.html`; the directory viewer and GitHub Pages editor load it via the `{{mermaidScript}}` template slot. Each path sets `onEnter`/`onExit` hooks to wire its own pan/zoom implementation.
+Every page includes `templates/media-overlay.html` through the `{{mediaScript}}`
+slot, independently of the conditional Mermaid module. The engine discovers
+article images and rendered Mermaid SVGs, adding a Full button. A single
+article-scoped MutationObserver handles directory navigation, editor previews,
+and asynchronous diagram rendering. Broken or unloaded images have a disabled
+button until loaded. Linked images retain their navigation, with the zoom button
+outside the link.
+
+Full opens a native modal `<dialog>` in the browser top layer, without the
+Fullscreen API. The engine copies the selected image (using its current source)
+or serializes the rendered Mermaid SVG into an isolated image. The original
+media stays in document flow, with its IDs, styles, and links untouched. This
+also avoids duplicate SVG IDs and clipping by document filters or scroll areas.
+
+One gesture implementation owns wheel zoom, pointer drag/pinch, zoom buttons,
+keyboard +/−/0, centered fit, and double-click reset. Resize refits the media.
+Escape/Close releases scroll lock and returns focus; source replacement, theme
+changes, and printing also close the overlay. Zoom buttons and the dialog are
+excluded from print output. There are no new runtime dependencies.
+
+The binary build embeds the same media partial and extracts the directory viewer
+script generator from `bin/mdopen.js` at build time, so the source and binary
+viewers share rendering and interaction behavior. The Pages-only editor remains
+excluded from the binary.
 
 ## Styling Model
 

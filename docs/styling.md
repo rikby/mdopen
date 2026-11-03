@@ -108,6 +108,13 @@ The risk pattern is any theme source setting element margins with `!important` a
 - Do not use the native `title` tooltip for this link; the visible hover/focus chip is the label.
 - Hide fixed chrome, including the repo back link, in print.
 
+## Media Zoom
+
+- Keep shared image and Mermaid zoom styles in `assets/mdopen.css`.
+- `.mdopen-image-container` preserves inline image flow and positions a separate Full button.
+- `.mdopen-media-overlay` is a modal dialog outside `.markdown-body`, using the existing theme-aware surface tokens.
+- Keep zoom controls keyboard-visible and hide the dialog and Full buttons when printing.
+
 ## Variant Rules
 
 Use data attributes for semantic or user-selected values:

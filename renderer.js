@@ -116,7 +116,7 @@ function readTemplatePart(value, name) {
  * @param {string} markdown - Raw Markdown source.
  * @param {object} options
  * @param {string} options.template - Pre-loaded template HTML string.
- * @param {string} options.templateDir - Directory containing `mdopen-script.html` and `mermaid-script.html`.
+ * @param {string} options.templateDir - Directory containing the toolbar, media overlay, and Mermaid script partials.
  * @param {string} options.pageTitle - Page title injected into the template.
  * @param {string} options.cssHref - CSS href injected into the template.
  * @param {string} [options.defaultStyle="default"] - Default style source identifier.
@@ -216,6 +216,7 @@ function renderMarkdown(markdown, options) {
     .replaceAll("{{cssHref}}", escapeHtml(cssHref))
     .replaceAll("{{mdopenScript}}", readTemplatePart(templateDir, "mdopen-script.html"))
     .replaceAll("{{defaultStyle}}", escapeHtml(defaultStyle))
+    .replaceAll("{{mediaScript}}", readTemplatePart(templateDir, "media-overlay.html"))
     .replaceAll("{{mermaidScript}}", hasMermaid ? readTemplatePart(templateDir, "mermaid-script.html") : "")
     .replaceAll("{{editorScript}}", "")
     .replaceAll("{{frontmatter}}", frontmatter)

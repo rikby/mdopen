@@ -43,7 +43,7 @@ Directory input scans Markdown files up to 5 levels deep, skips hidden and commo
 - Color accents: default, none, blue, sage, rose; each color uses varied heading and block tones
 - Font sets: source, system, balanced docs, print serif, technical, editorial, product, mono
 - Gap controls: normal, `-1`, `-2`, `-3`
-- Mermaid fenced diagram rendering with fullscreen button
+- Images and Mermaid diagrams with a fullscreen zoom viewer (scroll/pinch to zoom, drag to pan, Fit or double-click to reset, Escape to close)
 - Theme-aware Mermaid diagram surfaces
 - Print-specific CSS for tighter output
 - `-3` is the most compact print mode
@@ -54,6 +54,8 @@ The pin icon in the menu corner controls whether outside clicks close the hambur
 Default tone and color preserve the selected theme colors.
 Select `None` to remove the color accent. Dark mode is for screen reading only; print output stays light.
 Print grayscale tones use flat neutral RGB values so near-black text stays clean on color laser printers.
+
+Image zoom also works in directory previews and the Pages editor. Linked images keep their link; use the separate **Full** button to zoom. See [image zoom and verification](docs/media-zoom.md).
 
 ## Requirements
 
