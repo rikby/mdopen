@@ -12,6 +12,21 @@ async page => {
   const originalImages = await page.locator('.markdown-body img').count();
   await buttons.first().click();
   check(await dialog.evaluate(d => d.open), 'Full must open a modal dialog');
+  const fullViewport = await viewport.boundingBox();
+  const screen = page.viewportSize();
+  check(fullViewport.x === 0 && fullViewport.y === 0 && fullViewport.width === screen.width && fullViewport.height === screen.height, 'fullscreen must use the entire viewport without a header');
+  const help = page.locator('.mdopen-media-help');
+  const helpToggle = page.getByLabel('Zoom help and controls', {exact:true});
+  async function action(name) {
+    if (!await help.evaluate(el => el.open)) await helpToggle.click();
+    await page.getByRole('button', {name, exact:true}).click();
+  }
+  check(!await help.evaluate(el => el.open), 'help must start collapsed');
+  await helpToggle.click();
+  check(await help.evaluate(el => el.open), 'help must expand on tap');
+  await helpToggle.click();
+  check(!await help.evaluate(el => el.open), 'help must collapse on the next tap');
+  await helpToggle.click();
   await page.locator('.mdopen-media-content img').evaluate(img => img.decode());
   const initial = await content.boundingBox();
   const box = await viewport.boundingBox();
@@ -19,7 +34,7 @@ async page => {
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await page.mouse.wheel(0, -100);
   await page.waitForFunction(width => document.querySelector('.mdopen-media-content').getBoundingClientRect().width > width, initial.width);
-  await page.getByRole('button', {name:'Zoom in', exact:true}).click();
+  await action('Zoom in');
   const zoomed = await content.boundingBox();
   check(zoomed.width > initial.width, 'wheel and button must zoom');
   const x = box.x + box.width / 2, y = box.y + box.height / 2;
@@ -29,7 +44,7 @@ async page => {
   await page.mouse.up();
   const moved = await content.boundingBox();
   check(Math.abs(moved.x - zoomed.x - 80) < 2 && Math.abs(moved.y - zoomed.y - 45) < 2, 'drag must follow screen pixels');
-  await page.getByRole('button', {name:'Fit', exact:true}).click();
+  await action('Fit');
   const fitted = await content.boundingBox();
   check(Math.abs(fitted.width - initial.width) < 1, 'Fit must restore the initial scale');
   await page.keyboard.press('+');
@@ -51,7 +66,7 @@ async page => {
   });
   check((await content.boundingBox()).width > initial.width * 1.5, 'pinch must zoom');
   const pinched = await content.boundingBox();
-  await page.getByRole('button', {name:'Zoom out', exact:true}).click();
+  await action('Zoom out');
   check((await content.boundingBox()).width < pinched.width, 'minus button must zoom out');
   await viewport.dblclick({position:{x:box.width / 2, y:box.height / 2}});
   check(Math.abs((await content.boundingBox()).width - initial.width) < 1, 'double-click must fit');
@@ -74,7 +89,8 @@ async page => {
   await buttons.first().click();
   const controls = await page.locator('.mdopen-media-controls').boundingBox();
   const smallViewport = await viewport.boundingBox();
-  check(controls.y + controls.height <= smallViewport.y, 'controls must fit above media on narrow screens');
+  check(smallViewport.y === 0 && smallViewport.height === 640, 'narrow screens must use the entire viewport');
+  check(controls.width <= 64 && controls.height <= 28, 'collapsed controls must stay compact and floating');
   await page.keyboard.press('Escape');
   await page.setViewportSize(originalViewport);
   // Live editor/directory replacement must release the modal and lock too.

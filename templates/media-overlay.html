@@ -5,20 +5,26 @@
   (function () {
     if (window.mdopenMediaOverlay) return;
 
+    var EXPAND_ICON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>';
+    var MINIMIZE_ICON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 0 2-2h3M3 16h3a2 2 0 0 0 2 2v3"></path></svg>';
+    var FIT_ICON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9V3h6m6 0h6v6m0 6v6h-6M9 21H3v-6"></path><path d="M8 12h8m-4-4v8"></path></svg>';
     var active = null;
     var dialog = document.createElement('dialog');
     dialog.className = 'mdopen-media-overlay';
     dialog.setAttribute('aria-label', 'Image and diagram zoom');
     dialog.innerHTML = '<div class="mdopen-media-controls">' +
-      '<button type="button" data-media-action="out" aria-label="Zoom out">−</button>' +
-      '<button type="button" data-media-action="in" aria-label="Zoom in">+</button>' +
-      '<button type="button" data-media-action="fit">Fit</button>' +
-      '<span>Scroll or pinch to zoom · Drag to pan</span>' +
-      '<button type="button" data-media-action="close" autofocus aria-label="Exit fullscreen">Close</button>' +
+      '<button type="button" class="mdopen-media-icon-button" data-media-action="close" autofocus aria-label="Exit fullscreen" title="Exit fullscreen (Escape)">' + MINIMIZE_ICON + '</button>' +
+      '<details class="mdopen-media-help"><summary aria-label="Zoom help and controls" title="Zoom help and controls">?</summary>' +
+      '<div class="mdopen-media-help-panel"><div class="mdopen-media-help-actions">' +
+      '<button type="button" class="mdopen-media-icon-button" data-media-action="out" aria-label="Zoom out" title="Zoom out (−)">−</button>' +
+      '<button type="button" class="mdopen-media-icon-button" data-media-action="in" aria-label="Zoom in" title="Zoom in (+)">+</button>' +
+      '<button type="button" class="mdopen-media-icon-button" data-media-action="fit" aria-label="Fit" title="Fit (0 or double-click)">' + FIT_ICON + '</button>' +
+      '</div><p>Scroll or pinch to zoom. Drag to pan.</p><p>Double-click or 0 to fit. Escape to exit.</p></div></details>' +
       '</div><div class="mdopen-media-viewport"><div class="mdopen-media-content"></div></div>';
     document.body.appendChild(dialog);
     var viewport = dialog.querySelector('.mdopen-media-viewport');
     var content = dialog.querySelector('.mdopen-media-content');
+    var help = dialog.querySelector('.mdopen-media-help');
     var pointers = new Map();
     var gesture = null;
 
@@ -53,6 +59,7 @@
       pointers.clear();
       gesture = null;
       viewport.classList.remove('mdopen-media-dragging');
+      help.open = false;
       previous.container.dataset.overlayEnabled = 'false';
       previous.button.setAttribute('aria-expanded', 'false');
       if (dialog.open) dialog.close();
@@ -111,7 +118,7 @@
       var button = document.createElement('button');
       button.type = 'button';
       button.className = 'mdopen-media-fullscreen-btn' + (mermaid ? ' mermaid-fullscreen-btn' : '');
-      button.textContent = 'Full';
+      button.innerHTML = EXPAND_ICON;
       button.title = 'Open fullscreen to zoom';
       button.setAttribute('aria-label', 'Zoom ' + (mermaid ? 'diagram' : source.alt || 'image'));
       button.setAttribute('aria-haspopup', 'dialog');
@@ -204,6 +211,7 @@
     viewport.addEventListener('lostpointercapture', pointerEnd);
     viewport.addEventListener('dblclick', fit);
     dialog.addEventListener('click', function (event) {
+      if (!help.contains(event.target)) help.open = false;
       var button = event.target.closest('[data-media-action]');
       if (!button) return;
       var action = button.dataset.mediaAction;

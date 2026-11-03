@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Fixed
+
+- Restored the original translucent Mermaid fullscreen icons for images and diagrams. The viewer now uses the full viewport, with optional zoom controls in a collapsed floating help menu instead of a fixed header.
+
 ## [0.4.0] - 2026-11-03
 
 ### Added

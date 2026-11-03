@@ -55,7 +55,7 @@ Default tone and color preserve the selected theme colors.
 Select `None` to remove the color accent. Dark mode is for screen reading only; print output stays light.
 Print grayscale tones use flat neutral RGB values so near-black text stays clean on color laser printers.
 
-Image zoom also works in directory previews and the Pages editor. Linked images keep their link; use the separate **Full** button to zoom. See [image zoom and verification](docs/media-zoom.md).
+Image zoom also works in directory previews and the Pages editor. Linked images keep their link; use the separate fullscreen icon to zoom. See [image zoom and verification](docs/media-zoom.md).
 
 ## Requirements
 

@@ -1,16 +1,20 @@
 # Image and diagram zoom
 
-Images and Mermaid diagrams share a **Full** button and zoom viewer in single-file
+Images and Mermaid diagrams share a fullscreen icon button and zoom viewer in single-file
 output, directory output, standalone binaries, HTTP exports, and the Pages editor.
 
 - Scroll or pinch to zoom; drag to pan.
-- Use +/− buttons or keyboard +/− to zoom.
+- Tap ? to expand the floating help menu for +/− and Fit controls; tap again to hide it. Keyboard +/− also zoom.
 - Use Fit, keyboard 0, or double-click to reset.
-- Use Close or Escape to return to the document.
+- Use the original exit-fullscreen icon or Escape to return to the document.
 
-Links around images still navigate normally. Their separate Full button zooms the
+Links around images still navigate normally. Their separate fullscreen icon zooms the
 image. Unloaded or broken images cannot open the viewer. Printing closes zoom and
 prints the original document without zoom controls. Images need no Mermaid CDN.
+
+The canvas fills the entire viewport. The translucent floating controls use the
+original Mermaid icon style; there is no fixed header or reserved top space.
+The same shared overlay owns this UI for every fullscreen image and diagram.
 
 ## Plan and acceptance goals
 
@@ -33,7 +37,7 @@ Preview it locally without changing that source file:
 ./bin/mdopen ~/work/smartflyer/docs/architecture/c4-containers.md
 ```
 
-Check both Full buttons, immediate wheel zoom/drag, Fit, Escape, and light print
+Check both fullscreen icons, immediate wheel zoom/drag, Fit, Escape, and light print
 output. Also check a linked image, a broken image, and a Mermaid fenced diagram.
 
 The repeatable browser probe in `test/browser/media-zoom.js` checks fit, wheel and

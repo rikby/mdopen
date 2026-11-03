@@ -41,11 +41,14 @@ click [Full]
 └──────────────────────────────────────────────┘
 ```
 
+The original translucent icon buttons float over the full canvas. Tap `?`
+to show or hide zoom, Fit, and gesture help; no space is reserved for a header.
+
 ## Fullscreen Ready
 
 ```wireframe state:mermaid-fullscreen ready
 ┌────────────────────────────────────────────────────────────┐
-│ Media dialog                  [−] [+] [Fit] [Close]  │
+│ Media canvas                               [Exit] [?]  │
 │                                                            │
 │                                                            │
 │                  ┌────────────────────┐                    │
@@ -64,7 +67,7 @@ click [Full]
 
 ```wireframe state:mermaid-fullscreen panning
 ┌────────────────────────────────────────────────────────────┐
-│ Media dialog                  [−] [+] [Fit] [Close]  │
+│ Media canvas                               [Exit] [?]  │
 │                                                            │
 │  cursor: grabbing                                          │
 │                                                            │
@@ -84,7 +87,7 @@ click [Full]
 
 ```wireframe state:mermaid-fullscreen zoom
 ┌────────────────────────────────────────────────────────────┐
-│ Media dialog                  [−] [+] [Fit] [Close]  │
+│ Media canvas                               [Exit] [?]  │
 │                                                            │
 │       ┌────────────────────────────────────────────┐       │
 │       │ Start                                      │       │

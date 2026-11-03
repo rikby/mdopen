@@ -11,6 +11,9 @@ Images and Mermaid diagrams use the shared viewer described in
 - `templates/media-overlay.html` adds Full buttons and owns the modal dialog and gestures.
 - `templates/mermaid-script.html`, the directory viewer, and the editor only render diagrams.
 - `assets/mdopen.css` owns the shared, theme-aware styles and print exclusions.
+- The canvas fills the viewport with no fixed header. Original 28px translucent
+  Mermaid expand/exit icons apply to all media. Optional zoom and Fit controls
+  live in one floating, initially collapsed native `details` help menu.
 
 ## Acceptance criteria
 
@@ -29,5 +32,6 @@ Images and Mermaid diagrams use the shared viewer described in
 | MZ-3 | Fit, double-click, keyboard 0, and resize reset to centered fit. |
 | MZ-4 | Document replacement, theme changes, and printing close stale overlays. |
 | MZ-5 | All rendering paths use the same overlay and gesture implementation. |
+| MZ-6 | Help expands/collapses on tap; collapsed translucent controls reserve no canvas space, including on narrow screens. |
 
 The repeatable browser probe is `test/browser/media-zoom.js`.

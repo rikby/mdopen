@@ -558,37 +558,43 @@ html[data-mdopen-theme="dark"] .markdown-body .callout.important {
 }
 
 .mdopen-media-fullscreen-btn,
-.mdopen-media-controls button {
+.mdopen-media-icon-button,
+.mdopen-media-help > summary {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-inline-size: 44px;
-  min-block-size: 44px;
-  padding: 4px 10px;
-  border: 1px solid var(--mdopen-mermaid-border);
+  inline-size: 28px;
+  block-size: 28px;
+  padding: 0;
+  border: 0;
   border-radius: 4px;
-  background: var(--mdopen-mermaid-bg);
-  color: var(--mdopen-preview-text, CanvasText);
-  font: 14px/1.2 ui-sans-serif, system-ui, sans-serif;
+  background: rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  font: 16px/1 ui-sans-serif, system-ui, sans-serif;
   cursor: pointer;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .mdopen-media-fullscreen-btn:hover,
-  .mdopen-media-controls button:hover {
-    background: color-mix(in oklch, var(--mdopen-mermaid-bg) 85%, oklch(0.6 0 none));
+  .mdopen-media-icon-button:hover,
+  .mdopen-media-help > summary:hover {
+    background: rgba(0, 0, 0, 0.3);
   }
 }
 
 .mdopen-media-fullscreen-btn:focus-visible,
-.mdopen-media-controls button:focus-visible {
+.mdopen-media-icon-button:focus-visible,
+.mdopen-media-help > summary:focus-visible {
+  background: rgba(0, 0, 0, 0.3);
   outline: 2px solid var(--mdopen-preview-accent-link, #0969da);
   outline-offset: 2px;
 }
 
 .mdopen-media-fullscreen-btn:active,
-.mdopen-media-controls button:active {
-  background: color-mix(in oklch, var(--mdopen-mermaid-bg) 70%, oklch(0.6 0 none));
+.mdopen-media-icon-button:active,
+.mdopen-media-help > summary:active {
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .mdopen-media-fullscreen-btn:disabled {
@@ -616,28 +622,47 @@ html[data-mdopen-theme="dark"] .markdown-body .callout.important {
 .mdopen-media-controls {
   position: absolute;
   inset-block-start: 8px;
-  inset-inline: 8px;
+  inset-inline-start: 8px;
+  z-index: 1;
   display: flex;
-  align-items: center;
-  gap: 8px;
-  font: 14px/1.2 ui-sans-serif, system-ui, sans-serif;
+  align-items: start;
+  gap: 4px;
 }
 
-.mdopen-media-controls span {
-  flex: 1;
-  min-inline-size: 0;
-  white-space: nowrap;
-  overflow: clip;
-  text-overflow: ellipsis;
+.mdopen-media-help > summary {
+  list-style: none;
 }
 
-.mdopen-media-controls button:last-child {
-  margin-inline-start: auto;
+.mdopen-media-help > summary::-webkit-details-marker {
+  display: none;
+}
+
+.mdopen-media-help-panel {
+  position: absolute;
+  inset-block-start: 36px;
+  inset-inline-start: 0;
+  box-sizing: border-box;
+  inline-size: min(240px, calc(100vw - 16px));
+  padding: 10px;
+  border: 1px solid var(--mdopen-mermaid-border);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--mdopen-mermaid-bg) 88%, transparent);
+  color: var(--mdopen-preview-text, CanvasText);
+  font: 13px/1.5 ui-sans-serif, system-ui, sans-serif;
+}
+
+.mdopen-media-help-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.mdopen-media-help-panel p {
+  margin-block: 8px 0;
 }
 
 .mdopen-media-viewport {
   position: absolute;
-  inset: 64px 0 0;
+  inset: 0;
   overflow: clip;
   touch-action: none;
   user-select: none;

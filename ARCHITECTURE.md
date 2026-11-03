@@ -73,21 +73,26 @@ The browser script renders each diagram independently. Invalid diagrams show an 
 
 Every page includes `templates/media-overlay.html` through the `{{mediaScript}}`
 slot, independently of the conditional Mermaid module. The engine discovers
-article images and rendered Mermaid SVGs, adding a Full button. A single
+article images and rendered Mermaid SVGs, adding a fullscreen icon button. A single
 article-scoped MutationObserver handles directory navigation, editor previews,
 and asynchronous diagram rendering. Broken or unloaded images have a disabled
 button until loaded. Linked images retain their navigation, with the zoom button
 outside the link.
 
-Full opens a native modal `<dialog>` in the browser top layer, without the
+The fullscreen button opens a native modal `<dialog>` in the browser top layer, without the
 Fullscreen API. The engine copies the selected image (using its current source)
 or serializes the rendered Mermaid SVG into an isolated image. The original
 media stays in document flow, with its IDs, styles, and links untouched. This
 also avoids duplicate SVG IDs and clipping by document filters or scroll areas.
 
+The dialog canvas fills the viewport without a header. Original Mermaid expand/
+minimize icons use the same translucent styling for images and diagrams. A
+collapsed floating help menu exposes optional zoom and Fit controls on demand.
+This shared partial owns the UI for every fullscreen case.
+
 One gesture implementation owns wheel zoom, pointer drag/pinch, zoom buttons,
 keyboard +/−/0, centered fit, and double-click reset. Resize refits the media.
-Escape/Close releases scroll lock and returns focus; source replacement, theme
+Escape/the exit icon releases scroll lock and returns focus; source replacement, theme
 changes, and printing also close the overlay. Zoom buttons and the dialog are
 excluded from print output. There are no new runtime dependencies.
 
